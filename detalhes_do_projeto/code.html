@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="pt-BR"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Detalhes do Projeto - AgenciaOS</title>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#137fec",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#101922", // Matches the deep charcoal mentioned
+                        "card-dark": "#1e293b", // Slightly lighter for cards
+                        "border-dark": "#334155",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" },
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-white font-display antialiased overflow-x-hidden">
+<div class="relative flex h-auto min-h-screen w-full flex-col">
+<!-- Top Navigation -->
+<header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-slate-200 dark:border-[#233648] bg-white dark:bg-[#111a22] px-10 py-3 sticky top-0 z-50">
+<div class="flex items-center gap-8">
+<div class="flex items-center gap-4 dark:text-white text-slate-900">
+<div class="size-8 text-primary">
+<svg class="w-full h-full" fill="none" viewbox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+<path d="M4 42.4379C4 42.4379 14.0962 36.0744 24 41.1692C35.0664 46.8624 44 42.2078 44 42.2078L44 7.01134C44 7.01134 35.068 11.6577 24.0031 5.96913C14.0971 0.876274 4 7.27094 4 7.27094L4 42.4379Z" fill="currentColor"></path>
+</svg>
+</div>
+<h2 class="text-lg font-bold leading-tight tracking-[-0.015em]">AgenciaOS</h2>
+</div>
+<nav class="hidden md:flex items-center gap-9">
+<a class="text-slate-500 dark:text-[#92adc9] text-sm font-medium leading-normal hover:text-primary transition-colors" href="#">Dashboard</a>
+<a class="text-primary text-sm font-medium leading-normal" href="#">Projetos</a>
+<a class="text-slate-500 dark:text-[#92adc9] text-sm font-medium leading-normal hover:text-primary transition-colors" href="#">Clientes</a>
+<a class="text-slate-500 dark:text-[#92adc9] text-sm font-medium leading-normal hover:text-primary transition-colors" href="#">Relatórios</a>
+</nav>
+</div>
+<div class="flex flex-1 justify-end gap-6 items-center">
+<div class="hidden md:flex w-full max-w-xs items-center rounded-lg bg-slate-100 dark:bg-[#233648] px-3 py-2">
+<span class="material-symbols-outlined text-slate-400 dark:text-[#92adc9]">search</span>
+<input class="w-full bg-transparent border-none text-sm px-2 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-[#92adc9] focus:ring-0" placeholder="Buscar..." type="text"/>
+</div>
+<div class="bg-center bg-no-repeat bg-cover rounded-full size-10 ring-2 ring-slate-100 dark:ring-[#233648]" data-alt="User avatar profile picture showing a smiling professional" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDpR0Y1gsMaT_TwJ1wHobAN2IhWNtFlIl84slA0TLY0Tcudn7UiZWeKAHawH4_TTtNC-cle1GALfmmhKIdSMgOjbYJ7cI-goJ5Cs7Gyh11xVWodxOyagzvbR5FQENYiaeGCuSL-B13WKPPMOSTjbAMHjXNCDvHIOAMDBSRK26a6vHQvPn3wujZ1-CaZroJ8C2Y7eTR-DAPisLDo5ThyzdS83oUu8D7eV8hhhFfCSONscbTnHvoGHLQEQbq2t6bIBKmHbkIm51-A8K8");'></div>
+</div>
+</header>
+<main class="layout-container flex h-full grow flex-col px-4 md:px-10 lg:px-40 py-8">
+<div class="layout-content-container flex flex-col w-full max-w-[1200px] mx-auto flex-1 gap-6">
+<!-- Breadcrumbs -->
+<nav class="flex items-center gap-2 text-sm text-slate-500 dark:text-[#92adc9]">
+<a class="hover:text-primary transition-colors" href="#">Home</a>
+<span class="material-symbols-outlined text-[16px]">chevron_right</span>
+<a class="hover:text-primary transition-colors" href="#">Projetos</a>
+<span class="material-symbols-outlined text-[16px]">chevron_right</span>
+<span class="text-slate-900 dark:text-white font-medium">Redesign Website 2024</span>
+</nav>
+<!-- Page Header -->
+<div class="flex flex-col md:flex-row md:items-start justify-between gap-4">
+<div class="flex flex-col gap-2">
+<div class="flex items-center gap-3 flex-wrap">
+<h1 class="text-3xl md:text-4xl font-black leading-tight tracking-[-0.033em] text-slate-900 dark:text-white">Redesign Website 2024</h1>
+<span class="px-3 py-1 rounded-full bg-primary/20 text-primary text-xs font-bold uppercase tracking-wider">Web Development</span>
+</div>
+<p class="text-slate-500 dark:text-[#94a3b8] text-base">Projeto de modernização da identidade visual e arquitetura da Acme Corp.</p>
+</div>
+<div class="flex items-center gap-3">
+<button class="flex items-center gap-2 px-4 h-10 rounded-lg border border-slate-200 dark:border-[#334155] text-slate-700 dark:text-white font-bold text-sm hover:bg-slate-50 dark:hover:bg-[#233648] transition-colors">
+<span class="material-symbols-outlined text-[20px]">share</span>
+                            Share
+                        </button>
+<button class="flex items-center gap-2 px-4 h-10 rounded-lg bg-primary text-white font-bold text-sm hover:bg-blue-600 transition-colors shadow-lg shadow-primary/25">
+<span class="material-symbols-outlined text-[20px]">edit</span>
+                            Editar Projeto
+                        </button>
+</div>
+</div>
+<!-- Tabs -->
+<div class="border-b border-slate-200 dark:border-[#324d67]">
+<div class="flex gap-8 overflow-x-auto">
+<a class="flex items-center gap-2 border-b-[3px] border-primary text-primary pb-3 pt-2 px-1" href="#">
+<span class="material-symbols-outlined text-[20px]">dashboard</span>
+<span class="text-sm font-bold">Visão Geral</span>
+</a>
+<a class="flex items-center gap-2 border-b-[3px] border-transparent text-slate-500 dark:text-[#92adc9] hover:text-slate-700 dark:hover:text-white pb-3 pt-2 px-1 transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]">check_circle</span>
+<span class="text-sm font-bold">Tarefas</span>
+</a>
+<a class="flex items-center gap-2 border-b-[3px] border-transparent text-slate-500 dark:text-[#92adc9] hover:text-slate-700 dark:hover:text-white pb-3 pt-2 px-1 transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]">history</span>
+<span class="text-sm font-bold">Versões</span>
+</a>
+<a class="flex items-center gap-2 border-b-[3px] border-transparent text-slate-500 dark:text-[#92adc9] hover:text-slate-700 dark:hover:text-white pb-3 pt-2 px-1 transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]">chat</span>
+<span class="text-sm font-bold">Comunicação</span>
+</a>
+</div>
+</div>
+<!-- Stats Cards Row -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+<!-- Status -->
+<div class="bg-white dark:bg-card-dark p-5 rounded-lg border border-slate-200 dark:border-border-dark flex flex-col gap-1">
+<div class="flex items-center justify-between">
+<span class="text-slate-500 dark:text-[#94a3b8] text-sm font-medium">Status</span>
+<span class="material-symbols-outlined text-green-500 text-[20px]">radio_button_checked</span>
+</div>
+<span class="text-2xl font-bold text-slate-900 dark:text-white">Em Progresso</span>
+<div class="w-full bg-slate-100 dark:bg-slate-700 rounded-full h-1.5 mt-2">
+<div class="bg-green-500 h-1.5 rounded-full" style="width: 65%"></div>
+</div>
+</div>
+<!-- Days Remaining -->
+<div class="bg-white dark:bg-card-dark p-5 rounded-lg border border-slate-200 dark:border-border-dark flex flex-col gap-1">
+<div class="flex items-center justify-between">
+<span class="text-slate-500 dark:text-[#94a3b8] text-sm font-medium">Prazo</span>
+<span class="material-symbols-outlined text-orange-400 text-[20px]">schedule</span>
+</div>
+<span class="text-2xl font-bold text-slate-900 dark:text-white">12 Dias</span>
+<span class="text-xs text-slate-400">Entrega: 20 Mar 2024</span>
+</div>
+<!-- Completion -->
+<div class="bg-white dark:bg-card-dark p-5 rounded-lg border border-slate-200 dark:border-border-dark flex flex-col gap-1">
+<div class="flex items-center justify-between">
+<span class="text-slate-500 dark:text-[#94a3b8] text-sm font-medium">Conclusão</span>
+<span class="material-symbols-outlined text-primary text-[20px]">trending_up</span>
+</div>
+<span class="text-2xl font-bold text-slate-900 dark:text-white">65%</span>
+<span class="text-xs text-slate-400">32/45 Tarefas completas</span>
+</div>
+<!-- Team -->
+<div class="bg-white dark:bg-card-dark p-5 rounded-lg border border-slate-200 dark:border-border-dark flex flex-col gap-1">
+<div class="flex items-center justify-between">
+<span class="text-slate-500 dark:text-[#94a3b8] text-sm font-medium">Equipe</span>
+<span class="material-symbols-outlined text-purple-400 text-[20px]">group</span>
+</div>
+<div class="flex -space-x-2 mt-1">
+<div class="size-8 rounded-full border-2 border-white dark:border-card-dark bg-cover bg-center" data-alt="Team member 1 portrait" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBU_s1Mu3LwoGdj5UtBw2IBZJBN1dWW4c5UDHywyVxDnPzOb-jqNqM2WbIT-S4eFZEEMrHZnjZNZP3RIHMxPYliTomS31aYHIm-z_PVI5_vQglsZLjsh53iK34_WhjjBlLoSpNiNQRPLwFetP8CgcOD1VSCJm9qo2wY3aKNbtxGHuhZATq_7l_2hfQxwCNBUqNtn9bMSEtPaOIe3VyYW_-tnHcQyMqsbGX4h91jqR5tR_536qtbC7lXLe9jF8GfY051-jLjerrakX8');"></div>
+<div class="size-8 rounded-full border-2 border-white dark:border-card-dark bg-cover bg-center" data-alt="Team member 2 portrait" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDAJZlGSYR5HTV5l29sDZAsmCizTfYAjy84sGRk-MZzd1WsnRVn5ohD_s6ff6M6qc3Z6SyBRer90MpDOJ9ApjeW71FZZqQpBNvpQTWLIqfM0GWfU3oiv-EKtSUmA7C5I2TaFzGfe_-Qr8TW4j27HC9yp5yj9gqDQ1A0zc6b-u1gyvTfRJRxQYF2WkCz9zxbysqGxE533qzy9v6F2jS200bNu7acoFPmDnuAblrq7scBCFTUbVpil8M2IiSrVUUbFB0MZVFh0ClhFgg');"></div>
+<div class="size-8 rounded-full border-2 border-white dark:border-card-dark bg-cover bg-center" data-alt="Team member 3 portrait" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDRxeiW9XtlCwTzSBZYI6DHYTRFDaVtkhZ6r5FWHtG0fSOO16dUx4zoTzOjk5M4hAve0kxA-l4v8MmmB_k2OCZmlybYXSbiTHJeAV0CgDkwY38mVz0QUyCnkEQNDu0VkyEftNuLWV4WT4qSii2NGROFs2HpHYm8cI6TiVm9EXGbInGXqHA7n3puXuddrfXiaKNmHinSydLBoZRlDgJ9bUU1MiBbLYVldInntB2Fyv26WpAZn5615N1K07jHvMZXLUTvisLs6AZbHfc');"></div>
+<div class="size-8 rounded-full border-2 border-white dark:border-card-dark bg-slate-200 dark:bg-slate-700 flex items-center justify-center text-xs font-bold text-slate-600 dark:text-slate-300">+2</div>
+</div>
+</div>
+</div>
+<!-- Main Grid Layout -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+<!-- Left Column (Main Content) -->
+<div class="lg:col-span-2 flex flex-col gap-6">
+<!-- Description -->
+<div class="bg-white dark:bg-card-dark rounded-xl border border-slate-200 dark:border-border-dark overflow-hidden">
+<div class="px-6 py-4 border-b border-slate-200 dark:border-border-dark flex justify-between items-center">
+<h3 class="text-lg font-bold text-slate-900 dark:text-white">Descrição do Projeto</h3>
+</div>
+<div class="p-6">
+<p class="text-slate-600 dark:text-[#94a3b8] leading-relaxed mb-4">
+                                    O objetivo principal deste projeto é redesenhar completamente o site corporativo da Acme Corp para alinhar com a nova identidade de marca lançada no Q4 2023. O projeto inclui a migração do legado WordPress para uma arquitetura Headless moderna, focando em performance (Core Web Vitals), acessibilidade e escalabilidade para múltiplos idiomas.
+                                </p>
+<p class="text-slate-600 dark:text-[#94a3b8] leading-relaxed">
+                                    Além do frontend, será desenvolvido um painel administrativo customizado para a equipe de marketing gerenciar campanhas e landing pages de forma autônoma.
+                                </p>
+</div>
+</div>
+<!-- Scope -->
+<div class="bg-white dark:bg-card-dark rounded-xl border border-slate-200 dark:border-border-dark overflow-hidden">
+<div class="px-6 py-4 border-b border-slate-200 dark:border-border-dark">
+<h3 class="text-lg font-bold text-slate-900 dark:text-white">Escopo &amp; Entregáveis</h3>
+</div>
+<div class="p-6">
+<ul class="space-y-4">
+<li class="flex items-start gap-3">
+<span class="material-symbols-outlined text-green-500 mt-0.5">check_circle</span>
+<div>
+<p class="text-slate-900 dark:text-white font-medium">Design System &amp; UI Kit</p>
+<p class="text-sm text-slate-500 dark:text-slate-400">Criação de biblioteca de componentes no Figma.</p>
+</div>
+</li>
+<li class="flex items-start gap-3">
+<span class="material-symbols-outlined text-primary mt-0.5">pending</span>
+<div>
+<p class="text-slate-900 dark:text-white font-medium">Desenvolvimento Frontend</p>
+<p class="text-sm text-slate-500 dark:text-slate-400">Implementação das páginas institucionais e blog.</p>
+</div>
+</li>
+<li class="flex items-start gap-3">
+<span class="material-symbols-outlined text-slate-400 dark:text-slate-600 mt-0.5">radio_button_unchecked</span>
+<div>
+<p class="text-slate-900 dark:text-white font-medium">Integração CMS</p>
+<p class="text-sm text-slate-500 dark:text-slate-400">Configuração de content models e webhooks.</p>
+</div>
+</li>
+<li class="flex items-start gap-3">
+<span class="material-symbols-outlined text-slate-400 dark:text-slate-600 mt-0.5">radio_button_unchecked</span>
+<div>
+<p class="text-slate-900 dark:text-white font-medium">QA &amp; Homologação</p>
+<p class="text-sm text-slate-500 dark:text-slate-400">Testes automatizados e aprovação do cliente.</p>
+</div>
+</li>
+</ul>
+</div>
+</div>
+<!-- Tech Stack -->
+<div class="bg-white dark:bg-card-dark rounded-xl border border-slate-200 dark:border-border-dark overflow-hidden">
+<div class="px-6 py-4 border-b border-slate-200 dark:border-border-dark">
+<h3 class="text-lg font-bold text-slate-900 dark:text-white">Stack Tecnológica</h3>
+</div>
+<div class="p-6 flex flex-wrap gap-3">
+<span class="px-3 py-1.5 rounded-md bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 text-sm font-medium flex items-center gap-2">
+<img alt="React logo" class="size-4" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCQAxvaFcGsg8N8dHuodEj0Bu1KUtWW6pk3wr7kqYgy4IQRttrNzcp2t3D1dHiTSWBE7Y_SgHy0Bcw2Cr9i6RIkxcaihSO1_tfgGuNkfswd8esOQhvt4njuMtFkreNGb4w8mJWwhDlUv022w7udBkemotZEy3cJ1IwwwllQvizmKPqLGxrQ6PQ-PnqrAHd3tURBfV-UW0SUQggHaOnKgE3SSuPglNLZUAHdnM4579AXNBnQ3kERNy3ym58_uqS7C_Ccf7S0PrJeB3s"/>
+                                    React
+                                </span>
+<span class="px-3 py-1.5 rounded-md bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 text-sm font-medium flex items-center gap-2">
+<img alt="NextJS logo" class="size-4 invert dark:invert-0" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC6vnxoAH-BS0jvK7o7psPhU4RrRAS5_zbIAVqsBjQ5h8ePIj7YPNiGQF7NL53Tc4k0ZwAPh3eQtGhRqkG0__1dcZrZjHG3Qy118VeUA0VU9ouShJElJ430eATJsEETC-47NcGMEKJNGpuq-Z39S07cG_DRWLGfw9_hYNpbliCPE6TyAAbEvQkID5WW1amsJcstHD5vcWZGnhncNxB68wznnVIOOmV0vQrhuOOe8iVcbh9tHnl7u_vQk-Ljy1YnSs94AjWsA8tVzeM"/>
+                                    Next.js 14
+                                </span>
+<span class="px-3 py-1.5 rounded-md bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 text-sm font-medium flex items-center gap-2">
+<img alt="Typescript logo" class="size-4" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCiwW1bZ9oe6Gl0ioxMNJUt2joXMo_Pwj7Pg3aAUbN7i4HTqpNPr9z1Of6ZBOySyFoNFmba3qELBr1wvK6UYWXENtlVqinaLtV-5-bKMrB3NqFSUGATnB29-fTbcvtt3UubxdyzB0gDUczZemZutk-Bulrej2V5r0-SD5TGch7BS-GT4F2rXbULfVK3HEOE_TaaoFeatcLbVtk2e3qhumQu4axs_fFHW_KbcnaYHWHAKthB1p8d4xpRM88gKgLwkS7-xvLE1IZk9iQ"/>
+                                    TypeScript
+                                </span>
+<span class="px-3 py-1.5 rounded-md bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 text-sm font-medium flex items-center gap-2">
+<img alt="Tailwind logo" class="size-4" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCbXToQAMVdz-BTaDFdOanxUBj_IUXK-rb2nVM0R7gZklMwI9QkpFOWx4kilWOZd1WB6fIb4Yr2i6w5LZOsg_dx-ER8L2G5746c0xFKjifzGBFhZB1Nkhz8Yb1Qy67es4ZpItm6OeU6PAXtD_irvHgfiJ9NRs9RY0G3Er9y4IbSqwIILEVlAAvWYOn98Dlx3yqgzBl8dCXuWpN9l05Yhr_2WjP4M2qD_KfelZJtsxh7b3R6nOKAlVG_DTUUdYDTO8Qyby8fNNHb-fY"/>
+                                    Tailwind CSS
+                                </span>
+<span class="px-3 py-1.5 rounded-md bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 text-sm font-medium flex items-center gap-2">
+<img alt="Postgres logo" class="size-4" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA8N5Jq1wDUXS3rj5YP4C1cCNFs4XnSJjg3pbIunJ1lJfGU0aT4veG7ZqxJl_zMrcGbIVjQ-XFm2zM3rgwfThrm_H-CpZRIBaMTjbzc42Zprp6wDIg_u3Wj38KnFySND2DrqRoxBzPcuCavIbxD4IgkrHJkwWrfjEVAwRBEM0axOwjE4pWibsSceJYlR-7-d1djQJ8trRvHz-S-ip4bJwZRzF0ZNctyTLcHVwseaIAhMSOtX3s2uEg-h1KPJ5IfOexaKZTsZhuBJ18"/>
+                                    PostgreSQL
+                                </span>
+</div>
+</div>
+</div>
+<!-- Right Column (Sidebar) -->
+<div class="flex flex-col gap-6">
+<!-- Client Info -->
+<div class="bg-white dark:bg-card-dark rounded-xl border border-slate-200 dark:border-border-dark p-6">
+<h3 class="text-sm font-bold uppercase tracking-wider text-slate-500 dark:text-[#94a3b8] mb-4">Cliente</h3>
+<div class="flex items-center gap-4 mb-4">
+<div class="size-12 rounded-lg bg-white dark:bg-white p-1 flex items-center justify-center border border-slate-200 dark:border-border-dark">
+<!-- Placeholder logo -->
+<svg class="size-8 text-slate-900" fill="none" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+<path d="M2 17L12 22L22 17" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+<path d="M2 12L12 17L22 12" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</div>
+<div>
+<p class="text-lg font-bold text-slate-900 dark:text-white">Acme Corp</p>
+<p class="text-sm text-slate-500 dark:text-slate-400">San Francisco, CA</p>
+</div>
+</div>
+<div class="pt-4 border-t border-slate-200 dark:border-border-dark">
+<p class="text-xs text-slate-500 dark:text-slate-400 mb-1">Contato Principal</p>
+<div class="flex items-center gap-2">
+<div class="size-6 rounded-full bg-cover" data-alt="Contact person avatar" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuC1laberwXeUqz2AvsQ3Fp0Z7pJueYnSoUIibzARpAIEollpwsLZF7zbSCC6YFoo40cdMk47bSeXbE4oQjnxjRAbpaZL2juh5kJ3hbgZgkcrgSfP7BjDB7TlP9dV6M2PmVZEVghhYEyG1Eqeg0XEMRyBIS1R26bOj4U4WWklz0TukFeq57Rs-ljVtCD5rxCrw47chj3aSCWZLac35FtQtr2dWclq1OkQBhPYmx1GOnHB-uzSPrpTi-mKCO6y-5RL5G7IGr7gabFraE');"></div>
+<span class="text-sm font-medium text-slate-900 dark:text-white">Sarah Connor</span>
+</div>
+</div>
+</div>
+<!-- Timeline -->
+<div class="bg-white dark:bg-card-dark rounded-xl border border-slate-200 dark:border-border-dark p-6">
+<h3 class="text-sm font-bold uppercase tracking-wider text-slate-500 dark:text-[#94a3b8] mb-4">Linha do Tempo</h3>
+<div class="relative pl-4 border-l-2 border-slate-200 dark:border-slate-700 space-y-6">
+<div class="relative">
+<div class="absolute -left-[21px] top-1.5 size-3 bg-green-500 rounded-full border-2 border-white dark:border-card-dark"></div>
+<p class="text-xs text-slate-500 dark:text-slate-400">Início</p>
+<p class="text-sm font-semibold text-slate-900 dark:text-white">10 Jan 2024</p>
+</div>
+<div class="relative">
+<div class="absolute -left-[21px] top-1.5 size-3 bg-primary rounded-full border-2 border-white dark:border-card-dark ring-4 ring-primary/20"></div>
+<p class="text-xs text-slate-500 dark:text-slate-400">Estimativa</p>
+<p class="text-sm font-semibold text-slate-900 dark:text-white">15 Mar 2024</p>
+</div>
+<div class="relative">
+<div class="absolute -left-[21px] top-1.5 size-3 bg-slate-300 dark:bg-slate-600 rounded-full border-2 border-white dark:border-card-dark"></div>
+<p class="text-xs text-slate-500 dark:text-slate-400">Entrega Final</p>
+<p class="text-sm font-semibold text-slate-900 dark:text-white">20 Mar 2024</p>
+</div>
+</div>
+</div>
+<!-- Resources / Links -->
+<div class="bg-white dark:bg-card-dark rounded-xl border border-slate-200 dark:border-border-dark p-6">
+<h3 class="text-sm font-bold uppercase tracking-wider text-slate-500 dark:text-[#94a3b8] mb-4">Recursos</h3>
+<div class="flex flex-col gap-3">
+<a class="group flex items-center justify-between p-3 rounded-lg bg-slate-50 dark:bg-[#111a22] border border-slate-200 dark:border-[#334155] hover:border-primary/50 transition-colors" href="#">
+<div class="flex items-center gap-3">
+<div class="bg-white dark:bg-[#233648] p-1.5 rounded-md">
+<img alt="GitHub Logo" class="size-5 dark:invert" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAsJHnYtllVTWemL3s68JwRvuiN1OO8L5Mak6B0R6tZY9UstuTx7LCGeMEZTJpqy23ToeuYSqsfp_m-cBa5S01UxBH4qMFY6h_TqnBmZr1q9Dn-Nwmar9VX1tdml9US8MojFdmo01E8EMivw3qn69NufEH9fxPCjCgTLa10CHW94N7TRcsHKLiABdZRzSJ1qKXhpLZ3b9CVeXtD9gk1ramhCyDQsuuWZEPZt-thiuGFWsjUhLDESIqrsO3dXb2JjckmnBJjSGx9GcE"/>
+</div>
+<div class="flex flex-col">
+<span class="text-sm font-semibold text-slate-900 dark:text-white group-hover:text-primary transition-colors">Repositório</span>
+<span class="text-xs text-slate-500">github.com/agencia/acme-web</span>
+</div>
+</div>
+<span class="material-symbols-outlined text-slate-400 text-[18px]">open_in_new</span>
+</a>
+<a class="group flex items-center justify-between p-3 rounded-lg bg-slate-50 dark:bg-[#111a22] border border-slate-200 dark:border-[#334155] hover:border-primary/50 transition-colors" href="#">
+<div class="flex items-center gap-3">
+<div class="bg-white dark:bg-[#233648] p-1.5 rounded-md">
+<span class="material-symbols-outlined text-purple-500 text-[20px]">rocket_launch</span>
+</div>
+<div class="flex flex-col">
+<span class="text-sm font-semibold text-slate-900 dark:text-white group-hover:text-primary transition-colors">Staging Env</span>
+<span class="text-xs text-slate-500">staging.acme.com</span>
+</div>
+</div>
+<span class="material-symbols-outlined text-slate-400 text-[18px]">open_in_new</span>
+</a>
+<a class="group flex items-center justify-between p-3 rounded-lg bg-slate-50 dark:bg-[#111a22] border border-slate-200 dark:border-[#334155] hover:border-primary/50 transition-colors" href="#">
+<div class="flex items-center gap-3">
+<div class="bg-white dark:bg-[#233648] p-1.5 rounded-md">
+<img alt="Figma Logo" class="size-5" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBcRqVoZOMk5JHsfAxEo9GkycGvcOIs5QsUxTDUiXJxBdOWYPRggNjhoujADJ9Vt0qEGFyDLXSbETumJLmptGD7zkEQI6S-ikUPetT_tRhutbYVl3mfcuP7tAmvm1JHiD6Q-MMShoes9EKsqTMmxdADyOI5q-YuDnTukyaiP5qlqxuH7gaILODjkcz4PxZnaR60jZ2IBpyA_kKSbwZg8MvusUC5C0SILTiSfABdkFstvOes_Zbn_1kEtlN8haTulXUe0uZ5UHAdbK8"/>
+</div>
+<div class="flex flex-col">
+<span class="text-sm font-semibold text-slate-900 dark:text-white group-hover:text-primary transition-colors">Design File</span>
+<span class="text-xs text-slate-500">figma.com/file/...</span>
+</div>
+</div>
+<span class="material-symbols-outlined text-slate-400 text-[18px]">open_in_new</span>
+</a>
+<button class="mt-2 w-full py-2 flex items-center justify-center gap-2 border border-dashed border-slate-300 dark:border-slate-600 rounded-lg text-sm text-slate-500 dark:text-slate-400 hover:text-primary hover:border-primary transition-colors">
+<span class="material-symbols-outlined text-[18px]">add</span>
+                                    Adicionar Recurso
+                                </button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+</body></html>

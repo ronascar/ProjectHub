@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="pt-BR"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Configurações do Sistema</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#137fec",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#101922",
+                        "surface-dark": "#192633",
+                        "surface-dark-lighter": "#233648",
+                        "border-dark": "#324d67",
+                        "text-secondary": "#92adc9"
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+</head>
+<body class="font-display bg-background-light dark:bg-background-dark text-slate-900 dark:text-white antialiased">
+<div class="relative flex h-screen w-full overflow-hidden">
+<!-- Sidebar -->
+<div class="hidden md:flex flex-col w-[280px] h-full bg-[#111a22] border-r border-border-dark flex-shrink-0">
+<div class="flex h-full flex-col justify-between p-4">
+<div class="flex flex-col gap-6">
+<!-- User Profile / Branding -->
+<div class="flex gap-3 items-center px-2">
+<div class="bg-center bg-no-repeat bg-cover rounded-full size-10 flex-shrink-0" data-alt="User profile avatar image" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuA4BgxWLva5ujBDn_ZZCT_w25D8b4ntDRcSwtz6L-GpuunIPAzshit34X7iDIlmwu9fntkRnwMQlRMZWT2rsukH1xk1RLMf4ZTB__hCsKAag0oWTEQZRpNPhqWNAvW7OIGLkcCNE4dRdgkhPEQbm228C-RWOAI_hxrIT4xsgSiWyh88F2Q1xs-hC_1BoOm_MCH0rY9XWv_jrMQwETBE7eWfQobX_wfocYN95H0Ixfjj8aP31twnZiydqcnOuKYdHqdj_oud58mGZiw");'></div>
+<div class="flex flex-col overflow-hidden">
+<h1 class="text-white text-base font-semibold truncate">Admin Panel</h1>
+<p class="text-text-secondary text-sm font-normal truncate">Gerenciamento</p>
+</div>
+</div>
+<!-- Navigation Links -->
+<nav class="flex flex-col gap-1">
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-primary/20 text-primary border-l-4 border-primary" href="#">
+<span class="material-symbols-outlined text-[20px]">settings</span>
+<span class="text-sm font-medium">Geral</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-text-secondary hover:bg-surface-dark-lighter hover:text-white transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]">group</span>
+<span class="text-sm font-medium">Usuários &amp; RBAC</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-text-secondary hover:bg-surface-dark-lighter hover:text-white transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]">description</span>
+<span class="text-sm font-medium">Modelos</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-text-secondary hover:bg-surface-dark-lighter hover:text-white transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]">timer</span>
+<span class="text-sm font-medium">SLAs</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-text-secondary hover:bg-surface-dark-lighter hover:text-white transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]">link</span>
+<span class="text-sm font-medium">Integrações</span>
+</a>
+</nav>
+</div>
+<div class="flex flex-col gap-2 border-t border-border-dark pt-4">
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-text-secondary hover:text-white transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]">help</span>
+<span class="text-sm font-medium">Suporte</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-text-secondary hover:text-red-400 transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]">logout</span>
+<span class="text-sm font-medium">Sair</span>
+</a>
+</div>
+</div>
+</div>
+<!-- Main Content Area -->
+<div class="flex-1 flex flex-col h-full overflow-y-auto bg-background-light dark:bg-background-dark scroll-smooth">
+<!-- Header Section -->
+<header class="sticky top-0 z-20 bg-background-light/90 dark:bg-background-dark/90 backdrop-blur-md border-b border-border-dark px-6 py-4">
+<div class="max-w-[1200px] mx-auto w-full flex flex-col gap-4">
+<!-- Breadcrumbs -->
+<div class="flex items-center gap-2 text-sm">
+<a class="text-text-secondary hover:text-primary transition-colors font-medium" href="#">Dashboard</a>
+<span class="text-text-secondary">/</span>
+<span class="text-slate-900 dark:text-white font-medium">Configurações</span>
+</div>
+<!-- Page Heading & Action -->
+<div class="flex flex-wrap items-end justify-between gap-4">
+<div class="flex flex-col gap-1">
+<h1 class="text-slate-900 dark:text-white text-3xl font-bold tracking-tight">Configurações do Sistema</h1>
+<p class="text-text-secondary text-base">Gerencie configurações globais, permissões e integrações.</p>
+</div>
+<button class="flex items-center justify-center gap-2 rounded-lg h-10 px-6 bg-primary hover:bg-blue-600 text-white text-sm font-bold shadow-lg shadow-blue-500/20 transition-all active:scale-95">
+<span class="material-symbols-outlined text-[20px]">save</span>
+<span>Salvar Alterações</span>
+</button>
+</div>
+</div>
+</header>
+<!-- Main Content -->
+<main class="flex-1 px-6 py-8">
+<div class="max-w-[1200px] mx-auto w-full flex flex-col gap-10">
+<!-- Section: Geral -->
+<section class="flex flex-col gap-4">
+<div class="border-b border-border-dark pb-2">
+<h2 class="text-slate-900 dark:text-white text-xl font-bold">Geral</h2>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<!-- Card 1 -->
+<div class="bg-white dark:bg-surface-dark border border-slate-200 dark:border-border-dark rounded-xl p-6 shadow-sm">
+<h3 class="text-slate-900 dark:text-white text-lg font-semibold mb-4 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">business</span>
+                                Identidade
+                            </h3>
+<div class="flex flex-col gap-4">
+<label class="flex flex-col gap-1.5 w-full">
+<span class="text-slate-700 dark:text-white text-sm font-medium">Nome da Empresa</span>
+<input class="form-input w-full rounded-lg border-slate-300 dark:border-border-dark bg-slate-50 dark:bg-[#111a22] text-slate-900 dark:text-white placeholder:text-text-secondary focus:border-primary focus:ring-1 focus:ring-primary h-11 px-3" placeholder="Ex: Tech Solutions Ltd." type="text" value="Acme Agency"/>
+</label>
+<label class="flex flex-col gap-1.5 w-full">
+<span class="text-slate-700 dark:text-white text-sm font-medium">Logo URL</span>
+<div class="flex gap-2">
+<input class="form-input w-full rounded-lg border-slate-300 dark:border-border-dark bg-slate-50 dark:bg-[#111a22] text-slate-900 dark:text-white placeholder:text-text-secondary focus:border-primary focus:ring-1 focus:ring-primary h-11 px-3" type="text" value="https://cdn.acme.com/logo.png"/>
+<button class="h-11 px-4 rounded-lg bg-surface-dark-lighter hover:bg-border-dark text-white border border-border-dark transition-colors flex items-center justify-center">
+<span class="material-symbols-outlined">upload</span>
+</button>
+</div>
+</label>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="bg-white dark:bg-surface-dark border border-slate-200 dark:border-border-dark rounded-xl p-6 shadow-sm">
+<h3 class="text-slate-900 dark:text-white text-lg font-semibold mb-4 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">public</span>
+                                Localização
+                            </h3>
+<div class="flex flex-col gap-4">
+<label class="flex flex-col gap-1.5 w-full">
+<span class="text-slate-700 dark:text-white text-sm font-medium">Fuso Horário Padrão</span>
+<select class="form-select w-full rounded-lg border-slate-300 dark:border-border-dark bg-slate-50 dark:bg-[#111a22] text-slate-900 dark:text-white focus:border-primary focus:ring-1 focus:ring-primary h-11 px-3">
+<option value="UTC-3">America/Sao_Paulo (UTC-3)</option>
+<option value="UTC">UTC</option>
+<option value="UTC-5">America/New_York (UTC-5)</option>
+</select>
+</label>
+<label class="flex flex-col gap-1.5 w-full">
+<span class="text-slate-700 dark:text-white text-sm font-medium">Idioma do Sistema</span>
+<select class="form-select w-full rounded-lg border-slate-300 dark:border-border-dark bg-slate-50 dark:bg-[#111a22] text-slate-900 dark:text-white focus:border-primary focus:ring-1 focus:ring-primary h-11 px-3">
+<option value="pt-BR">Português (Brasil)</option>
+<option value="en-US">English (US)</option>
+<option value="es">Español</option>
+</select>
+</label>
+</div>
+</div>
+</div>
+</section>
+<!-- Section: Usuários & RBAC -->
+<section class="flex flex-col gap-4">
+<div class="border-b border-border-dark pb-2 flex justify-between items-end">
+<h2 class="text-slate-900 dark:text-white text-xl font-bold">Usuários &amp; Permissões (RBAC)</h2>
+<button class="text-primary text-sm font-semibold hover:underline">Gerenciar Funções</button>
+</div>
+<div class="overflow-hidden bg-white dark:bg-surface-dark border border-slate-200 dark:border-border-dark rounded-xl shadow-sm">
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="border-b border-border-dark bg-slate-50 dark:bg-[#111a22]">
+<th class="p-4 text-xs font-semibold uppercase tracking-wider text-text-secondary">Permissão / Função</th>
+<th class="p-4 text-center text-xs font-semibold uppercase tracking-wider text-white bg-primary/10 w-32">Admin</th>
+<th class="p-4 text-center text-xs font-semibold uppercase tracking-wider text-text-secondary w-32">Gerente</th>
+<th class="p-4 text-center text-xs font-semibold uppercase tracking-wider text-text-secondary w-32">Dev</th>
+<th class="p-4 text-center text-xs font-semibold uppercase tracking-wider text-text-secondary w-32">Cliente</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-slate-200 dark:divide-border-dark text-slate-700 dark:text-slate-300 text-sm">
+<tr>
+<td class="p-4 font-medium">Criar Projetos</td>
+<td class="p-4 text-center text-primary"><span class="material-symbols-outlined">check_circle</span></td>
+<td class="p-4 text-center text-primary"><span class="material-symbols-outlined">check_circle</span></td>
+<td class="p-4 text-center text-text-secondary opacity-30"><span class="material-symbols-outlined">cancel</span></td>
+<td class="p-4 text-center text-text-secondary opacity-30"><span class="material-symbols-outlined">cancel</span></td>
+</tr>
+<tr>
+<td class="p-4 font-medium">Visualizar Orçamento</td>
+<td class="p-4 text-center text-primary"><span class="material-symbols-outlined">check_circle</span></td>
+<td class="p-4 text-center text-primary"><span class="material-symbols-outlined">check_circle</span></td>
+<td class="p-4 text-center text-text-secondary opacity-30"><span class="material-symbols-outlined">cancel</span></td>
+<td class="p-4 text-center text-text-secondary opacity-30"><span class="material-symbols-outlined">cancel</span></td>
+</tr>
+<tr>
+<td class="p-4 font-medium">Deletar Tarefas</td>
+<td class="p-4 text-center text-primary"><span class="material-symbols-outlined">check_circle</span></td>
+<td class="p-4 text-center text-text-secondary opacity-30"><span class="material-symbols-outlined">cancel</span></td>
+<td class="p-4 text-center text-text-secondary opacity-30"><span class="material-symbols-outlined">cancel</span></td>
+<td class="p-4 text-center text-text-secondary opacity-30"><span class="material-symbols-outlined">cancel</span></td>
+</tr>
+<tr>
+<td class="p-4 font-medium">Comentar em Tarefas</td>
+<td class="p-4 text-center text-primary"><span class="material-symbols-outlined">check_circle</span></td>
+<td class="p-4 text-center text-primary"><span class="material-symbols-outlined">check_circle</span></td>
+<td class="p-4 text-center text-primary"><span class="material-symbols-outlined">check_circle</span></td>
+<td class="p-4 text-center text-primary"><span class="material-symbols-outlined">check_circle</span></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<!-- Section: Integrações -->
+<section class="flex flex-col gap-4">
+<div class="border-b border-border-dark pb-2">
+<h2 class="text-slate-900 dark:text-white text-xl font-bold">Integrações</h2>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<!-- Integration Card: GitHub -->
+<div class="bg-white dark:bg-surface-dark border border-slate-200 dark:border-border-dark rounded-xl p-5 flex flex-col gap-4 shadow-sm relative group hover:border-primary/50 transition-all">
+<div class="flex justify-between items-start">
+<div class="bg-slate-100 dark:bg-white p-2 rounded-lg size-12 flex items-center justify-center">
+<!-- Using a placeholder svg for brand icons -->
+<img alt="GitHub Logo" class="size-8" data-alt="GitHub integration logo" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA426BxB5Cjf1WiDK7wqqdxeQUi3Al-n2B0GBE2FxmaoCbddRBU7_oGgnQReBnXpC0HxReWsY4D_PSXm6iUxj1p6kJfub1loPv87Ci92XxwXxiwnHabZd_5CIYypgT0raYDId7mXZgneDvsSBeBpOHfdjNo1LWsinWHezPVEKCJ_n3KOXfJnnj224d1jSWna9QflK5iym7w2-o9GaBggfUadODkW-WQf9OoY3TxPIB4H8OChtYwGsdSIH1r7Iv8h8OogSa5BTVMbRQ"/>
+</div>
+<span class="px-2 py-1 rounded-full bg-green-500/10 text-green-500 text-xs font-bold border border-green-500/20">Conectado</span>
+</div>
+<div>
+<h3 class="text-slate-900 dark:text-white font-bold text-lg">GitHub</h3>
+<p class="text-text-secondary text-sm mt-1">Sincronize commits e pull requests com tarefas.</p>
+</div>
+<div class="mt-auto pt-2">
+<button class="w-full py-2 px-3 rounded-lg border border-border-dark text-slate-700 dark:text-white hover:bg-surface-dark-lighter transition-colors text-sm font-medium">Configurar</button>
+</div>
+</div>
+<!-- Integration Card: Slack -->
+<div class="bg-white dark:bg-surface-dark border border-slate-200 dark:border-border-dark rounded-xl p-5 flex flex-col gap-4 shadow-sm relative group hover:border-primary/50 transition-all">
+<div class="flex justify-between items-start">
+<div class="bg-slate-100 dark:bg-white p-2 rounded-lg size-12 flex items-center justify-center">
+<img alt="Slack Logo" class="size-8" data-alt="Slack integration logo" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCZ_YneE-uN2aRoHv34z4h2hwcsL_2DWXTfA0cxlP2NnPjV8GFVsuRdXnbsQZocJwSHLPmKuIUuBBy9Nql1c0_xRMkmBYe7SBH9EQAbEtGZ71WDLd5TPpcFQs2_SBxTgGFh9jQ1haeW78vzhOorWbduy55cVS0WpVmCcRiKHsgS_VGIEQrgZM-Ywb2zcF_-4gh2XA-TfBLaI4ljEZynCYWx4o4qFSCmB5VuepHP9UlCdaQmvAjx-GO_uAyGNI6nnRltvUG8g4ybf94"/>
+</div>
+<span class="px-2 py-1 rounded-full bg-red-500/10 text-red-500 text-xs font-bold border border-red-500/20">Desconectado</span>
+</div>
+<div>
+<h3 class="text-slate-900 dark:text-white font-bold text-lg">Slack</h3>
+<p class="text-text-secondary text-sm mt-1">Notificações em tempo real nos canais da equipe.</p>
+</div>
+<div class="mt-auto pt-2">
+<button class="w-full py-2 px-3 rounded-lg bg-primary hover:bg-blue-600 text-white transition-colors text-sm font-medium shadow-md shadow-blue-500/10">Conectar</button>
+</div>
+</div>
+<!-- Integration Card: Discord -->
+<div class="bg-white dark:bg-surface-dark border border-slate-200 dark:border-border-dark rounded-xl p-5 flex flex-col gap-4 shadow-sm relative group hover:border-primary/50 transition-all">
+<div class="flex justify-between items-start">
+<div class="bg-[#5865F2] p-2 rounded-lg size-12 flex items-center justify-center">
+<span class="material-symbols-outlined text-white text-3xl">chat</span>
+</div>
+<span class="px-2 py-1 rounded-full bg-slate-500/10 text-text-secondary text-xs font-bold border border-slate-500/20">Opcional</span>
+</div>
+<div>
+<h3 class="text-slate-900 dark:text-white font-bold text-lg">Discord</h3>
+<p class="text-text-secondary text-sm mt-1">Integração de comunidade e suporte via Webhooks.</p>
+</div>
+<div class="mt-auto pt-2">
+<button class="w-full py-2 px-3 rounded-lg bg-primary hover:bg-blue-600 text-white transition-colors text-sm font-medium shadow-md shadow-blue-500/10">Conectar</button>
+</div>
+</div>
+</div>
+</section>
+<!-- Section: SLAs & Automation -->
+<section class="flex flex-col gap-4 pb-12">
+<div class="border-b border-border-dark pb-2">
+<h2 class="text-slate-900 dark:text-white text-xl font-bold">SLAs &amp; Automação</h2>
+</div>
+<div class="bg-white dark:bg-surface-dark border border-slate-200 dark:border-border-dark rounded-xl p-6 shadow-sm">
+<div class="flex flex-col gap-6">
+<!-- SLA Item -->
+<div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-4 rounded-lg bg-slate-50 dark:bg-[#111a22] border border-slate-200 dark:border-border-dark">
+<div class="flex items-center gap-4">
+<div class="size-10 rounded-full bg-red-500/20 flex items-center justify-center text-red-500">
+<span class="material-symbols-outlined">priority_high</span>
+</div>
+<div class="flex flex-col">
+<h4 class="text-slate-900 dark:text-white font-semibold">Prioridade Crítica</h4>
+<p class="text-text-secondary text-sm">Tempo de resposta alvo para bugs de produção.</p>
+</div>
+</div>
+<div class="flex items-center gap-3 w-full sm:w-auto">
+<div class="flex items-center gap-2 bg-white dark:bg-surface-dark border border-slate-300 dark:border-border-dark rounded-md px-3 py-1.5">
+<span class="text-slate-900 dark:text-white text-sm font-bold">1h</span>
+<span class="text-text-secondary text-xs">Resposta</span>
+</div>
+<div class="h-px w-4 bg-border-dark"></div>
+<div class="flex items-center gap-2 bg-white dark:bg-surface-dark border border-slate-300 dark:border-border-dark rounded-md px-3 py-1.5">
+<span class="text-slate-900 dark:text-white text-sm font-bold">4h</span>
+<span class="text-text-secondary text-xs">Resolução</span>
+</div>
+<button class="text-text-secondary hover:text-white p-1">
+<span class="material-symbols-outlined">edit</span>
+</button>
+</div>
+</div>
+<!-- SLA Item -->
+<div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-4 rounded-lg bg-slate-50 dark:bg-[#111a22] border border-slate-200 dark:border-border-dark">
+<div class="flex items-center gap-4">
+<div class="size-10 rounded-full bg-yellow-500/20 flex items-center justify-center text-yellow-500">
+<span class="material-symbols-outlined">warning</span>
+</div>
+<div class="flex flex-col">
+<h4 class="text-slate-900 dark:text-white font-semibold">Prioridade Alta</h4>
+<p class="text-text-secondary text-sm">Problemas funcionais que não bloqueiam todo o sistema.</p>
+</div>
+</div>
+<div class="flex items-center gap-3 w-full sm:w-auto">
+<div class="flex items-center gap-2 bg-white dark:bg-surface-dark border border-slate-300 dark:border-border-dark rounded-md px-3 py-1.5">
+<span class="text-slate-900 dark:text-white text-sm font-bold">4h</span>
+<span class="text-text-secondary text-xs">Resposta</span>
+</div>
+<div class="h-px w-4 bg-border-dark"></div>
+<div class="flex items-center gap-2 bg-white dark:bg-surface-dark border border-slate-300 dark:border-border-dark rounded-md px-3 py-1.5">
+<span class="text-slate-900 dark:text-white text-sm font-bold">24h</span>
+<span class="text-text-secondary text-xs">Resolução</span>
+</div>
+<button class="text-text-secondary hover:text-white p-1">
+<span class="material-symbols-outlined">edit</span>
+</button>
+</div>
+</div>
+<button class="flex items-center justify-center gap-2 w-full py-3 border border-dashed border-border-dark rounded-lg text-text-secondary hover:text-primary hover:border-primary hover:bg-primary/5 transition-all">
+<span class="material-symbols-outlined">add</span>
+<span class="font-medium">Adicionar Regra de SLA</span>
+</button>
+</div>
+</div>
+</section>
+</div>
+</main>
+</div>
+</div>
+</body></html>

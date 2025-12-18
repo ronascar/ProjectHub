@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Edit Task - Project Management</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Theme Config -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#137fec",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#101922",
+                        "surface-dark": "#111a22", 
+                        "card-dark": "#192633",
+                        "border-dark": "#324d67",
+                        "text-secondary": "#92adc9"
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        /* Custom scrollbar for dark mode */
+        .dark ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        .dark ::-webkit-scrollbar-track {
+            background: #111a22; 
+        }
+        .dark ::-webkit-scrollbar-thumb {
+            background: #324d67; 
+            border-radius: 4px;
+        }
+        .dark ::-webkit-scrollbar-thumb:hover {
+            background: #4b6b8b; 
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-white h-screen flex overflow-hidden">
+<!-- Sidebar -->
+<div class="w-64 flex-shrink-0 border-r border-gray-200 dark:border-border-dark bg-white dark:bg-surface-dark hidden md:flex flex-col">
+<div class="p-4 flex flex-col h-full justify-between">
+<div class="flex flex-col gap-6">
+<!-- Branding -->
+<div class="flex gap-3 items-center px-2">
+<div class="bg-center bg-no-repeat bg-cover rounded-full h-10 w-10 shrink-0" data-alt="Abstract geometric logo with blue gradients" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAja0dQB538PDr3dtmruyjjYxxkSj5Ok6fPz0aWMg7GomUSPXg1kbRaLrWxTqVeLhJPiwj5esTezDT0TLWljbl-FDnMILrCaw6y7W2VV6xJsYDh37WYUh6pmrQVlhWOrXACp2UBl2uYmRbKHsCUSeO3hRI4aBDkKfssP-5ZN5ZQUfvvQUjwyFVjsoECCSzJoKErnY9xs1wKmt15My35h28V21WbC2SIzajrbUC6rxRtiCIHDPIvL5vxUJxkveLZQIVCU6GjdzF9tWM");'></div>
+<div class="flex flex-col overflow-hidden">
+<h1 class="text-slate-900 dark:text-white text-base font-medium leading-normal truncate">Acme Corp</h1>
+<p class="text-gray-500 dark:text-text-secondary text-xs font-normal leading-normal">Digital Agency</p>
+</div>
+</div>
+<!-- Navigation -->
+<div class="flex flex-col gap-1">
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-card-dark group transition-colors" href="#">
+<span class="material-symbols-outlined text-gray-500 dark:text-text-secondary group-hover:text-primary">dashboard</span>
+<p class="text-slate-700 dark:text-text-secondary group-hover:text-slate-900 dark:group-hover:text-white text-sm font-medium">Dashboard</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg bg-primary/10 dark:bg-primary/20" href="#">
+<span class="material-symbols-outlined text-primary">view_kanban</span>
+<p class="text-primary dark:text-white text-sm font-medium">Projects</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-card-dark group transition-colors" href="#">
+<span class="material-symbols-outlined text-gray-500 dark:text-text-secondary group-hover:text-primary">check_box</span>
+<p class="text-slate-700 dark:text-text-secondary group-hover:text-slate-900 dark:group-hover:text-white text-sm font-medium">My Tasks</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-card-dark group transition-colors" href="#">
+<span class="material-symbols-outlined text-gray-500 dark:text-text-secondary group-hover:text-primary">group</span>
+<p class="text-slate-700 dark:text-text-secondary group-hover:text-slate-900 dark:group-hover:text-white text-sm font-medium">Team</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-card-dark group transition-colors" href="#">
+<span class="material-symbols-outlined text-gray-500 dark:text-text-secondary group-hover:text-primary">settings</span>
+<p class="text-slate-700 dark:text-text-secondary group-hover:text-slate-900 dark:group-hover:text-white text-sm font-medium">Settings</p>
+</a>
+</div>
+</div>
+<!-- User Profile (Bottom Sidebar) -->
+<div class="flex items-center gap-3 px-3 py-2 mt-auto border-t border-gray-200 dark:border-border-dark pt-4">
+<div class="h-8 w-8 rounded-full bg-cover bg-center" data-alt="User profile picture of a smiling man" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBFrBBK7kmzYtPr7zQGiKVHpQ5p6L75YRPSDeuSnBV6v1y1pAMN7O7PtOcq-SzCKf95Yp0ii9STKMd_NVcQ8SskJZY5ikKED1aHe8M1aivXICLFW9Jz_bk7ymlpZ1znUnEiiPWRqYS2S6kmJs_wHbiJAOjCtaB_bS1X60HiyWA_a7joJS5OQrsClCUpctWo7dGJcfU4JmJVohwkQUKpT-JH-_Lye9DHi4q4M2PyUabmNKjkIZ-fyusKju_gpvNBgelj7ZG_9q4tyKo');"></div>
+<div class="flex flex-col">
+<p class="text-sm font-medium text-slate-900 dark:text-white">Alex Morgan</p>
+<p class="text-xs text-gray-500 dark:text-text-secondary">Project Manager</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Main Content -->
+<div class="flex-1 flex flex-col h-full overflow-hidden relative">
+<!-- Header & Breadcrumbs -->
+<header class="flex-shrink-0 bg-white dark:bg-surface-dark border-b border-gray-200 dark:border-border-dark px-6 py-4 flex flex-col gap-4">
+<!-- Breadcrumbs -->
+<div class="flex items-center gap-2 text-sm">
+<a class="text-gray-500 dark:text-text-secondary hover:text-primary transition-colors" href="#">Projects</a>
+<span class="text-gray-400 dark:text-gray-600">/</span>
+<a class="text-gray-500 dark:text-text-secondary hover:text-primary transition-colors" href="#">Web Redesign</a>
+<span class="text-gray-400 dark:text-gray-600">/</span>
+<span class="text-slate-900 dark:text-white font-medium">Task #1024</span>
+</div>
+<!-- Page Heading -->
+<div class="flex flex-wrap justify-between items-center gap-4">
+<div>
+<h1 class="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">Edit Task</h1>
+<p class="text-sm text-gray-500 dark:text-text-secondary mt-1">Last updated 2 hours ago by Sarah J.</p>
+</div>
+<div class="flex items-center gap-3">
+<button class="px-4 py-2 rounded-lg border border-gray-300 dark:border-border-dark text-slate-700 dark:text-text-secondary text-sm font-medium hover:bg-gray-50 dark:hover:bg-card-dark transition-colors">
+                        Cancel
+                    </button>
+<button class="flex items-center gap-2 px-4 py-2 rounded-lg bg-primary hover:bg-blue-600 text-white text-sm font-medium transition-colors shadow-lg shadow-blue-500/20">
+<span class="material-symbols-outlined text-[18px]">save</span>
+                        Save Changes
+                    </button>
+</div>
+</div>
+</header>
+<!-- Scrollable Content -->
+<main class="flex-1 overflow-y-auto p-4 md:p-8 scroll-smooth">
+<div class="max-w-[1200px] mx-auto grid grid-cols-1 lg:grid-cols-3 gap-6">
+<!-- LEFT COLUMN: Main Inputs -->
+<div class="lg:col-span-2 flex flex-col gap-6">
+<!-- Title Input -->
+<div class="flex flex-col gap-2">
+<label class="text-sm font-medium text-slate-700 dark:text-text-secondary uppercase tracking-wider">Task Title</label>
+<input class="w-full bg-white dark:bg-card-dark border border-gray-300 dark:border-border-dark rounded-lg px-4 py-3 text-lg font-medium text-slate-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all" placeholder="Enter task title" type="text" value="Implement new authentication flow"/>
+</div>
+<!-- Description Editor -->
+<div class="flex flex-col gap-2">
+<label class="text-sm font-medium text-slate-700 dark:text-text-secondary uppercase tracking-wider">Description</label>
+<div class="bg-white dark:bg-card-dark border border-gray-300 dark:border-border-dark rounded-lg overflow-hidden">
+<!-- Toolbar -->
+<div class="flex items-center gap-1 p-2 border-b border-gray-200 dark:border-border-dark bg-gray-50 dark:bg-[#111a22]">
+<button class="p-1.5 rounded hover:bg-gray-200 dark:hover:bg-card-dark text-gray-500 dark:text-text-secondary"><span class="material-symbols-outlined text-[20px]">format_bold</span></button>
+<button class="p-1.5 rounded hover:bg-gray-200 dark:hover:bg-card-dark text-gray-500 dark:text-text-secondary"><span class="material-symbols-outlined text-[20px]">format_italic</span></button>
+<button class="p-1.5 rounded hover:bg-gray-200 dark:hover:bg-card-dark text-gray-500 dark:text-text-secondary"><span class="material-symbols-outlined text-[20px]">format_list_bulleted</span></button>
+<button class="p-1.5 rounded hover:bg-gray-200 dark:hover:bg-card-dark text-gray-500 dark:text-text-secondary"><span class="material-symbols-outlined text-[20px]">link</span></button>
+</div>
+<!-- Text Area -->
+<textarea class="w-full bg-transparent border-none p-4 min-h-[200px] text-slate-900 dark:text-white placeholder-gray-400 focus:ring-0 resize-y" placeholder="Describe the task requirements...">The current authentication flow needs to be updated to support OAuth2.0 providers including Google and GitHub. Please refer to the updated security specifications.</textarea>
+</div>
+</div>
+<!-- Subtasks & Checklists -->
+<div class="bg-white dark:bg-card-dark rounded-xl border border-gray-200 dark:border-border-dark p-5">
+<div class="flex justify-between items-center mb-4">
+<h3 class="text-base font-semibold text-slate-900 dark:text-white flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">checklist</span> Subtasks
+                            </h3>
+<span class="text-xs font-medium px-2 py-1 rounded bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400">2/4 Completed</span>
+</div>
+<div class="flex flex-col gap-3">
+<!-- Item 1 -->
+<label class="flex items-start gap-3 p-2 hover:bg-gray-50 dark:hover:bg-surface-dark rounded-lg cursor-pointer group transition-colors">
+<input checked="" class="mt-1 w-5 h-5 rounded border-gray-300 dark:border-gray-600 text-primary focus:ring-primary bg-gray-100 dark:bg-surface-dark" type="checkbox"/>
+<span class="text-sm text-gray-500 dark:text-gray-400 line-through decoration-gray-400">Setup new OAuth credentials in Google Cloud Console</span>
+</label>
+<!-- Item 2 -->
+<label class="flex items-start gap-3 p-2 hover:bg-gray-50 dark:hover:bg-surface-dark rounded-lg cursor-pointer group transition-colors">
+<input checked="" class="mt-1 w-5 h-5 rounded border-gray-300 dark:border-gray-600 text-primary focus:ring-primary bg-gray-100 dark:bg-surface-dark" type="checkbox"/>
+<span class="text-sm text-gray-500 dark:text-gray-400 line-through decoration-gray-400">Update database schema for social tokens</span>
+</label>
+<!-- Item 3 -->
+<label class="flex items-start gap-3 p-2 hover:bg-gray-50 dark:hover:bg-surface-dark rounded-lg cursor-pointer group transition-colors">
+<input class="mt-1 w-5 h-5 rounded border-gray-300 dark:border-gray-600 text-primary focus:ring-primary bg-gray-100 dark:bg-surface-dark" type="checkbox"/>
+<span class="text-sm text-slate-700 dark:text-gray-200">Implement backend logic for token exchange</span>
+</label>
+<!-- Item 4 -->
+<label class="flex items-start gap-3 p-2 hover:bg-gray-50 dark:hover:bg-surface-dark rounded-lg cursor-pointer group transition-colors">
+<input class="mt-1 w-5 h-5 rounded border-gray-300 dark:border-gray-600 text-primary focus:ring-primary bg-gray-100 dark:bg-surface-dark" type="checkbox"/>
+<span class="text-sm text-slate-700 dark:text-gray-200">Frontend login page updates</span>
+</label>
+<!-- Add New -->
+<div class="mt-2 flex items-center gap-2 pl-2">
+<span class="material-symbols-outlined text-gray-400 text-sm">add</span>
+<input class="bg-transparent border-none text-sm text-slate-900 dark:text-white placeholder-gray-500 focus:ring-0 p-0 w-full" placeholder="Add a subtask..." type="text"/>
+</div>
+</div>
+</div>
+<!-- Attachments -->
+<div class="bg-white dark:bg-card-dark rounded-xl border border-gray-200 dark:border-border-dark p-5">
+<div class="flex justify-between items-center mb-4">
+<h3 class="text-base font-semibold text-slate-900 dark:text-white flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">attach_file</span> Attachments
+                            </h3>
+<button class="text-xs font-medium text-primary hover:text-blue-400">Upload</button>
+</div>
+<div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+<!-- File Card -->
+<div class="flex items-center gap-3 p-3 rounded-lg border border-gray-200 dark:border-border-dark hover:bg-gray-50 dark:hover:bg-surface-dark transition-colors cursor-pointer group">
+<div class="w-10 h-10 rounded bg-red-100 dark:bg-red-900/20 flex items-center justify-center text-red-500 dark:text-red-400">
+<span class="material-symbols-outlined">picture_as_pdf</span>
+</div>
+<div class="overflow-hidden">
+<p class="text-sm font-medium text-slate-900 dark:text-white truncate group-hover:text-primary">specs_v2.pdf</p>
+<p class="text-xs text-gray-500">2.4 MB</p>
+</div>
+</div>
+<!-- File Card -->
+<div class="flex items-center gap-3 p-3 rounded-lg border border-gray-200 dark:border-border-dark hover:bg-gray-50 dark:hover:bg-surface-dark transition-colors cursor-pointer group">
+<div class="w-10 h-10 rounded bg-blue-100 dark:bg-blue-900/20 flex items-center justify-center text-blue-500 dark:text-blue-400">
+<span class="material-symbols-outlined">image</span>
+</div>
+<div class="overflow-hidden">
+<p class="text-sm font-medium text-slate-900 dark:text-white truncate group-hover:text-primary">design_mock.png</p>
+<p class="text-xs text-gray-500">1.8 MB</p>
+</div>
+</div>
+<!-- Dropzone -->
+<div class="flex flex-col items-center justify-center p-3 rounded-lg border border-dashed border-gray-300 dark:border-gray-600 hover:border-primary hover:bg-blue-50 dark:hover:bg-surface-dark/50 transition-colors cursor-pointer text-gray-400 dark:text-gray-500 hover:text-primary">
+<span class="material-symbols-outlined mb-1">cloud_upload</span>
+<span class="text-xs">Drop files here</span>
+</div>
+</div>
+</div>
+<!-- Comments -->
+<div class="flex flex-col gap-4 mt-2">
+<h3 class="text-base font-semibold text-slate-900 dark:text-white">Comments (3)</h3>
+<!-- Comment Item -->
+<div class="flex gap-4 group">
+<div class="h-10 w-10 rounded-full bg-cover bg-center shrink-0" data-alt="Profile picture of Sarah" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBDp9xUKrgRvIfU_H2psDlfkSwwH-NdcRtBoCEtkb2hWTPaMR7b8xH2FMa0SQMhp5paZHV0ey4U34W_QUskM0Lni8eZWEP8ont8sdDU8vpgFg9SXbVlQ-huqoXmIZshMEIW3aDnsrU5H5HauRbe8CubSMx7O_fg4duIYrpkQVh2aLpAlCSaGrSjtCcEout8Gnf0elQag8wo3PPe5XtUGW4yFSmRevlkMcS0XKApHNcGZyoZNCLoNlgin0w20BOvc33Y5hG2KOoP6P0');"></div>
+<div class="flex-1">
+<div class="flex items-center gap-2 mb-1">
+<span class="text-sm font-semibold text-slate-900 dark:text-white">Sarah Jenkins</span>
+<span class="text-xs text-gray-500">2 hours ago</span>
+</div>
+<div class="bg-white dark:bg-card-dark border border-gray-200 dark:border-border-dark rounded-lg rounded-tl-none p-3 text-sm text-slate-700 dark:text-gray-300">
+<p>I've updated the description with the new requirements from the client meeting. Please review.</p>
+</div>
+</div>
+</div>
+<!-- Comment Input -->
+<div class="flex gap-4 mt-2">
+<div class="h-10 w-10 rounded-full bg-cover bg-center shrink-0" data-alt="Your profile picture" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCeZvr4kyK4n-0QYrfwugcKjmQiJo9aWavGlMi0kl0FYPX2BRLVrsp_G7RVmeO5p8zyZuEarUC33AXNpG-bqAKss-pcHfwN_VCdvAV_gcQRtsiPZ6a-e_fBTYgdNfcDuxomJF2w3uKxpFoQwLYkkJMj2elFfCoxsZN73kMjfkefcLzLeEjDuOL__vK7FUwYio3YV-XiKSIGn7S8FuTHO1C5m69kcnlmmop8JzkTbzRM50VlgwpMS54HGMqs24RMCnVtQ7FK9IgoaJo');"></div>
+<div class="flex-1 relative">
+<textarea class="w-full bg-white dark:bg-card-dark border border-gray-300 dark:border-border-dark rounded-lg p-3 pr-12 text-sm text-slate-900 dark:text-white placeholder-gray-400 focus:ring-1 focus:ring-primary focus:border-primary resize-none h-20" placeholder="Write a comment..."></textarea>
+<button class="absolute bottom-2 right-2 p-1.5 rounded-md bg-primary text-white hover:bg-blue-600 transition-colors">
+<span class="material-symbols-outlined text-[18px] block">send</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- RIGHT COLUMN: Metadata Sidebar -->
+<div class="flex flex-col gap-6">
+<!-- Metadata Card -->
+<div class="bg-white dark:bg-card-dark rounded-xl border border-gray-200 dark:border-border-dark p-5 flex flex-col gap-5 sticky top-6">
+<!-- Status -->
+<div>
+<label class="text-xs font-semibold text-gray-500 dark:text-text-secondary uppercase tracking-wider mb-2 block">Status</label>
+<div class="relative">
+<select class="w-full appearance-none bg-blue-50 dark:bg-[#233648] border-none text-blue-700 dark:text-blue-100 text-sm font-medium rounded-lg py-2.5 px-4 pr-8 focus:ring-2 focus:ring-primary cursor-pointer">
+<option>In Progress</option>
+<option>To Do</option>
+<option>Review</option>
+<option>Done</option>
+</select>
+<div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none text-blue-700 dark:text-blue-100">
+<span class="material-symbols-outlined text-sm">expand_more</span>
+</div>
+</div>
+</div>
+<!-- Priority -->
+<div>
+<label class="text-xs font-semibold text-gray-500 dark:text-text-secondary uppercase tracking-wider mb-2 block">Priority</label>
+<div class="relative">
+<select class="w-full appearance-none bg-red-50 dark:bg-red-900/20 border-none text-red-700 dark:text-red-300 text-sm font-medium rounded-lg py-2.5 px-4 pr-8 focus:ring-2 focus:ring-red-500 cursor-pointer">
+<option>High</option>
+<option>Critical</option>
+<option>Medium</option>
+<option>Low</option>
+</select>
+<div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none text-red-700 dark:text-red-300">
+<span class="material-symbols-outlined text-sm">priority_high</span>
+</div>
+</div>
+</div>
+<hr class="border-gray-100 dark:border-gray-700"/>
+<!-- Assignee -->
+<div>
+<label class="text-xs font-semibold text-gray-500 dark:text-text-secondary uppercase tracking-wider mb-2 block">Responsible</label>
+<button class="w-full flex items-center gap-3 p-2 rounded-lg hover:bg-gray-50 dark:hover:bg-surface-dark transition-colors border border-transparent hover:border-gray-200 dark:hover:border-border-dark text-left">
+<div class="h-8 w-8 rounded-full bg-cover bg-center shrink-0" data-alt="Profile picture of assigned user" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAJCMsf5C4iFAluI5F2zsrm6UPTm5UJOr4rf8a3uiNHaJobq9UwhNhn_vMtoZYfH6R7-F8LIkCK99zKf36I_oguTSDucH9kVwARQhCgr8IZXxa3PFoVKBk0paPhF9bzTglgjKaVzofyYAEgGBsp596Kd4RUHdr6pwN-T_3L0P0K34DeapKqGH_eBFGltxJPMMuQ1GCVTmuA3-qPDQBrCPPLGoPLuVRF3Io9R-7IJDe-WqfcI60rdD8ntzsC-OWVKkxEhtSFF7JuIjw');"></div>
+<div class="flex-1">
+<p class="text-sm font-medium text-slate-900 dark:text-white">Michael Chen</p>
+<p class="text-xs text-gray-500">Lead Developer</p>
+</div>
+<span class="material-symbols-outlined text-gray-400 text-sm">edit</span>
+</button>
+</div>
+<!-- Dates -->
+<div>
+<label class="text-xs font-semibold text-gray-500 dark:text-text-secondary uppercase tracking-wider mb-2 block">Deadline</label>
+<div class="relative">
+<span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500 dark:text-text-secondary">
+<span class="material-symbols-outlined text-[20px]">calendar_month</span>
+</span>
+<input class="w-full bg-white dark:bg-surface-dark border border-gray-300 dark:border-border-dark rounded-lg py-2 pl-10 pr-3 text-sm text-slate-900 dark:text-white focus:ring-primary focus:border-primary" type="date" value="2023-11-24"/>
+</div>
+</div>
+<!-- Time Tracking -->
+<div>
+<label class="text-xs font-semibold text-gray-500 dark:text-text-secondary uppercase tracking-wider mb-2 block">Time Tracking</label>
+<div class="flex gap-3">
+<div class="flex-1">
+<p class="text-xs text-gray-400 mb-1">Estimated</p>
+<div class="relative">
+<input class="w-full bg-white dark:bg-surface-dark border border-gray-300 dark:border-border-dark rounded-lg py-2 px-3 text-sm text-slate-900 dark:text-white focus:ring-primary focus:border-primary" type="text" value="8h"/>
+</div>
+</div>
+<div class="flex-1">
+<p class="text-xs text-gray-400 mb-1">Actual</p>
+<div class="relative">
+<input class="w-full bg-white dark:bg-surface-dark border border-gray-300 dark:border-border-dark rounded-lg py-2 px-3 text-sm text-slate-900 dark:text-white focus:ring-primary focus:border-primary" type="text" value="2.5h"/>
+</div>
+</div>
+</div>
+<!-- Simple Progress Bar for Time -->
+<div class="w-full bg-gray-200 dark:bg-surface-dark h-1.5 rounded-full mt-3 overflow-hidden">
+<div class="bg-green-500 h-full rounded-full" style="width: 30%"></div>
+</div>
+</div>
+<!-- Actions Dropdown -->
+<div class="mt-2 pt-4 border-t border-gray-100 dark:border-gray-700">
+<button class="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg border border-red-200 dark:border-red-900/50 text-red-600 dark:text-red-400 text-sm font-medium hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors">
+<span class="material-symbols-outlined text-[18px]">delete</span>
+                                Delete Task
+                            </button>
+</div>
+</div>
+<!-- Meta Info -->
+<div class="px-2">
+<p class="text-xs text-gray-400 dark:text-gray-600 text-center">
+                            Created Oct 20, 2023 10:30 AM <br/>
+                            Task ID: #1024
+                        </p>
+</div>
+</div>
+</div>
+</main>
+</div>
+</body></html>

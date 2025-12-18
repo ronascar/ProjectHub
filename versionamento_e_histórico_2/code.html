@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Versionamento e Histórico - ProjectFlow</title>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&amp;family=Noto+Sans:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Config -->
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#137fec",
+              "background-light": "#f6f7f8",
+              "background-dark": "#111a22", 
+              "surface-dark": "#1e2730",
+              "border-dark": "#233648",
+              "text-secondary": "#92adc9"
+            },
+            fontFamily: {
+              "display": ["Inter", "sans-serif"],
+              "body": ["Noto Sans", "sans-serif"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        /* Custom scrollbar for dark theme */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #111a22; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #233648; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #324d67; 
+        }
+        
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        
+        .material-symbols-outlined.fill {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-white overflow-hidden">
+<div class="relative flex h-screen w-full flex-col overflow-hidden">
+<!-- TOP NAV BAR -->
+<header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-b-border-dark bg-[#111a22] px-6 py-3 z-20 shrink-0">
+<div class="flex items-center gap-8">
+<div class="flex items-center gap-4 text-white">
+<div class="size-8 text-primary">
+<svg class="w-full h-full" fill="currentColor" viewbox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+<path clip-rule="evenodd" d="M39.475 21.6262C40.358 21.4363 40.6863 21.5589 40.7581 21.5934C40.7876 21.655 40.8547 21.857 40.8082 22.3336C40.7408 23.0255 40.4502 24.0046 39.8572 25.2301C38.6799 27.6631 36.5085 30.6631 33.5858 33.5858C30.6631 36.5085 27.6632 38.6799 25.2301 39.8572C24.0046 40.4502 23.0255 40.7407 22.3336 40.8082C21.8571 40.8547 21.6551 40.7875 21.5934 40.7581C21.5589 40.6863 21.4363 40.358 21.6262 39.475C21.8562 38.4054 22.4689 36.9657 23.5038 35.2817C24.7575 33.2417 26.5497 30.9744 28.7621 28.762C30.9744 26.5497 33.2417 24.7574 35.2817 23.5037C36.9657 22.4689 38.4054 21.8562 39.475 21.6262ZM4.41189 29.2403L18.7597 43.5881C19.8813 44.7097 21.4027 44.9179 22.7217 44.7893C24.0585 44.659 25.5148 44.1631 26.9723 43.4579C29.9052 42.0387 33.2618 39.5667 36.4142 36.4142C39.5667 33.2618 42.0387 29.9052 43.4579 26.9723C44.1631 25.5148 44.659 24.0585 44.7893 22.7217C44.9179 21.4027 44.7097 19.8813 43.5881 18.7597L29.2403 4.41187C27.8527 3.02428 25.8765 3.02573 24.2861 3.36776C22.6081 3.72863 20.7334 4.58419 18.8396 5.74801C16.4978 7.18716 13.9881 9.18353 11.5858 11.5858C9.18354 13.988 7.18717 16.4978 5.74802 18.8396C4.58421 20.7334 3.72865 22.6081 3.36778 24.2861C3.02574 25.8765 3.02429 27.8527 4.41189 29.2403Z" fill-rule="evenodd"></path>
+</svg>
+</div>
+<h2 class="text-white text-lg font-bold leading-tight tracking-[-0.015em]">ProjectFlow</h2>
+</div>
+<div class="hidden md:flex flex-col min-w-40 !h-10 max-w-64">
+<div class="flex w-full flex-1 items-stretch rounded-lg h-full bg-[#233648]">
+<div class="text-[#92adc9] flex border-none items-center justify-center pl-4 rounded-l-lg border-r-0">
+<span class="material-symbols-outlined">search</span>
+</div>
+<input class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-white focus:outline-0 focus:ring-0 border-none bg-transparent focus:border-none h-full placeholder:text-[#92adc9] px-4 rounded-l-none border-l-0 pl-2 text-base font-normal leading-normal" placeholder="Search..." value=""/>
+</div>
+</div>
+</div>
+<div class="flex flex-1 justify-end gap-8">
+<div class="hidden lg:flex items-center gap-9">
+<a class="text-white text-sm font-medium leading-normal hover:text-primary transition-colors" href="#">Dashboard</a>
+<a class="text-white text-sm font-medium leading-normal hover:text-primary transition-colors" href="#">Projects</a>
+<a class="text-white text-sm font-medium leading-normal hover:text-primary transition-colors" href="#">Teams</a>
+<a class="text-white text-sm font-medium leading-normal hover:text-primary transition-colors" href="#">Settings</a>
+</div>
+<button class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10 ring-2 ring-[#233648] hover:ring-primary transition-all cursor-pointer" data-alt="User profile picture showing a smiling man" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCjxdfCuGNgZ15rAU65VuzrrJ-XbVkCdJ873Hv0j1t0w80r9l-CzzpMDB_eFFy6-AKbRN7nYnc0mPfunyofQjlqAy01zhn2uoKby3R1RZegiUW6BD89XDnHIULhPa18FTv12bluwlVKJczzyDrllSpKdANHjItibsj4utGU08FVixlgUK_PYr39rxCctzqh-4mMoCTj6f119y6L03V0gnQG-Sc83oFhAYb3p74KlaaaPbRnFG1dscWF7ZfvNVLEo3jympPv2uAoI1k");'></button>
+</div>
+</header>
+<div class="flex flex-1 overflow-hidden">
+<!-- SIDE NAV BAR -->
+<aside class="hidden w-[260px] flex-col justify-between bg-[#111a22] p-4 border-r border-border-dark md:flex shrink-0">
+<div class="flex flex-col gap-4">
+<div class="flex flex-col px-3 pt-2">
+<h1 class="text-white text-base font-medium leading-normal">Tech Agency</h1>
+<p class="text-[#92adc9] text-xs font-normal leading-normal">Projeto Alpha</p>
+</div>
+<div class="flex flex-col gap-1 mt-4">
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-[#233648] text-[#92adc9] hover:text-white transition-colors group" href="#">
+<span class="material-symbols-outlined group-hover:text-primary">home</span>
+<p class="text-sm font-medium leading-normal">Visão Geral</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-[#233648] text-[#92adc9] hover:text-white transition-colors group" href="#">
+<span class="material-symbols-outlined group-hover:text-primary">check_box</span>
+<p class="text-sm font-medium leading-normal">Tarefas</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-[#233648] text-[#92adc9] hover:text-white transition-colors group" href="#">
+<span class="material-symbols-outlined group-hover:text-primary">view_kanban</span>
+<p class="text-sm font-medium leading-normal">Kanban</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-[#233648] text-[#92adc9] hover:text-white transition-colors group" href="#">
+<span class="material-symbols-outlined group-hover:text-primary">description</span>
+<p class="text-sm font-medium leading-normal">Arquivos</p>
+</a>
+<!-- Active State -->
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg bg-[#233648] text-white" href="#">
+<span class="material-symbols-outlined fill text-primary">history</span>
+<p class="text-sm font-medium leading-normal">Histórico</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-[#233648] text-[#92adc9] hover:text-white transition-colors group" href="#">
+<span class="material-symbols-outlined group-hover:text-primary">bug_report</span>
+<p class="text-sm font-medium leading-normal">Bugs</p>
+</a>
+</div>
+</div>
+<div class="px-3 pb-2">
+<div class="flex items-center gap-3 text-[#92adc9] hover:text-white cursor-pointer transition-colors">
+<span class="material-symbols-outlined">logout</span>
+<p class="text-sm font-medium leading-normal">Sair do Projeto</p>
+</div>
+</div>
+</aside>
+<!-- MAIN CONTENT -->
+<main class="flex-1 overflow-y-auto bg-background-dark p-4 md:p-8 scroll-smooth">
+<div class="mx-auto max-w-[1200px] flex flex-col gap-6">
+<!-- BREADCRUMBS -->
+<div class="flex flex-wrap gap-2 text-sm">
+<a class="text-[#92adc9] hover:text-primary transition-colors" href="#">Projetos</a>
+<span class="text-[#92adc9]">/</span>
+<a class="text-[#92adc9] hover:text-primary transition-colors" href="#">App Mobile v2</a>
+<span class="text-[#92adc9]">/</span>
+<span class="text-white font-medium">Versionamento</span>
+</div>
+<!-- PAGE HEADING -->
+<div class="flex flex-col md:flex-row justify-between gap-4 items-start md:items-end pb-2 border-b border-border-dark">
+<div class="flex flex-col gap-2">
+<h1 class="text-white text-3xl md:text-4xl font-black leading-tight tracking-[-0.033em]">Versionamento e Histórico</h1>
+<p class="text-[#92adc9] text-base font-normal leading-normal max-w-2xl">Acompanhe o ciclo de vida do projeto, releases e auditoria completa de todas as alterações.</p>
+</div>
+<div class="flex gap-3">
+<button class="flex items-center justify-center gap-2 rounded-lg h-10 px-4 border border-border-dark bg-transparent hover:bg-surface-dark text-white text-sm font-bold transition-all">
+<span class="material-symbols-outlined text-[20px]">filter_list</span>
+<span>Filtrar</span>
+</button>
+<button class="flex items-center justify-center gap-2 rounded-lg h-10 px-4 bg-primary hover:bg-primary/90 text-white text-sm font-bold shadow-lg shadow-primary/20 transition-all">
+<span class="material-symbols-outlined text-[20px]">add_circle</span>
+<span>Gerar Release Note</span>
+</button>
+</div>
+</div>
+<!-- STATS -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+<div class="flex flex-col gap-2 rounded-xl p-6 border border-border-dark bg-surface-dark/50 backdrop-blur-sm">
+<div class="flex justify-between items-start">
+<p class="text-[#92adc9] text-sm font-medium uppercase tracking-wider">Total de Commits</p>
+<span class="material-symbols-outlined text-[#92adc9]">commit</span>
+</div>
+<div class="flex items-baseline gap-2 mt-1">
+<p class="text-white text-3xl font-bold leading-tight">1,240</p>
+<span class="text-[#0bda5b] text-sm font-medium bg-[#0bda5b]/10 px-2 py-0.5 rounded-full">+12%</span>
+</div>
+</div>
+<div class="flex flex-col gap-2 rounded-xl p-6 border border-border-dark bg-surface-dark/50 backdrop-blur-sm">
+<div class="flex justify-between items-start">
+<p class="text-[#92adc9] text-sm font-medium uppercase tracking-wider">Alterações de Status</p>
+<span class="material-symbols-outlined text-[#92adc9]">swap_horiz</span>
+</div>
+<div class="flex items-baseline gap-2 mt-1">
+<p class="text-white text-3xl font-bold leading-tight">85</p>
+<span class="text-[#0bda5b] text-sm font-medium bg-[#0bda5b]/10 px-2 py-0.5 rounded-full">+5%</span>
+</div>
+</div>
+<div class="flex flex-col gap-2 rounded-xl p-6 border border-border-dark bg-surface-dark/50 backdrop-blur-sm">
+<div class="flex justify-between items-start">
+<p class="text-[#92adc9] text-sm font-medium uppercase tracking-wider">Tickets Fechados</p>
+<span class="material-symbols-outlined text-[#92adc9]">check_circle</span>
+</div>
+<div class="flex items-baseline gap-2 mt-1">
+<p class="text-white text-3xl font-bold leading-tight">42</p>
+<span class="text-[#0bda5b] text-sm font-medium bg-[#0bda5b]/10 px-2 py-0.5 rounded-full">+8%</span>
+</div>
+</div>
+</div>
+<!-- MAIN GRID: ACTIVITY & RELEASES -->
+<div class="grid grid-cols-1 xl:grid-cols-3 gap-6 md:gap-8">
+<!-- LEFT COLUMN: Activity Log (Span 2) -->
+<div class="xl:col-span-2 flex flex-col gap-6">
+<!-- Toolbar -->
+<div class="flex flex-col sm:flex-row justify-between items-center gap-4 bg-surface-dark p-4 rounded-xl border border-border-dark">
+<div class="flex gap-2 bg-[#111a22] p-1 rounded-lg border border-border-dark w-full sm:w-auto">
+<button class="px-4 py-1.5 rounded-md bg-surface-dark text-white text-sm font-medium shadow-sm transition-all">Todos</button>
+<button class="px-4 py-1.5 rounded-md text-[#92adc9] hover:text-white hover:bg-surface-dark/50 text-sm font-medium transition-all">Status</button>
+<button class="px-4 py-1.5 rounded-md text-[#92adc9] hover:text-white hover:bg-surface-dark/50 text-sm font-medium transition-all">Commits</button>
+</div>
+<div class="relative w-full sm:w-64">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[#92adc9] text-[18px]">search</span>
+<input class="w-full bg-[#111a22] border border-border-dark rounded-lg pl-10 pr-4 py-2 text-sm text-white placeholder-[#92adc9] focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all" placeholder="Buscar no histórico..." type="text"/>
+</div>
+</div>
+<!-- Timeline / Audit Log -->
+<div class="flex flex-col gap-4">
+<h3 class="text-white font-bold text-lg px-2">Hoje</h3>
+<!-- Log Item 1 -->
+<div class="group flex gap-4 p-4 rounded-xl bg-surface-dark border border-border-dark hover:border-primary/50 transition-all">
+<div class="relative shrink-0">
+<div class="size-10 rounded-full bg-cover bg-center ring-2 ring-border-dark group-hover:ring-primary transition-all" data-alt="Profile picture of male developer" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCUOTxIDeg7pbAhk26SGVfV5M0OrxySPZ07r2Kq3KkQeb4tKujd47IW4OZ-KEw5B2OJjB_jyq-0iCHf9nQm_rK8B5ozf3vQpHKW1WQP6H59VsqhqlViAY6jv1I-to_KrheQW-dq_9t2SB2vKaaU0njhs70U2wIyOCgRXSYxTAwDrkBgx2HIhUmCbLNW7_qJem4T1FChTMpCfXO-oONgOFnVv9JPmwnEdLA-7z3LVNc0kDtPe8uSR6ulo3kqCaaCh0W5mR0HHhU6QhU");'></div>
+<div class="absolute -bottom-1 -right-1 bg-[#0bda5b] text-black rounded-full p-0.5 border-2 border-surface-dark">
+<span class="material-symbols-outlined text-[12px] font-bold block">check</span>
+</div>
+</div>
+<div class="flex flex-col flex-1 gap-1">
+<div class="flex justify-between items-start">
+<p class="text-sm text-white"><span class="font-bold text-white">Ricardo Silva</span> moveu <a class="text-primary hover:underline" href="#">TASK-1024</a> para <span class="text-[#0bda5b] font-medium">Concluído</span></p>
+<span class="text-xs text-[#92adc9] whitespace-nowrap">2m atrás</span>
+</div>
+<p class="text-sm text-[#92adc9]">Implementação do fluxo de autenticação via OAuth2 finalizada.</p>
+<div class="flex gap-2 mt-2">
+<span class="px-2 py-0.5 rounded text-[10px] font-mono bg-[#233648] text-[#92adc9] border border-[#324d67]">backend</span>
+<span class="px-2 py-0.5 rounded text-[10px] font-mono bg-[#233648] text-[#92adc9] border border-[#324d67]">security</span>
+</div>
+</div>
+</div>
+<!-- Log Item 2 -->
+<div class="group flex gap-4 p-4 rounded-xl bg-surface-dark border border-border-dark hover:border-primary/50 transition-all">
+<div class="relative shrink-0">
+<div class="size-10 rounded-full bg-cover bg-center ring-2 ring-border-dark group-hover:ring-primary transition-all" data-alt="Profile picture of female designer" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBkT34oJmJvtWcrQoxpBMc-PYGmsWMPyspiaUn3o7qghoEolgHzpEzCiHGqBeqsvicLdz4Vk8Q6EGB83Rci79SlJ9Q126dsGP2rCbjgx1gc7wftIYSzhzp0_2Mq73arjdIanlYZGMcVbh75UuWzDlDSHsETFvc5HlxBCcSNCPAtBv_Z0E-9-tePJglPTOPqmEIyyZu__ZlFS1tZoLlsI6SSE6TSV8zs57BsIXVWVeWppzvqcMpK-jjzaj_jjJowzmimxXNeLKFEs40");'></div>
+<div class="absolute -bottom-1 -right-1 bg-[#137fec] text-white rounded-full p-0.5 border-2 border-surface-dark">
+<span class="material-symbols-outlined text-[12px] font-bold block">edit</span>
+</div>
+</div>
+<div class="flex flex-col flex-1 gap-1">
+<div class="flex justify-between items-start">
+<p class="text-sm text-white"><span class="font-bold text-white">Ana Costa</span> atualizou o design de <a class="text-primary hover:underline" href="#">TASK-1010</a></p>
+<span class="text-xs text-[#92adc9] whitespace-nowrap">45m atrás</span>
+</div>
+<div class="flex items-center gap-3 mt-2 p-3 rounded-lg bg-[#111a22] border border-border-dark">
+<div class="h-10 w-10 bg-cover bg-center rounded" data-alt="Thumbnail of updated UI component" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAU4X04Qg77YhkXN77HXO90NAk0rBXsc3BAojGpBMohNDbQF-Yxs3oM146EORvWWrY64I1xFzs1CPWcMbiCwdGiW_-u9xOsrLVRXii1SGUs4KqzSipJM0fMNrFj9oHVZ2OcZzlgNak0vxFk97CmrOi_WGrXf89SHJdreNR1n8M97EthOCOdx366Zi0z9tgF055Cr7t_Wmg2X5pyKdjk3mAq2DoBKB2OUDiIiHyULQN8xs6CNKJJ-wz9okFRsSLJ-34tUBMng6HD_uA')"></div>
+<div class="flex flex-col">
+<span class="text-sm text-white font-medium">Dashboard_v2_Dark.fig</span>
+<span class="text-xs text-[#92adc9]">2.4 MB • Figma</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Log Item 3 -->
+<div class="group flex gap-4 p-4 rounded-xl bg-surface-dark border border-border-dark hover:border-primary/50 transition-all">
+<div class="relative shrink-0">
+<div class="flex items-center justify-center size-10 rounded-full bg-[#233648] text-[#92adc9] ring-2 ring-border-dark group-hover:ring-primary transition-all">
+<span class="material-symbols-outlined text-[20px]">code</span>
+</div>
+</div>
+<div class="flex flex-col flex-1 gap-1">
+<div class="flex justify-between items-start">
+<p class="text-sm text-white"><span class="font-bold text-white">System</span> registrou novo commit na branch <span class="font-mono text-[#e5b3fe]">feat/user-profile</span></p>
+<span class="text-xs text-[#92adc9] whitespace-nowrap">2h atrás</span>
+</div>
+<div class="font-mono text-xs text-[#92adc9] bg-[#111a22] p-2 rounded border border-border-dark mt-1">
+<span class="text-primary">8a2b3c</span> - Fix: avatar rendering issue on mobile devices
+                                        </div>
+</div>
+</div>
+<h3 class="text-white font-bold text-lg px-2 mt-4">Ontem</h3>
+<!-- Log Item 4 -->
+<div class="group flex gap-4 p-4 rounded-xl bg-surface-dark border border-border-dark hover:border-primary/50 transition-all">
+<div class="relative shrink-0">
+<div class="size-10 rounded-full bg-cover bg-center ring-2 ring-border-dark group-hover:ring-primary transition-all" data-alt="Profile picture of project manager" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuB1po7hmQfGsPSKBWMYgrQn6I4Vv61wwNazj5AJ02BoCu5nTeNbHpSJqNuPdQHByRhMuDJD6AU6_MAKW8A3bCcbpsSk2lVLDS0iSQG37IgDY6P9Ga6fGSaFHRLUxCLvLQZFrzFes7iCK0W4eSkvdn4U_X4VEDheLRqsVwvL3q_EBc6AIjQWTOyLALea0P16k0Hpl1nznzUoiQX6kZ3hWDul8-3QQSUw3jXOPw3c3yJHllvhcQ9TdadSnMnJdZ0rMHfRbxpl9sFt9dI");'></div>
+<div class="absolute -bottom-1 -right-1 bg-purple-500 text-white rounded-full p-0.5 border-2 border-surface-dark">
+<span class="material-symbols-outlined text-[12px] font-bold block">rocket_launch</span>
+</div>
+</div>
+<div class="flex flex-col flex-1 gap-1">
+<div class="flex justify-between items-start">
+<p class="text-sm text-white"><span class="font-bold text-white">Carlos Mendes</span> publicou release <span class="font-bold text-primary">v1.2.0</span></p>
+<span class="text-xs text-[#92adc9] whitespace-nowrap">14:30</span>
+</div>
+<p class="text-sm text-[#92adc9]">Release candidate aprovado. Deploy automático iniciado para produção.</p>
+<button class="mt-2 text-xs font-bold text-primary hover:text-white transition-colors flex items-center gap-1">
+                                            Ver Changelog Completo
+                                            <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Load More -->
+<div class="flex justify-center pt-4">
+<button class="text-sm text-[#92adc9] hover:text-white flex items-center gap-2 transition-colors">
+<span class="material-symbols-outlined">refresh</span>
+                                    Carregar mais atividades
+                                </button>
+</div>
+</div>
+<!-- RIGHT COLUMN: Release Management (Span 1) -->
+<div class="flex flex-col gap-6">
+<!-- Current Version Card -->
+<div class="bg-gradient-to-br from-[#1e2730] to-[#161c23] rounded-xl p-6 border border-border-dark relative overflow-hidden group">
+<div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+<span class="material-symbols-outlined text-[120px] text-white">rocket</span>
+</div>
+<div class="relative z-10">
+<div class="flex items-center justify-between mb-4">
+<span class="text-[#92adc9] text-xs font-bold uppercase tracking-wider">Versão Atual</span>
+<span class="bg-[#eab308]/20 text-[#eab308] text-xs font-bold px-2 py-1 rounded">EM PROGRESSO</span>
+</div>
+<h2 class="text-4xl font-black text-white mb-1">v1.3.0</h2>
+<p class="text-sm text-[#92adc9] mb-6">Sprint: "Performance Boost"</p>
+<div class="flex flex-col gap-2 mb-6">
+<div class="flex justify-between text-xs font-medium">
+<span class="text-white">Progresso</span>
+<span class="text-primary">75%</span>
+</div>
+<div class="w-full bg-[#111a22] rounded-full h-2">
+<div class="bg-primary h-2 rounded-full" style="width: 75%"></div>
+</div>
+<div class="flex justify-between text-[10px] text-[#92adc9] mt-1">
+<span>Start: 10 Out</span>
+<span>Est. Delivery: 24 Out</span>
+</div>
+</div>
+<div class="flex -space-x-2 mb-4">
+<img alt="Contributor 1" class="w-8 h-8 rounded-full border-2 border-surface-dark" data-alt="User avatar" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBeiQzAJYyQNtH5BLnKlVWJ70jAalo1eW9UKl6xiIwvtguLHikzzrV4MlxujIsBJrMG10gDRP4g6V-eSKEs63nUKhrqw6rvibqs6hJsDAP65lkNgY0_-dSZgLk8c9DmkLeqRQEdxa17GDiXtykQpYhc2GAjpCviZxR8rl4fq0zyFnAHjanD9EXTt68kA0MY9SbyQjE9Pa9KTeVyXl_P6-t0lbknnSccDWPQU0KIwH2vYyiQOi92tE8E-ANu9oLgsiggu90VGdVVuvU"/>
+<img alt="Contributor 2" class="w-8 h-8 rounded-full border-2 border-surface-dark" data-alt="User avatar" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBZHvVVv6jGV0FGgCkT7MmQERKY5BSNFM7AnfOrMwVHT5ALKTR9GP5zZYjpTsQtl4Jb4vgehKh2eLh30Co9Nru3xMhX4UZ_mP1zHxwuoWeBtyXrrLIoHfw_ICIIRdm5cTOtU_hjeAZ8G05V1sOMfnL8TcCX23H5ek2YpIL_OAyoW0dTdOCjwIuVUcEzvg_nsZry5AamHfw1wrZvtBJP0ZQIwkBrjfRzNETaxkSZyFbAffTvDSllD8JlZ0JPP-Vggs3-nVfTftgqDbM"/>
+<img alt="Contributor 3" class="w-8 h-8 rounded-full border-2 border-surface-dark" data-alt="User avatar" src="https://lh3.googleusercontent.com/aida-public/AB6AXuChTp2e5Sdq5gQ56yorT-Gv3-MjtC4eNHP7MrUqVHcFEnO66G4Adz_-bQs8SfasEIFW9Dvz-AuMbnG1StDnc2jforTKRsB7-IiG5Q_OzCXURb9Cz4jq2Te9geH8BbqPzUFEAfbiptZjbB9dn8CyB8rqZj--fmjfa-yzhOMloKh06dplG0M_r0703H2mS5G_MoeiVup2xTbLaEq4zorz1Curapx6rUPXNS9gn26Jbo_-UukNmyCpugZ5z6UXQYJjdAPwNddH37AQXeY"/>
+<div class="w-8 h-8 rounded-full border-2 border-surface-dark bg-[#324d67] flex items-center justify-center text-[10px] text-white font-bold">+5</div>
+</div>
+</div>
+</div>
+<!-- Past Releases List -->
+<div class="flex flex-col gap-4">
+<h3 class="text-white font-bold text-lg px-1">Lançamentos Anteriores</h3>
+<div class="bg-surface-dark rounded-xl p-4 border border-border-dark flex flex-col gap-3">
+<div class="flex justify-between items-center">
+<div class="flex items-center gap-3">
+<div class="bg-[#0bda5b]/10 p-2 rounded-lg">
+<span class="material-symbols-outlined text-[#0bda5b]">verified</span>
+</div>
+<div>
+<h4 class="text-white font-bold">v1.2.0</h4>
+<p class="text-xs text-[#92adc9]">Ontem</p>
+</div>
+</div>
+<span class="text-xs font-medium bg-[#111a22] text-[#92adc9] px-2 py-1 rounded border border-border-dark">Stable</span>
+</div>
+<div class="h-px w-full bg-[#233648]"></div>
+<div class="flex flex-col gap-2">
+<p class="text-sm text-[#92adc9] line-clamp-2">Inclusão de dark mode, melhorias na API de usuários e correções de segurança no login.</p>
+<a class="text-xs text-primary font-bold hover:underline" href="#">Ver Release Notes</a>
+</div>
+</div>
+<div class="bg-surface-dark rounded-xl p-4 border border-border-dark flex flex-col gap-3 opacity-75 hover:opacity-100 transition-opacity">
+<div class="flex justify-between items-center">
+<div class="flex items-center gap-3">
+<div class="bg-[#233648] p-2 rounded-lg">
+<span class="material-symbols-outlined text-[#92adc9]">archive</span>
+</div>
+<div>
+<h4 class="text-white font-bold">v1.1.5</h4>
+<p class="text-xs text-[#92adc9]">28 Set, 2023</p>
+</div>
+</div>
+<span class="text-xs font-medium bg-[#111a22] text-[#92adc9] px-2 py-1 rounded border border-border-dark">Legacy</span>
+</div>
+</div>
+<div class="bg-surface-dark rounded-xl p-4 border border-border-dark flex flex-col gap-3 opacity-75 hover:opacity-100 transition-opacity">
+<div class="flex justify-between items-center">
+<div class="flex items-center gap-3">
+<div class="bg-[#233648] p-2 rounded-lg">
+<span class="material-symbols-outlined text-[#92adc9]">archive</span>
+</div>
+<div>
+<h4 class="text-white font-bold">v1.1.0</h4>
+<p class="text-xs text-[#92adc9]">15 Set, 2023</p>
+</div>
+</div>
+<span class="text-xs font-medium bg-[#111a22] text-[#92adc9] px-2 py-1 rounded border border-border-dark">Legacy</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+</div>
+</body></html>

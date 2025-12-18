@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Task Visualization - Projeto X</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#137fec",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#101922",
+                        "surface-dark": "#1d2832",
+                        "surface-light": "#ffffff",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" },
+                },
+            },
+        }
+    </script>
+<style>.custom-scrollbar::-webkit-scrollbar {
+            height: 8px;
+            width: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #1d2832;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #334455;
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #445566;
+        }.gantt-grid {
+            background-size: 40px 100%;
+            background-image: linear-gradient(to right, #233648 1px, transparent 1px);
+        }
+        .cursor-grabbing {
+            cursor: grabbing !important;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-white font-display overflow-hidden">
+<div class="relative flex h-screen w-full flex-col overflow-hidden">
+<header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-slate-200 dark:border-[#233648] bg-surface-light dark:bg-[#111a22] px-6 py-3 shrink-0 z-20">
+<div class="flex items-center gap-8">
+<div class="flex items-center gap-4 text-slate-900 dark:text-white">
+<div class="size-8 flex items-center justify-center bg-primary rounded-lg text-white">
+<span class="material-symbols-outlined text-[20px]">layers</span>
+</div>
+<h2 class="text-lg font-bold leading-tight tracking-[-0.015em]">Projeto X</h2>
+</div>
+<label class="hidden md:flex flex-col min-w-40 !h-10 max-w-64">
+<div class="flex w-full flex-1 items-stretch rounded-lg h-full bg-slate-100 dark:bg-[#233648]">
+<div class="text-slate-500 dark:text-[#92adc9] flex border-none items-center justify-center pl-4 rounded-l-lg border-r-0">
+<span class="material-symbols-outlined text-[24px]">search</span>
+</div>
+<input class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-slate-900 dark:text-white focus:outline-0 focus:ring-0 border-none bg-transparent focus:border-none h-full placeholder:text-slate-500 dark:placeholder:text-[#92adc9] px-4 rounded-l-none border-l-0 pl-2 text-base font-normal leading-normal" placeholder="Search tasks..." value=""/>
+</div>
+</label>
+</div>
+<div class="flex flex-1 justify-end gap-4 items-center">
+<div class="flex gap-2">
+<button class="flex size-10 cursor-pointer items-center justify-center overflow-hidden rounded-lg bg-slate-100 dark:bg-[#233648] text-slate-900 dark:text-white hover:bg-slate-200 dark:hover:bg-[#2f455a] transition-colors">
+<span class="material-symbols-outlined text-[20px]">notifications</span>
+</button>
+<button class="flex size-10 cursor-pointer items-center justify-center overflow-hidden rounded-lg bg-slate-100 dark:bg-[#233648] text-slate-900 dark:text-white hover:bg-slate-200 dark:hover:bg-[#2f455a] transition-colors">
+<span class="material-symbols-outlined text-[20px]">settings</span>
+</button>
+<button class="flex size-10 cursor-pointer items-center justify-center overflow-hidden rounded-lg bg-slate-100 dark:bg-[#233648] text-slate-900 dark:text-white hover:bg-slate-200 dark:hover:bg-[#2f455a] transition-colors">
+<span class="material-symbols-outlined text-[20px]">help</span>
+</button>
+</div>
+<div class="h-8 w-[1px] bg-slate-300 dark:bg-[#233648]"></div>
+<button class="flex items-center gap-2">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-9 ring-2 ring-slate-200 dark:ring-[#233648]" data-alt="User profile picture" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCmasl5u3Pzz4C44QJW827hUv__2l-F15LWy6ys4B9GLuJnSLlYbkhhCCjKyDwZV3WiAtOgmd2wBqcLQkZj2QvU3qj4r6BD4qE71o3tL2-SmYUzPUCrEDr7aIs1BXPgnsWU7E5eexs727ZUUcbIUQV2nfqlPgMC-rjD6W_KumXQxXz7YvDXIOL1A6Y87fEoTZdBNekdXIpnSd1QpH4P80ZZSKJ04zbzqC8cYuq_N-IqBIXbUILCCJVCZoQI-ilJIqzEs5uyJ9LYqJg");'></div>
+</button>
+</div>
+</header>
+<div class="flex flex-1 overflow-hidden">
+<div class="flex flex-col flex-1 w-full max-w-full">
+<div class="flex flex-col gap-4 p-6 pb-2 shrink-0">
+<div class="flex flex-wrap gap-2 text-sm">
+<a class="text-slate-500 dark:text-[#92adc9] hover:text-primary transition-colors" href="#">Dashboard</a>
+<span class="text-slate-500 dark:text-[#92adc9]">/</span>
+<a class="text-slate-500 dark:text-[#92adc9] hover:text-primary transition-colors" href="#">Projects</a>
+<span class="text-slate-500 dark:text-[#92adc9]">/</span>
+<a class="text-slate-500 dark:text-[#92adc9] hover:text-primary transition-colors" href="#">Projeto X</a>
+<span class="text-slate-500 dark:text-[#92adc9]">/</span>
+<span class="text-slate-900 dark:text-white font-medium">Timeline</span>
+</div>
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+<h1 class="text-3xl font-black text-slate-900 dark:text-white tracking-tight">Timeline View</h1>
+<div class="flex gap-3">
+<div class="flex bg-slate-200 dark:bg-[#1d2832] p-1 rounded-lg">
+<button class="px-3 py-1.5 rounded text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white">List</button>
+<button class="px-3 py-1.5 rounded text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white">Board</button>
+<button class="px-3 py-1.5 rounded bg-white dark:bg-[#2c3b4a] shadow-sm text-sm font-medium text-primary">Timeline</button>
+<button class="px-3 py-1.5 rounded text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white">Calendar</button>
+</div>
+<button class="flex items-center gap-2 bg-primary hover:bg-blue-600 text-white px-4 py-2 rounded-lg font-bold text-sm transition-colors shadow-lg shadow-blue-900/20">
+<span class="material-symbols-outlined text-[20px]">add</span>
+<span>Add Task</span>
+</button>
+</div>
+</div>
+<div class="flex flex-col border-b border-slate-200 dark:border-[#233648] bg-white dark:bg-[#111a22] z-10 shadow-sm rounded-lg mt-2">
+<div class="flex flex-wrap items-center justify-between gap-4 px-4 py-3">
+<div class="flex flex-wrap items-center gap-6">
+<div class="flex items-center gap-3">
+<span class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Group By</span>
+<div class="relative group">
+<button class="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-slate-700 dark:text-slate-200 bg-slate-50 dark:bg-[#1d2832] border border-slate-200 dark:border-[#233648] rounded-md hover:bg-slate-100 dark:hover:bg-[#2c3b4a] transition-all shadow-sm">
+<span class="material-symbols-outlined text-[18px] text-slate-500">folder_open</span>
+<span>Phase</span>
+<span class="material-symbols-outlined text-[18px] text-slate-400">arrow_drop_down</span>
+</button>
+<div class="hidden group-hover:block absolute top-full left-0 mt-1 w-48 bg-white dark:bg-[#1d2832] border border-slate-200 dark:border-[#233648] rounded-lg shadow-xl py-1 z-50">
+<div class="px-4 py-2 text-xs font-bold text-slate-400 uppercase tracking-wider">Grouping Options</div>
+<a class="flex items-center gap-2 px-4 py-2 text-sm text-primary bg-primary/5" href="#">
+<span class="material-symbols-outlined text-[16px]">check</span>
+                            Project Phase
+                        </a>
+<a class="block pl-10 pr-4 py-2 text-sm text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-[#2c3b4a]" href="#">Assignee</a>
+<a class="block pl-10 pr-4 py-2 text-sm text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-[#2c3b4a]" href="#">Task Type</a>
+<a class="block pl-10 pr-4 py-2 text-sm text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-[#2c3b4a]" href="#">Priority</a>
+<div class="border-t border-slate-100 dark:border-[#233648] my-1"></div>
+<a class="block pl-10 pr-4 py-2 text-sm text-slate-500 hover:bg-slate-50 dark:hover:bg-[#2c3b4a]" href="#">None</a>
+</div>
+</div>
+</div>
+<div class="h-6 w-px bg-slate-200 dark:bg-[#233648]"></div>
+<div class="flex items-center gap-2">
+<span class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mr-1">Filter</span>
+<button class="group flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-slate-600 dark:text-slate-300 bg-white dark:bg-transparent border border-slate-200 dark:border-[#233648] rounded-md hover:border-primary/50 hover:text-primary dark:hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[18px]">person</span>
+<span>Assignee</span>
+</button>
+<button class="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-slate-600 dark:text-slate-300 bg-white dark:bg-transparent border border-slate-200 dark:border-[#233648] rounded-md hover:border-primary/50 hover:text-primary dark:hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[18px]">timelapse</span>
+<span>Status</span>
+</button>
+<button class="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-slate-600 dark:text-slate-300 bg-white dark:bg-transparent border border-slate-200 dark:border-[#233648] rounded-md hover:border-primary/50 hover:text-primary dark:hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[18px]">priority_high</span>
+<span>Priority</span>
+</button>
+<button class="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-slate-600 dark:text-slate-300 bg-white dark:bg-transparent border border-slate-200 dark:border-[#233648] rounded-md hover:border-primary/50 hover:text-primary dark:hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[18px]">calendar_today</span>
+<span>Date</span>
+</button>
+<button class="ml-1 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors" title="Clear Filters">
+<span class="material-symbols-outlined text-[18px]">filter_alt_off</span>
+</button>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<div class="hidden xl:flex bg-slate-100 dark:bg-[#1d2832] p-1 rounded-lg">
+<button class="px-3 py-1 text-xs font-medium text-slate-600 dark:text-slate-400 rounded hover:bg-white dark:hover:bg-[#2c3b4a] transition-colors">Day</button>
+<button class="px-3 py-1 text-xs font-bold text-primary bg-white dark:bg-[#2c3b4a] shadow-sm rounded">Week</button>
+<button class="px-3 py-1 text-xs font-medium text-slate-600 dark:text-slate-400 rounded hover:bg-white dark:hover:bg-[#2c3b4a] transition-colors">Month</button>
+</div>
+<div class="h-6 w-px bg-slate-200 dark:bg-[#233648] hidden xl:block"></div>
+<div class="flex items-center gap-2 bg-slate-50 dark:bg-[#1d2832] rounded-lg p-0.5 border border-slate-200 dark:border-[#233648]">
+<button class="p-1 rounded hover:bg-white dark:hover:bg-[#2c3b4a] shadow-sm text-slate-500 dark:text-[#92adc9]">
+<span class="material-symbols-outlined text-[20px]">chevron_left</span>
+</button>
+<span class="text-sm font-bold text-slate-900 dark:text-white px-2 min-w-[80px] text-center">Oct 2023</span>
+<button class="p-1 rounded hover:bg-white dark:hover:bg-[#2c3b4a] shadow-sm text-slate-500 dark:text-[#92adc9]">
+<span class="material-symbols-outlined text-[20px]">chevron_right</span>
+</button>
+</div>
+<button class="text-xs font-bold text-primary hover:underline uppercase tracking-wide">Today</button>
+<div class="h-6 w-px bg-slate-200 dark:bg-[#233648]"></div>
+<button class="flex items-center gap-2 text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[20px]">ios_share</span>
+<span class="hidden sm:inline">Export</span>
+</button>
+</div>
+</div>
+<div class="flex items-center gap-2 px-4 pb-2">
+<span class="text-[10px] font-bold text-slate-400 uppercase">Active:</span>
+<div class="flex items-center gap-1 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 px-2 py-0.5 rounded text-xs border border-blue-100 dark:border-blue-800">
+<span>Assignee: <strong>Me</strong></span>
+<button class="hover:text-blue-900 dark:hover:text-blue-100"><span class="material-symbols-outlined text-[14px]">close</span></button>
+</div>
+<div class="flex items-center gap-1 bg-orange-50 dark:bg-orange-900/20 text-orange-700 dark:text-orange-300 px-2 py-0.5 rounded text-xs border border-orange-100 dark:border-orange-800">
+<span>Priority: <strong>High</strong></span>
+<button class="hover:text-orange-900 dark:hover:text-orange-100"><span class="material-symbols-outlined text-[14px]">close</span></button>
+</div>
+</div>
+</div>
+</div>
+<div class="flex flex-1 overflow-hidden border-t border-slate-200 dark:border-[#233648]">
+<div class="w-1/3 min-w-[320px] max-w-[450px] flex flex-col border-r border-slate-200 dark:border-[#233648] bg-white dark:bg-[#111a22] overflow-hidden">
+<div class="flex items-center h-12 border-b border-slate-200 dark:border-[#233648] bg-slate-50 dark:bg-[#1d2832] px-4">
+<div class="w-1/2 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-[#92adc9]">Task Name</div>
+<div class="w-1/4 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-[#92adc9]">Assignee</div>
+<div class="w-1/4 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-[#92adc9] text-right">Duration</div>
+</div>
+<div class="flex-1 overflow-y-auto custom-scrollbar">
+<div class="group">
+<div class="flex items-center h-10 bg-slate-100/50 dark:bg-[#1d2832]/50 px-4 border-b border-slate-100 dark:border-[#233648]/50 cursor-pointer">
+<span class="material-symbols-outlined text-[18px] text-slate-500 mr-2">keyboard_arrow_down</span>
+<span class="text-sm font-bold text-slate-800 dark:text-white">Phase 1: Discovery</span>
+</div>
+<div class="flex items-center h-12 px-4 border-b border-slate-100 dark:border-[#233648]/30 hover:bg-slate-50 dark:hover:bg-[#1d2832] transition-colors group/row">
+<div class="w-1/2 flex items-center gap-2 overflow-hidden">
+<div class="size-2 rounded-full bg-purple-500 shrink-0"></div>
+<span class="text-sm text-slate-700 dark:text-slate-300 truncate">Kick-off Meeting</span>
+</div>
+<div class="w-1/4 flex items-center">
+<div class="size-6 rounded-full bg-green-500/20 text-green-700 dark:text-green-400 flex items-center justify-center text-xs font-bold border border-green-500/30">PM</div>
+</div>
+<div class="w-1/4 text-right text-xs text-slate-500 font-mono">1d</div>
+</div>
+<div class="flex items-center h-12 px-4 border-b border-slate-100 dark:border-[#233648]/30 hover:bg-slate-50 dark:hover:bg-[#1d2832] transition-colors group/row bg-primary/5 dark:bg-primary/10">
+<div class="w-1/2 flex items-center gap-2 overflow-hidden pl-4 border-l-2 border-primary">
+<div class="size-2 rounded-full bg-blue-500 shrink-0"></div>
+<span class="text-sm font-medium text-slate-900 dark:text-white truncate">Market Research</span>
+</div>
+<div class="w-1/4 flex items-center">
+<img class="size-6 rounded-full" data-alt="Assignee Avatar" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDMFuHe03WJjjaK_fafJ7H0YMPhADY0eMgug9tQkcqYBWpmXA_cDphy10vNIs23z48n_HiLfyWmvrpZEDAwuLsDr4B2IbD7LoQ1tRKdOjYygxSoVDng1oglP2uoTfz5ZTDL3PSYbbpW8LSqINXjSSDe7-eR72hhixr5AcWLXEsxo-RjkNeI8KT5J1pYA8jKE-j9EeT5nctPsK-xxekPRSurE3OGiImxDBRTVJfZLGee-M--QiZCd2nE1qNZ24xQPehMuIMxWGPVrws"/>
+</div>
+<div class="w-1/4 text-right text-xs text-slate-500 font-mono">4d</div>
+</div>
+</div>
+<div class="group mt-2">
+<div class="flex items-center h-10 bg-slate-100/50 dark:bg-[#1d2832]/50 px-4 border-b border-slate-100 dark:border-[#233648]/50 cursor-pointer">
+<span class="material-symbols-outlined text-[18px] text-slate-500 mr-2">keyboard_arrow_down</span>
+<span class="text-sm font-bold text-slate-800 dark:text-white">Phase 2: Design</span>
+</div>
+<div class="flex items-center h-12 px-4 border-b border-slate-100 dark:border-[#233648]/30 hover:bg-slate-50 dark:hover:bg-[#1d2832] transition-colors group/row">
+<div class="w-1/2 flex items-center gap-2 overflow-hidden">
+<div class="size-2 rounded-full bg-orange-500 shrink-0"></div>
+<span class="text-sm text-slate-700 dark:text-slate-300 truncate">Wireframing</span>
+</div>
+<div class="w-1/4 flex items-center">
+<img class="size-6 rounded-full" data-alt="Assignee Avatar" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC2gyK7PLrM4X05d5YnWc40B6RLQl0upLNEidN4SvBWsP5-5yRZJ4cxvoQApHd5Enxii1hjibArpokHK_o_QEY_6EDf4BOATf0FFKYendWerb12UwGcxFKnbUusnOpmp3U3yNvZlEGWFA0FoaUHq2qKXpgSPmFkj2CbJgbwZMQjqKcOz2knxDkdzIho46pGRj6_Q7ocfmbBmlYWftRzdLwbKtjTptZCvuFoWOWYstQmYLo0eAoX4apCTqrn1_NoxE6vK7LtnXX3BLo"/>
+</div>
+<div class="w-1/4 text-right text-xs text-slate-500 font-mono">5d</div>
+</div>
+<div class="flex items-center h-12 px-4 border-b border-slate-100 dark:border-[#233648]/30 hover:bg-slate-50 dark:hover:bg-[#1d2832] transition-colors group/row">
+<div class="w-1/2 flex items-center gap-2 overflow-hidden">
+<div class="size-2 rounded-full bg-orange-500 shrink-0"></div>
+<span class="text-sm text-slate-700 dark:text-slate-300 truncate">UI Kit Creation</span>
+</div>
+<div class="w-1/4 flex items-center">
+<div class="size-6 rounded-full bg-orange-500/20 text-orange-700 dark:text-orange-400 flex items-center justify-center text-xs font-bold border border-orange-500/30">DS</div>
+</div>
+<div class="w-1/4 text-right text-xs text-slate-500 font-mono">3d</div>
+</div>
+</div>
+</div>
+<div class="h-10 bg-slate-50 dark:bg-[#1d2832] border-t border-slate-200 dark:border-[#233648] flex items-center px-4 text-xs text-slate-500 dark:text-[#92adc9]">
+                            4 tasks shown
+                        </div>
+</div>
+<div class="flex-1 flex flex-col bg-slate-50 dark:bg-[#0d141c] overflow-hidden relative">
+<div class="h-12 bg-white dark:bg-[#1d2832] border-b border-slate-200 dark:border-[#233648] flex overflow-hidden shrink-0">
+<div class="flex-1 flex">
+<div class="w-[40px] h-full flex flex-col items-center justify-center border-r border-slate-100 dark:border-[#233648]">
+<span class="text-[10px] text-slate-400 font-bold">M</span>
+<span class="text-xs font-medium text-slate-600 dark:text-slate-300">01</span>
+</div>
+<div class="w-[40px] h-full flex flex-col items-center justify-center border-r border-slate-100 dark:border-[#233648]">
+<span class="text-[10px] text-slate-400 font-bold">T</span>
+<span class="text-xs font-medium text-slate-600 dark:text-slate-300">02</span>
+</div>
+<div class="w-[40px] h-full flex flex-col items-center justify-center border-r border-slate-100 dark:border-[#233648] bg-primary/5">
+<span class="text-[10px] text-primary font-bold">W</span>
+<span class="text-xs font-bold text-primary">03</span>
+</div>
+<div class="w-[40px] h-full flex flex-col items-center justify-center border-r border-slate-100 dark:border-[#233648]">
+<span class="text-[10px] text-slate-400 font-bold">T</span>
+<span class="text-xs font-medium text-slate-600 dark:text-slate-300">04</span>
+</div>
+<div class="w-[40px] h-full flex flex-col items-center justify-center border-r border-slate-100 dark:border-[#233648]">
+<span class="text-[10px] text-slate-400 font-bold">F</span>
+<span class="text-xs font-medium text-slate-600 dark:text-slate-300">05</span>
+</div>
+<div class="w-[40px] h-full flex flex-col items-center justify-center border-r border-slate-100 dark:border-[#233648] bg-slate-100/50 dark:bg-[#18212a]">
+<span class="text-[10px] text-slate-400">S</span>
+<span class="text-xs text-slate-500">06</span>
+</div>
+<div class="w-[40px] h-full flex flex-col items-center justify-center border-r border-slate-100 dark:border-[#233648] bg-slate-100/50 dark:bg-[#18212a]">
+<span class="text-[10px] text-slate-400">S</span>
+<span class="text-xs text-slate-500">07</span>
+</div>
+<div class="w-[40px] h-full flex flex-col items-center justify-center border-r border-slate-100 dark:border-[#233648]">
+<span class="text-[10px] text-slate-400 font-bold">M</span>
+<span class="text-xs font-medium text-slate-600 dark:text-slate-300">08</span>
+</div>
+<div class="w-[40px] h-full flex flex-col items-center justify-center border-r border-slate-100 dark:border-[#233648]">
+<span class="text-[10px] text-slate-400 font-bold">T</span>
+<span class="text-xs font-medium text-slate-600 dark:text-slate-300">09</span>
+</div>
+<div class="w-[40px] h-full flex flex-col items-center justify-center border-r border-slate-100 dark:border-[#233648]">
+<span class="text-[10px] text-slate-400 font-bold">W</span>
+<span class="text-xs font-medium text-slate-600 dark:text-slate-300">10</span>
+</div>
+<div class="w-[40px] h-full flex flex-col items-center justify-center border-r border-slate-100 dark:border-[#233648]">
+<span class="text-[10px] text-slate-400 font-bold">T</span>
+<span class="text-xs font-medium text-slate-600 dark:text-slate-300">11</span>
+</div>
+<div class="w-[40px] h-full flex flex-col items-center justify-center border-r border-slate-100 dark:border-[#233648]">
+<span class="text-[10px] text-slate-400 font-bold">F</span>
+<span class="text-xs font-medium text-slate-600 dark:text-slate-300">12</span>
+</div>
+<div class="w-[40px] h-full flex flex-col items-center justify-center border-r border-slate-100 dark:border-[#233648] bg-slate-100/50 dark:bg-[#18212a]">
+<span class="text-[10px] text-slate-400">S</span>
+<span class="text-xs text-slate-500">13</span>
+</div>
+<div class="w-[40px] h-full flex flex-col items-center justify-center border-r border-slate-100 dark:border-[#233648] bg-slate-100/50 dark:bg-[#18212a]">
+<span class="text-[10px] text-slate-400">S</span>
+<span class="text-xs text-slate-500">14</span>
+</div>
+<div class="w-[40px] h-full flex flex-col items-center justify-center border-r border-slate-100 dark:border-[#233648]">
+<span class="text-[10px] text-slate-400 font-bold">M</span>
+<span class="text-xs font-medium text-slate-600 dark:text-slate-300">15</span>
+</div>
+</div>
+</div>
+<div class="flex-1 overflow-auto custom-scrollbar relative gantt-grid" id="gantt-container">
+<div class="absolute top-0 bottom-0 left-[80px] w-[2px] bg-red-500 z-10 pointer-events-none">
+<div class="bg-red-500 text-white text-[10px] font-bold px-1 py-0.5 rounded-sm absolute -top-0 -left-[14px]">Today</div>
+</div>
+<div class="h-10 w-full border-b border-transparent"></div>
+<div class="h-12 w-full flex items-center relative border-b border-slate-100 dark:border-[#233648]/30">
+<div class="absolute left-[20px] top-1/2 -translate-y-1/2 flex flex-col items-center group cursor-pointer z-10">
+<div class="size-4 bg-purple-500 rotate-45 border-2 border-white dark:border-[#0d141c] shadow-lg shadow-purple-500/30"></div>
+<div class="hidden group-hover:flex absolute bottom-full mb-2 bg-[#233648] text-white text-xs p-2 rounded shadow-xl whitespace-nowrap z-50 flex-col gap-1">
+<div class="font-bold">Kick-off Meeting</div>
+<div class="opacity-70">Oct 01 • Milestone</div>
+</div>
+</div>
+</div>
+<div class="h-12 w-full flex items-center relative border-b border-slate-100 dark:border-[#233648]/30 bg-primary/5 dark:bg-primary/5">
+<div class="absolute left-[80px] w-[160px] h-7 bg-primary rounded-md shadow-lg shadow-blue-500/20 flex items-center px-2 cursor-pointer group hover:bg-blue-600 transition-colors z-10">
+<span class="text-xs font-bold text-white truncate w-full select-none">Market Research</span>
+<div class="absolute left-0 top-0 bottom-0 w-3 cursor-ew-resize flex items-center justify-center group/handle hover:bg-black/10 rounded-l-md transition-colors">
+<div class="h-3 w-0.5 bg-white/40 rounded-full"></div>
+</div>
+<div class="absolute right-0 top-0 bottom-0 w-3 cursor-ew-resize flex items-center justify-center group/handle hover:bg-black/10 rounded-r-md transition-colors">
+<div class="h-3 w-0.5 bg-white/40 rounded-full"></div>
+</div>
+<div class="hidden group-hover:flex absolute top-full mt-2 left-0 bg-[#233648] border border-[#3e4f60] text-white text-xs p-3 rounded-lg shadow-xl whitespace-nowrap z-50 flex-col gap-1 min-w-[180px]">
+<div class="font-bold text-sm">Market Research</div>
+<div class="flex justify-between items-center text-slate-400 mt-1">
+<span>Oct 03 - Oct 06</span>
+<span>4d</span>
+</div>
+<div class="w-full bg-slate-700 h-1.5 rounded-full mt-2 overflow-hidden">
+<div class="bg-primary w-[25%] h-full"></div>
+</div>
+<div class="flex justify-between text-[10px] mt-1 text-slate-400">
+<span>25% Complete</span>
+</div>
+</div>
+</div>
+<svg class="absolute top-0 left-0 w-full h-full pointer-events-none overflow-visible" style="z-index: 0;">
+<path d="M 30 24 C 55 24, 55 24, 80 24" fill="none" marker-end="url(#arrowhead)" stroke="#64748b" stroke-dasharray="4" stroke-width="1.5"></path>
+<defs>
+<marker id="arrowhead" markerHeight="4" markerWidth="6" orient="auto" refX="5" refY="2">
+<polygon fill="#64748b" points="0 0, 6 2, 0 4"></polygon>
+</marker>
+</defs>
+</svg>
+</div>
+<div class="h-10 w-full border-b border-transparent"></div>
+<div class="h-12 w-full flex items-center relative border-b border-slate-100 dark:border-[#233648]/30 overflow-visible" style="z-index: 40;">
+<div class="absolute left-[280px] w-[200px] h-7 border-2 border-dashed border-slate-400/30 dark:border-slate-500/30 bg-slate-400/10 rounded-md flex items-center px-2 opacity-60">
+<span class="text-xs font-bold text-transparent truncate w-full select-none">Wireframing</span>
+</div>
+<div class="absolute left-[305px] top-1/2 -translate-y-1/2 w-[200px] h-7 bg-slate-600 dark:bg-slate-600 rounded-md shadow-[0_8px_30px_rgb(0,0,0,0.5)] ring-2 ring-primary ring-offset-2 ring-offset-[#0d141c] flex items-center px-2 cursor-grabbing z-50 overflow-hidden transform scale-105 transition-transform group">
+<div class="absolute top-0 left-0 bottom-0 bg-primary/40 w-[50%]"></div>
+<span class="text-xs font-bold text-white truncate w-full relative z-10 select-none">Wireframing</span>
+<div class="absolute bottom-[calc(100%+8px)] left-1/2 -translate-x-1/2 bg-slate-800 text-white text-[10px] py-1 px-2.5 rounded shadow-lg whitespace-nowrap flex flex-col items-center border border-slate-700">
+<div class="flex gap-2">
+<span class="font-bold text-primary">Oct 08</span>
+<span class="text-slate-400">→</span>
+<span class="font-bold text-primary">Oct 13</span>
+</div>
+<span class="text-slate-400 text-[9px] mt-0.5">Shift: +0.6d</span>
+<div class="absolute top-full left-1/2 -translate-x-1/2 border-[4px] border-transparent border-t-slate-800"></div>
+</div>
+</div>
+<div class="absolute top-[-500px] bottom-[-500px] left-[305px] w-px border-l border-dashed border-primary/60 pointer-events-none z-0"></div>
+<div class="absolute top-[-500px] bottom-[-500px] left-[505px] w-px border-l border-dashed border-primary/60 pointer-events-none z-0"></div>
+<svg class="absolute -top-[58px] left-0 w-full h-[200px] pointer-events-none overflow-visible" style="z-index: -1;">
+<path d="M 240 24 C 260 24, 270 82, 305 82" fill="none" stroke="#64748b" stroke-dasharray="4" stroke-width="1.5"></path>
+<circle cx="240" cy="24" fill="#64748b" r="3"></circle>
+</svg>
+</div>
+<div class="h-12 w-full flex items-center relative border-b border-slate-100 dark:border-[#233648]/30">
+<div class="absolute left-[560px] w-[120px] h-7 bg-[#2c3b4a] border border-dashed border-slate-500 rounded-md flex items-center px-2 cursor-pointer group hover:border-white transition-colors z-10">
+<span class="text-xs font-medium text-slate-300 group-hover:text-white truncate w-full">UI Kit Creation</span>
+</div>
+<svg class="absolute -top-[48px] left-0 w-full h-[100px] pointer-events-none overflow-visible" style="z-index: 0;">
+<path d="M 480 24 C 520 24, 520 72, 560 72" fill="none" stroke="#64748b" stroke-width="1.5"></path>
+</svg>
+</div>
+<div class="h-12 w-full flex items-center justify-center relative opacity-30 mt-4">
+<div class="text-sm text-slate-500">Scroll for more...</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="absolute bottom-6 right-6 z-50">
+<button class="size-14 bg-primary rounded-full shadow-2xl shadow-blue-500/40 text-white flex items-center justify-center hover:scale-105 transition-transform">
+<span class="material-symbols-outlined text-[28px]">chat</span>
+</button>
+</div>
+</div>
+</div></body></html>
