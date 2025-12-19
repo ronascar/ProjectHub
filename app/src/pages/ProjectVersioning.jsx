@@ -1,6 +1,54 @@
-import React from 'react';
+import React, { useState, useMemo } from 'react';
+
+// Mock data para atividades
+const MOCK_ACTIVITIES = [
+    { id: 1, user: 'Ricardo Silva', avatar: 'https://i.pravatar.cc/100?u=ricardo', action: 'moveu', task: 'TASK-1024', status: 'Concluído', message: 'Implementação do fluxo de autenticação via OAuth2 finalizada.', time: '2m atrás', tags: ['backend', 'security'], type: 'status', date: new Date() },
+    { id: 2, user: 'Ana Costa', avatar: 'https://i.pravatar.cc/100?u=ana2', action: 'atualizou o design de', task: 'TASK-1010', message: 'Dashboard_v2_Dark.fig', time: '45m atrás', type: 'file', date: new Date(Date.now() - 45 * 60000) },
+    { id: 3, user: 'System', avatar: null, action: 'registrou novo commit na branch', branch: 'feat/user-profile', commit: '8a2b3c', commitMsg: 'Fix: avatar rendering issue on mobile devices', time: '2h atrás', type: 'commit', date: new Date(Date.now() - 2 * 3600000) },
+    { id: 4, user: 'Carlos Mendes', avatar: 'https://i.pravatar.cc/100?u=carlos2', action: 'publicou release', version: 'v1.2.0', message: 'Release candidate aprovado. Deploy automático iniciado para produção.', time: '14:30', type: 'release', date: new Date(Date.now() - 86400000) }
+];
 
 export default function ProjectVersioning() {
+    const [filters, setFilters] = useState({
+        period: '',
+        user: '',
+        type: '',
+        search: ''
+    });
+    const [quickFilter, setQuickFilter] = useState(null);
+
+    // Filtrar atividades
+    const filteredActivities = useMemo(() => {
+        return MOCK_ACTIVITIES.filter(activity => {
+            if (filters.user && activity.user !== filters.user) return false;
+            if (filters.type && activity.type !== filters.type) return false;
+            if (filters.search && !activity.message?.toLowerCase().includes(filters.search.toLowerCase())) return false;
+
+            // Quick filters
+            if (quickFilter === 'last24h') {
+                const dayAgo = Date.now() - 24 * 3600000;
+                if (activity.date < dayAgo) return false;
+            }
+            if (quickFilter === 'myTickets' && activity.user !== 'Ricardo Silva') return false;
+            if (quickFilter === 'errors' && activity.type !== 'commit') return false;
+
+            return true;
+        });
+    }, [filters, quickFilter]);
+
+    const handleFilterChange = (key, value) => {
+        setFilters(prev => ({ ...prev, [key]: value }));
+    };
+
+    const handleReset = () => {
+        setFilters({ period: '', user: '', type: '', search: '' });
+        setQuickFilter(null);
+    };
+
+    const handleQuickFilter = (filter) => {
+        setQuickFilter(filter === quickFilter ? null : filter);
+    };
+
     return (
         <div className="flex flex-col gap-6">
             <div className="flex flex-col md:flex-row justify-between gap-4 items-start md:items-end pb-2 border-b border-border-dark">
@@ -55,7 +103,7 @@ export default function ProjectVersioning() {
                                 <span className="material-symbols-outlined text-[20px]">filter_alt</span>
                                 <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider">Filtros Avançados</h3>
                             </div>
-                            <button className="text-xs font-medium text-primary hover:text-slate-900 dark:hover:text-white transition-colors flex items-center gap-1">
+                            <button onClick={handleReset} className="text-xs font-medium text-primary hover:text-slate-900 dark:hover:text-white transition-colors flex items-center gap-1">
                                 <span className="material-symbols-outlined text-[14px]">restart_alt</span>
                                 Resetar
                             </button>
@@ -67,7 +115,7 @@ export default function ProjectVersioning() {
                                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                         <span className="material-symbols-outlined text-slate-400 dark:text-[#92adc9] group-focus-within:text-primary transition-colors text-[18px]">calendar_month</span>
                                     </div>
-                                    <input className="w-full bg-slate-50 dark:bg-[#111a22] border border-slate-200 dark:border-border-dark rounded-lg pl-10 pr-3 py-2.5 text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-[#5d7285] focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all" placeholder="DD/MM/AAAA" type="text" />
+                                    <input value={filters.period} onChange={(e) => handleFilterChange('period', e.target.value)} className="w-full bg-slate-50 dark:bg-[#111a22] border border-slate-200 dark:border-border-dark rounded-lg pl-10 pr-3 py-2.5 text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-[#5d7285] focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all" placeholder="DD/MM/AAAA" type="text" />
                                 </div>
                             </div>
                             <div className="relative group">
@@ -76,12 +124,12 @@ export default function ProjectVersioning() {
                                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                         <span className="material-symbols-outlined text-slate-400 dark:text-[#92adc9] group-focus-within:text-primary transition-colors text-[18px]">person</span>
                                     </div>
-                                    <select className="w-full bg-slate-50 dark:bg-[#111a22] border border-slate-200 dark:border-border-dark rounded-lg pl-10 pr-8 py-2.5 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all appearance-none cursor-pointer">
+                                    <select value={filters.user} onChange={(e) => handleFilterChange('user', e.target.value)} className="w-full bg-slate-50 dark:bg-[#111a22] border border-slate-200 dark:border-border-dark rounded-lg pl-10 pr-8 py-2.5 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all appearance-none cursor-pointer">
                                         <option value="">Todos os usuários</option>
-                                        <option value="1">Ricardo Silva</option>
-                                        <option value="2">Ana Costa</option>
-                                        <option value="3">Carlos Mendes</option>
-                                        <option value="4">System</option>
+                                        <option value="Ricardo Silva">Ricardo Silva</option>
+                                        <option value="Ana Costa">Ana Costa</option>
+                                        <option value="Carlos Mendes">Carlos Mendes</option>
+                                        <option value="System">System</option>
                                     </select>
                                     <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
                                         <span className="material-symbols-outlined text-slate-400 dark:text-[#92adc9] text-[18px]">expand_more</span>
@@ -94,7 +142,7 @@ export default function ProjectVersioning() {
                                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                         <span className="material-symbols-outlined text-slate-400 dark:text-[#92adc9] group-focus-within:text-primary transition-colors text-[18px]">category</span>
                                     </div>
-                                    <select className="w-full bg-slate-50 dark:bg-[#111a22] border border-slate-200 dark:border-border-dark rounded-lg pl-10 pr-8 py-2.5 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all appearance-none cursor-pointer">
+                                    <select value={filters.type} onChange={(e) => handleFilterChange('type', e.target.value)} className="w-full bg-slate-50 dark:bg-[#111a22] border border-slate-200 dark:border-border-dark rounded-lg pl-10 pr-8 py-2.5 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all appearance-none cursor-pointer">
                                         <option value="">Todos os tipos</option>
                                         <option value="status">Status Update</option>
                                         <option value="comment">Comentário</option>
@@ -113,15 +161,15 @@ export default function ProjectVersioning() {
                                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                         <span className="material-symbols-outlined text-slate-400 dark:text-[#92adc9] group-focus-within:text-primary transition-colors text-[18px]">search</span>
                                     </div>
-                                    <input className="w-full bg-slate-50 dark:bg-[#111a22] border border-slate-200 dark:border-border-dark rounded-lg pl-10 pr-4 py-2.5 text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-[#5d7285] focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all" placeholder="ID, mensagem..." type="text" />
+                                    <input value={filters.search} onChange={(e) => handleFilterChange('search', e.target.value)} className="w-full bg-slate-50 dark:bg-[#111a22] border border-slate-200 dark:border-border-dark rounded-lg pl-10 pr-4 py-2.5 text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-[#5d7285] focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all" placeholder="ID, mensagem..." type="text" />
                                 </div>
                             </div>
                         </div>
                         <div className="flex flex-wrap items-center gap-2 pt-1">
                             <span className="text-xs text-slate-500 dark:text-[#92adc9]">Sugestões:</span>
-                            <button className="px-3 py-1 rounded-full border border-slate-200 dark:border-border-dark bg-slate-50 dark:bg-[#111a22] text-slate-500 dark:text-[#92adc9] text-xs hover:text-slate-900 dark:hover:text-white hover:border-primary transition-colors">Últimas 24h</button>
-                            <button className="px-3 py-1 rounded-full border border-slate-200 dark:border-border-dark bg-slate-50 dark:bg-[#111a22] text-slate-500 dark:text-[#92adc9] text-xs hover:text-slate-900 dark:hover:text-white hover:border-primary transition-colors">Meus Tickets</button>
-                            <button className="px-3 py-1 rounded-full border border-slate-200 dark:border-border-dark bg-slate-50 dark:bg-[#111a22] text-slate-500 dark:text-[#92adc9] text-xs hover:text-slate-900 dark:hover:text-white hover:border-primary transition-colors">Apenas Erros</button>
+                            <button onClick={() => handleQuickFilter('last24h')} className={`px-3 py-1 rounded-full border text-xs transition-colors ${quickFilter === 'last24h' ? 'border-primary bg-primary/10 text-primary font-bold' : 'border-slate-200 dark:border-border-dark bg-slate-50 dark:bg-[#111a22] text-slate-500 dark:text-[#92adc9] hover:text-slate-900 dark:hover:text-white hover:border-primary'}`}>Últimas 24h</button>
+                            <button onClick={() => handleQuickFilter('myTickets')} className={`px-3 py-1 rounded-full border text-xs transition-colors ${quickFilter === 'myTickets' ? 'border-primary bg-primary/10 text-primary font-bold' : 'border-slate-200 dark:border-border-dark bg-slate-50 dark:bg-[#111a22] text-slate-500 dark:text-[#92adc9] hover:text-slate-900 dark:hover:text-white hover:border-primary'}`}>Meus Tickets</button>
+                            <button onClick={() => handleQuickFilter('errors')} className={`px-3 py-1 rounded-full border text-xs transition-colors ${quickFilter === 'errors' ? 'border-primary bg-primary/10 text-primary font-bold' : 'border-slate-200 dark:border-border-dark bg-slate-50 dark:bg-[#111a22] text-slate-500 dark:text-[#92adc9] hover:text-slate-900 dark:hover:text-white hover:border-primary'}`}>Apenas Erros</button>
                         </div>
                     </div>
                     <div className="flex flex-col gap-4">

@@ -1,6 +1,19 @@
-import React from 'react';
+import React, { useState } from 'react';
 
-export default function ProjectOverview() {
+export default function ProjectOverview({ projectData }) {
+    const [resources, setResources] = useState([
+        { id: 1, name: 'Repositório', url: 'github.com/agencia/acme-web', icon: 'github', type: 'repo' },
+        { id: 2, name: 'Staging Env', url: 'staging.acme.com', icon: 'rocket_launch', type: 'staging' },
+        { id: 3, name: 'Design File', url: 'figma.com/file/...', icon: 'figma', type: 'design' }
+    ]);
+    const [showAddResource, setShowAddResource] = useState(false);
+
+    const handleAddResource = () => {
+        // Lógica para adicionar novo recurso
+        setShowAddResource(true);
+        console.log('Add new resource');
+    };
+
     return (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* Left Column (Main Content) */}
@@ -174,7 +187,7 @@ export default function ProjectOverview() {
                             </div>
                             <span className="material-symbols-outlined text-slate-400 text-[18px]">open_in_new</span>
                         </a>
-                        <button className="mt-2 w-full py-2 flex items-center justify-center gap-2 border border-dashed border-slate-300 dark:border-slate-600 rounded-lg text-sm text-slate-500 dark:text-slate-400 hover:text-primary hover:border-primary transition-colors">
+                        <button onClick={handleAddResource} className="mt-2 w-full py-2 flex items-center justify-center gap-2 border border-dashed border-slate-300 dark:border-slate-600 rounded-lg text-sm text-slate-500 dark:text-slate-400 hover:text-primary hover:border-primary transition-colors">
                             <span className="material-symbols-outlined text-[18px]">add</span>
                             Adicionar Recurso
                         </button>

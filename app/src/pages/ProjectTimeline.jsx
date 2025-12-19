@@ -1,7 +1,64 @@
-import React from 'react';
+import React, { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 
+// Mock data para tarefas
+const MOCK_TASKS = [
+    { id: 1, name: 'Kick-off Meeting', phase: 'Phase 1: Discovery', assignee: 'PM', color: 'purple', duration: '1d', start: 0, status: 'done', priority: 'high' },
+    { id: 2, name: 'Market Research', phase: 'Phase 1: Discovery', assignee: 'Ana Silva', avatar: 'https://i.pravatar.cc/100?u=ana', color: 'blue', duration: '4d', start: 2, progress: 25, status: 'in-progress', priority: 'high' },
+    { id: 3, name: 'Wireframing', phase: 'Phase 2: Design', assignee: 'Carlos M.', avatar: 'https://i.pravatar.cc/100?u=carlos', color: 'orange', duration: '5d', start: 7, progress: 50, status: 'in-progress', priority: 'medium' },
+    { id: 4, name: 'UI Kit Creation', phase: 'Phase 2: Design', assignee: 'DS', color: 'orange', duration: '3d', start: 14, status: 'pending', priority: 'low' },
+];
+
 export default function ProjectTimeline() {
+    const [currentMonth, setCurrentMonth] = useState('Oct 2023');
+    const [viewMode, setViewMode] = useState('Week');
+    const [groupBy, setGroupBy] = useState('Phase');
+    const [activeFilters, setActiveFilters] = useState({
+        assignee: 'Me',
+        priority: 'High',
+        status: null,
+        date: null
+    });
+    const [searchTerm, setSearchTerm] = useState('');
+    const [selectedUser, setSelectedUser] = useState('');
+    const [selectedType, setSelectedType] = useState('');
+
+    // Filtrar tarefas baseado nos filtros ativos
+    const filteredTasks = useMemo(() => {
+        return MOCK_TASKS.filter(task => {
+            if (activeFilters.assignee === 'Me' && !task.assignee.includes('Ana')) return false;
+            if (activeFilters.priority === 'High' && task.priority !== 'high') return false;
+            if (searchTerm && !task.name.toLowerCase().includes(searchTerm.toLowerCase())) return false;
+            return true;
+        });
+    }, [activeFilters, searchTerm]);
+
+    // Agrupar tarefas
+    const groupedTasks = useMemo(() => {
+        const groups = {};
+        filteredTasks.forEach(task => {
+            const key = task.phase;
+            if (!groups[key]) groups[key] = [];
+            groups[key].push(task);
+        });
+        return groups;
+    }, [filteredTasks]);
+
+    const removeFilter = (filterKey) => {
+        setActiveFilters(prev => ({ ...prev, [filterKey]: null }));
+    };
+
+    const clearAllFilters = () => {
+        setActiveFilters({ assignee: null, priority: null, status: null, date: null });
+        setSearchTerm('');
+        setSelectedUser('');
+        setSelectedType('');
+    };
+
+    const goToToday = () => {
+        setCurrentMonth('Oct 2023');
+    };
+
     return (
         <div className="flex flex-col flex-1 w-full max-w-full h-[calc(100vh-65px)] overflow-hidden">
             <style>{`
@@ -82,16 +139,16 @@ export default function ProjectTimeline() {
                                     <span className="material-symbols-outlined text-[18px]">calendar_today</span>
                                     <span>Date</span>
                                 </button>
-                                <button className="ml-1 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors" title="Clear Filters">
+                                <button onClick={clearAllFilters} className="ml-1 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors" title="Clear Filters">
                                     <span className="material-symbols-outlined text-[18px]">filter_alt_off</span>
                                 </button>
                             </div>
                         </div>
                         <div className="flex items-center gap-4">
                             <div className="hidden xl:flex bg-slate-100 dark:bg-[#1d2832] p-1 rounded-lg">
-                                <button className="px-3 py-1 text-xs font-medium text-slate-600 dark:text-slate-400 rounded hover:bg-white dark:hover:bg-[#2c3b4a] transition-colors">Day</button>
-                                <button className="px-3 py-1 text-xs font-bold text-primary bg-white dark:bg-[#2c3b4a] shadow-sm rounded">Week</button>
-                                <button className="px-3 py-1 text-xs font-medium text-slate-600 dark:text-slate-400 rounded hover:bg-white dark:hover:bg-[#2c3b4a] transition-colors">Month</button>
+                                <button onClick={() => setViewMode('Day')} className={`px-3 py-1 text-xs font-medium rounded transition-colors ${viewMode === 'Day' ? 'font-bold text-primary bg-white dark:bg-[#2c3b4a] shadow-sm' : 'text-slate-600 dark:text-slate-400 hover:bg-white dark:hover:bg-[#2c3b4a]'}`}>Day</button>
+                                <button onClick={() => setViewMode('Week')} className={`px-3 py-1 text-xs font-medium rounded transition-colors ${viewMode === 'Week' ? 'font-bold text-primary bg-white dark:bg-[#2c3b4a] shadow-sm' : 'text-slate-600 dark:text-slate-400 hover:bg-white dark:hover:bg-[#2c3b4a]'}`}>Week</button>
+                                <button onClick={() => setViewMode('Month')} className={`px-3 py-1 text-xs font-medium rounded transition-colors ${viewMode === 'Month' ? 'font-bold text-primary bg-white dark:bg-[#2c3b4a] shadow-sm' : 'text-slate-600 dark:text-slate-400 hover:bg-white dark:hover:bg-[#2c3b4a]'}`}>Month</button>
                             </div>
                             <div className="h-6 w-px bg-slate-200 dark:bg-[#233648] hidden xl:block"></div>
                             <div className="flex items-center gap-2 bg-slate-50 dark:bg-[#1d2832] rounded-lg p-0.5 border border-slate-200 dark:border-[#233648]">
@@ -103,7 +160,7 @@ export default function ProjectTimeline() {
                                     <span className="material-symbols-outlined text-[20px]">chevron_right</span>
                                 </button>
                             </div>
-                            <button className="text-xs font-bold text-primary hover:underline uppercase tracking-wide">Today</button>
+                            <button onClick={goToToday} className="text-xs font-bold text-primary hover:underline uppercase tracking-wide">Today</button>
                             <div className="h-6 w-px bg-slate-200 dark:bg-[#233648]"></div>
                             <button className="flex items-center gap-2 text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-primary transition-colors">
                                 <span className="material-symbols-outlined text-[20px]">ios_share</span>
@@ -113,14 +170,18 @@ export default function ProjectTimeline() {
                     </div>
                     <div className="flex items-center gap-2 px-4 pb-2">
                         <span className="text-[10px] font-bold text-slate-400 uppercase">Active:</span>
-                        <div className="flex items-center gap-1 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 px-2 py-0.5 rounded text-xs border border-blue-100 dark:border-blue-800">
-                            <span>Assignee: <strong>Me</strong></span>
-                            <button className="hover:text-blue-900 dark:hover:text-blue-100"><span className="material-symbols-outlined text-[14px]">close</span></button>
-                        </div>
-                        <div className="flex items-center gap-1 bg-orange-50 dark:bg-orange-900/20 text-orange-700 dark:text-orange-300 px-2 py-0.5 rounded text-xs border border-orange-100 dark:border-orange-800">
-                            <span>Priority: <strong>High</strong></span>
-                            <button className="hover:text-orange-900 dark:hover:text-orange-100"><span className="material-symbols-outlined text-[14px]">close</span></button>
-                        </div>
+                        {activeFilters.assignee && (
+                            <div className="flex items-center gap-1 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 px-2 py-0.5 rounded text-xs border border-blue-100 dark:border-blue-800">
+                                <span>Assignee: <strong>{activeFilters.assignee}</strong></span>
+                                <button onClick={() => removeFilter('assignee')} className="hover:text-blue-900 dark:hover:text-blue-100"><span className="material-symbols-outlined text-[14px]">close</span></button>
+                            </div>
+                        )}
+                        {activeFilters.priority && (
+                            <div className="flex items-center gap-1 bg-orange-50 dark:bg-orange-900/20 text-orange-700 dark:text-orange-300 px-2 py-0.5 rounded text-xs border border-orange-100 dark:border-orange-800">
+                                <span>Priority: <strong>{activeFilters.priority}</strong></span>
+                                <button onClick={() => removeFilter('priority')} className="hover:text-orange-900 dark:hover:text-orange-100"><span className="material-symbols-outlined text-[14px]">close</span></button>
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>
@@ -279,6 +340,6 @@ export default function ProjectTimeline() {
                     <span className="material-symbols-outlined text-[28px]">chat</span>
                 </button>
             </div>
-        </div>
+        </div >
     );
 }

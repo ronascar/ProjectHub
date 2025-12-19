@@ -1,83 +1,132 @@
-import React from 'react';
+import React, { useState } from 'react';
+
+// Mock data para mensagens
+const MOCK_MESSAGES = [
+    {
+        id: 1,
+        user: 'Ana Silva',
+        avatar: 'https://i.pravatar.cc/100?u=ana',
+        action: 'mentioned you in',
+        project: 'Website Redesign',
+        message: 'Can you check the latest Figma mockup? I think the gradient on the hero section needs adjustment.',
+        time: '2m ago',
+        type: 'mention',
+        unread: true
+    },
+    {
+        id: 2,
+        user: 'Carlos Mendes',
+        avatar: 'https://i.pravatar.cc/100?u=carlos',
+        action: 'completed a task in',
+        project: 'Mobile App Q3',
+        message: 'Marked "API Integration" as done.',
+        time: '1h ago',
+        type: 'status',
+        unread: true
+    },
+    {
+        id: 3,
+        user: 'System Notification',
+        avatar: null,
+        action: 'Approval Requested',
+        project: null,
+        message: 'Client has requested approval for the Q3 Marketing Budget proposal.',
+        time: '3h ago',
+        type: 'approval',
+        unread: false
+    },
+    {
+        id: 4,
+        user: 'Sofia Martinez',
+        avatar: 'https://i.pravatar.cc/100?u=sofia',
+        action: 'commented on',
+        project: 'Design System',
+        message: 'Added new color tokens.',
+        time: 'Yesterday',
+        type: 'comment',
+        unread: false
+    }
+];
 
 export default function Inbox() {
+    const [messages, setMessages] = useState(MOCK_MESSAGES);
+    const [selectedMessage, setSelectedMessage] = useState(messages[0]);
+    const [replyText, setReplyText] = useState('');
+
+    const handleSelectMessage = (message) => {
+        setSelectedMessage(message);
+        // Marcar como lida
+        setMessages(prev => prev.map(m =>
+            m.id === message.id ? { ...m, unread: false } : m
+        ));
+    };
+
+    const handleSendReply = () => {
+        if (!replyText.trim()) return;
+        console.log('Sending reply:', replyText);
+        setReplyText('');
+        // Aqui você adicionaria a lógica para enviar a resposta
+    };
+
+    const handleApprove = () => {
+        console.log('Approved');
+        // Lógica de aprovação
+    };
+
+    const handleSnooze = () => {
+        console.log('Snoozed');
+        // Lógica de adiar
+    };
+
     return (
         <div className="flex flex-1 h-full overflow-hidden relative">
             {/* Content Split View */}
             <div className="flex flex-1 overflow-hidden">
                 {/* LIST VIEW (Left Panel) */}
                 <div className="w-full md:w-[400px] xl:w-[450px] flex flex-col border-r border-gray-200 dark:border-border-dark bg-white dark:bg-[#111a22] overflow-y-auto shrink-0">
-                    {/* Item 1: Active */}
-                    <div className="flex gap-4 p-4 border-l-[3px] border-l-primary bg-gray-50 dark:bg-[#1c2936] cursor-pointer hover:bg-gray-100 dark:hover:bg-[#1f2e3d] transition-colors group relative">
-                        <div className="shrink-0 relative">
-                            <div className="bg-center bg-no-repeat bg-cover rounded-full h-10 w-10 border border-gray-200 dark:border-[#233648]" style={{ backgroundImage: 'url("https://lh3.googleusercontent.com/aida-public/AB6AXuBOqT8eSkV3VbXg42_0iqmA_GDk2LK2QO8ZZrVPOqm1eEOhO3q0wPnFV9M9OGgl2WPr-i05DX7wWkc15WTRLNYEU8AKJE2vgJpgrKmppvZ4fd2EzLlWAImwZVh9OyLa2XiQyNwKj2l8dfFfHqNeWL9nl0BOnRXtXK-PW_qiYwSAg8MFKTQAK41_fn8_FORpqwZtWuf6R5_6l7MZNKVnOwuZEv1SizEWK2z4Dh0yB0xq61TNYRFRap237cJHCSlN-zH0VAhJx5ZkwQU")' }}></div>
-                            <div className="absolute -bottom-1 -right-1 bg-primary text-white rounded-full p-[2px] border-2 border-white dark:border-[#1c2936]">
-                                <span className="material-symbols-outlined text-[12px] leading-none block">alternate_email</span>
+                    {messages.map((msg) => (
+                        <div
+                            key={msg.id}
+                            onClick={() => handleSelectMessage(msg)}
+                            className={`flex gap-4 p-4 border-l-[3px] cursor-pointer hover:bg-gray-100 dark:hover:bg-[#1f2e3d] transition-colors group relative ${selectedMessage?.id === msg.id
+                                ? 'border-l-primary bg-gray-50 dark:bg-[#1c2936]'
+                                : 'border-l-transparent border-b border-b-gray-100 dark:border-b-[#1c2936]'
+                                }`}
+                        >
+                            <div className="shrink-0 relative">
+                                {msg.avatar ? (
+                                    <div className="bg-center bg-no-repeat bg-cover rounded-full h-10 w-10 border border-gray-200 dark:border-[#233648]" style={{ backgroundImage: `url("${msg.avatar}")` }}></div>
+                                ) : (
+                                    <div className="flex items-center justify-center bg-gray-100 dark:bg-[#233648] text-slate-700 dark:text-white rounded-full h-10 w-10 border border-gray-200 dark:border-[#324d67]">
+                                        <span className="font-bold text-sm">TF</span>
+                                    </div>
+                                )}
+                                <div className={`absolute -bottom-1 -right-1 rounded-full p-[2px] border-2 border-white dark:border-[#111a22] ${msg.type === 'mention' ? 'bg-primary text-white' :
+                                    msg.type === 'status' ? 'bg-emerald-500 text-white' :
+                                        'bg-amber-500 text-white'
+                                    }`}>
+                                    <span className="material-symbols-outlined text-[12px] leading-none block">
+                                        {msg.type === 'mention' ? 'alternate_email' :
+                                            msg.type === 'status' ? 'check_circle' :
+                                                'assignment_turned_in'}
+                                    </span>
+                                </div>
                             </div>
-                        </div>
-                        <div className="flex flex-1 flex-col justify-start min-w-0">
-                            <div className="flex justify-between items-baseline mb-1">
-                                <p className="text-slate-900 dark:text-white text-sm font-bold truncate pr-2">Ana Silva</p>
-                                <p className="text-primary text-xs font-medium whitespace-nowrap">2m ago</p>
+                            <div className="flex flex-1 flex-col justify-start min-w-0">
+                                <div className="flex justify-between items-baseline mb-1">
+                                    <p className={`text-sm truncate pr-2 ${msg.unread ? 'text-slate-900 dark:text-white font-bold' : 'text-slate-900 dark:text-white font-medium'}`}>{msg.user}</p>
+                                    <p className={`text-xs whitespace-nowrap ${msg.unread ? 'text-primary font-medium' : 'text-slate-500 dark:text-text-secondary'}`}>{msg.time}</p>
+                                </div>
+                                <p className="text-slate-500 dark:text-text-secondary text-xs mb-1 truncate">
+                                    {msg.action} {msg.project && <span className={msg.type === 'mention' ? 'text-primary font-medium' : msg.type === 'status' ? 'text-emerald-500 font-medium' : 'text-amber-600 dark:text-amber-400 font-medium uppercase tracking-wide'}>{msg.project}</span>}
+                                </p>
+                                <p className={`text-sm font-normal line-clamp-2 ${msg.unread ? 'text-slate-700 dark:text-white/80' : 'text-slate-500 dark:text-text-secondary'}`}>{msg.message}</p>
                             </div>
-                            <p className="text-slate-500 dark:text-text-secondary text-xs mb-1 truncate">mentioned you in <span className="text-primary font-medium">Website Redesign</span></p>
-                            <p className="text-slate-700 dark:text-white/80 text-sm font-normal line-clamp-2 leading-snug">Can you check the latest Figma mockup? I think the gradient on the hero section needs adjustment.</p>
+                            {msg.unread && (
+                                <div className="absolute top-4 right-4 h-2 w-2 rounded-full bg-primary"></div>
+                            )}
                         </div>
-                    </div>
-
-                    {/* Item 2: Unread */}
-                    <div className="flex gap-4 p-4 border-l-[3px] border-l-transparent border-b border-b-gray-100 dark:border-b-[#1c2936] hover:bg-gray-50 dark:hover:bg-[#1c2936] cursor-pointer transition-colors relative">
-                        <div className="shrink-0 relative">
-                            <div className="bg-center bg-no-repeat bg-cover rounded-full h-10 w-10 border border-gray-200 dark:border-[#233648]" style={{ backgroundImage: 'url("https://lh3.googleusercontent.com/aida-public/AB6AXuB9xaJDCUOlA0YTLQHhcVXzLml5x-yE-LVpIHNdpHMC8msOCdyZVBVhvZvDdoubZbohJcGbBrAh8TT23KFzyOQnroFm7a6JLuOStl0h0Ok5tYfohXQ1mYUn4qiFntOcPVEMIWujeNAMAr0fwnir1UszMOelXvcMmPGxjX-vpCnNlEEqpg0zyF87HnT7wkLaeToqbggslhCwAbR4wzsON0ToCFwCZbf4jc8U0r5lA_v05qnSompCyHalyuLq5f8u9-4IEsuf8i46lyE")' }}></div>
-                            <div className="absolute -bottom-1 -right-1 bg-emerald-500 text-white rounded-full p-[2px] border-2 border-white dark:border-[#111a22]">
-                                <span className="material-symbols-outlined text-[12px] leading-none block">check_circle</span>
-                            </div>
-                        </div>
-                        <div className="flex flex-1 flex-col justify-start min-w-0">
-                            <div className="flex justify-between items-baseline mb-1">
-                                <p className="text-slate-900 dark:text-white text-sm font-medium truncate pr-2">Carlos Mendes</p>
-                                <p className="text-slate-500 dark:text-text-secondary text-xs whitespace-nowrap">1h ago</p>
-                            </div>
-                            <p className="text-slate-500 dark:text-text-secondary text-xs mb-1 truncate">completed a task in <span className="text-emerald-500 font-medium">Mobile App Q3</span></p>
-                            <p className="text-slate-500 dark:text-text-secondary text-sm font-normal line-clamp-1">Marked "API Integration" as done.</p>
-                        </div>
-                        <div className="absolute top-4 right-4 h-2 w-2 rounded-full bg-primary"></div>
-                    </div>
-
-                    {/* Item 3: Approval */}
-                    <div className="flex gap-4 p-4 border-l-[3px] border-l-transparent border-b border-b-gray-100 dark:border-b-[#1c2936] hover:bg-gray-50 dark:hover:bg-[#1c2936] cursor-pointer transition-colors relative">
-                        <div className="shrink-0 relative">
-                            <div className="flex items-center justify-center bg-gray-100 dark:bg-[#233648] text-slate-700 dark:text-white rounded-full h-10 w-10 border border-gray-200 dark:border-[#324d67]">
-                                <span className="font-bold text-sm">TF</span>
-                            </div>
-                            <div className="absolute -bottom-1 -right-1 bg-amber-500 text-white rounded-full p-[2px] border-2 border-white dark:border-[#111a22]">
-                                <span className="material-symbols-outlined text-[12px] leading-none block">assignment_turned_in</span>
-                            </div>
-                        </div>
-                        <div className="flex flex-1 flex-col justify-start min-w-0">
-                            <div className="flex justify-between items-baseline mb-1">
-                                <p className="text-slate-900 dark:text-white text-sm font-medium truncate pr-2">System Notification</p>
-                                <p className="text-slate-500 dark:text-text-secondary text-xs whitespace-nowrap">3h ago</p>
-                            </div>
-                            <p className="text-amber-600 dark:text-amber-400 text-xs mb-1 font-medium uppercase tracking-wide">Approval Requested</p>
-                            <p className="text-slate-500 dark:text-text-secondary text-sm font-normal line-clamp-2">Client has requested approval for the Q3 Marketing Budget proposal.</p>
-                        </div>
-                    </div>
-
-                    {/* Item 4: Read */}
-                    <div className="flex gap-4 p-4 border-l-[3px] border-l-transparent border-b border-b-gray-100 dark:border-b-[#1c2936] hover:bg-gray-50 dark:hover:bg-[#1c2936] cursor-pointer transition-colors relative opacity-70 hover:opacity-100">
-                        <div className="shrink-0 relative">
-                            <div className="bg-center bg-no-repeat bg-cover rounded-full h-10 w-10 border border-gray-200 dark:border-[#233648]" style={{ backgroundImage: 'url("https://lh3.googleusercontent.com/aida-public/AB6AXuDTGbenKUOihTsYbl74GKR61JWmODipMYtS9QogjZaxmqzAI6WztJEU4SXwiBEh2hPrnp6Jx_HHfH7aDM6ec5bfGaqA6fQZvpDE4Fz7ee3PlewaF42quOPimRbXgdArh8dv8a6NWTDQw8oZ2jem_TdeltpWrMzJwpj3tJrGj91dSGQxclWm1kd6zPRtO6iDbJmNNpLLh7xoFOmx6NB24Iq_k_4HaAXkKQvPBFwIIHU2ppdP1W668aZGS-ovwSVRsm6jt1MzVuNTLSU")' }}></div>
-                        </div>
-                        <div className="flex flex-1 flex-col justify-start min-w-0">
-                            <div className="flex justify-between items-baseline mb-1">
-                                <p className="text-slate-900 dark:text-white text-sm font-medium truncate pr-2">Sofia Martinez</p>
-                                <p className="text-slate-500 dark:text-text-secondary text-xs whitespace-nowrap">Yesterday</p>
-                            </div>
-                            <p className="text-slate-500 dark:text-text-secondary text-xs mb-1 truncate">commented on <span className="text-slate-900 dark:text-white font-medium">Design System</span></p>
-                            <p className="text-slate-500 dark:text-text-secondary text-sm font-normal line-clamp-1">Added new color tokens.</p>
-                        </div>
-                    </div>
+                    ))}
                 </div>
 
                 {/* DETAIL VIEW (Right Panel) */}
@@ -100,7 +149,7 @@ export default function Inbox() {
                                 </h2>
                             </div>
                             <div className="flex gap-2">
-                                <button className="p-2 text-slate-500 dark:text-text-secondary hover:text-primary dark:hover:text-white rounded-lg hover:bg-gray-100 dark:hover:bg-[#233648] transition-colors" title="Snooze">
+                                <button onClick={handleSnooze} className="p-2 text-slate-500 dark:text-text-secondary hover:text-primary dark:hover:text-white rounded-lg hover:bg-gray-100 dark:hover:bg-[#233648] transition-colors" title="Snooze">
                                     <span className="material-symbols-outlined">snooze</span>
                                 </button>
                                 <button className="p-2 text-slate-500 dark:text-text-secondary hover:text-primary dark:hover:text-white rounded-lg hover:bg-gray-100 dark:hover:bg-[#233648] transition-colors" title="More options">
@@ -172,11 +221,11 @@ export default function Inbox() {
                         <div className="p-6 bg-white dark:bg-[#111a22] border-t border-gray-200 dark:border-[#233648]">
                             {/* Quick Actions */}
                             <div className="flex gap-2 mb-4">
-                                <button className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-50 dark:bg-[#1c2936] border border-gray-200 dark:border-[#233648] hover:border-emerald-500/50 hover:bg-emerald-500/5 dark:hover:bg-emerald-500/10 transition-colors group text-emerald-600 dark:text-emerald-500">
+                                <button onClick={handleApprove} className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-50 dark:bg-[#1c2936] border border-gray-200 dark:border-[#233648] hover:border-emerald-500/50 hover:bg-emerald-500/5 dark:hover:bg-emerald-500/10 transition-colors group text-emerald-600 dark:text-emerald-500">
                                     <span className="material-symbols-outlined text-[16px]">check_circle</span>
                                     <span className="text-xs font-medium">Approve Fix</span>
                                 </button>
-                                <button className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-50 dark:bg-[#1c2936] border border-gray-200 dark:border-[#233648] hover:border-primary/50 hover:bg-primary/5 dark:hover:bg-primary/10 transition-colors group text-primary">
+                                <button onClick={handleSnooze} className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-50 dark:bg-[#1c2936] border border-gray-200 dark:border-[#233648] hover:border-primary/50 hover:bg-primary/5 dark:hover:bg-primary/10 transition-colors group text-primary">
                                     <span className="material-symbols-outlined text-[16px]">schedule</span>
                                     <span className="text-xs font-medium">Remind me later</span>
                                 </button>
@@ -191,10 +240,10 @@ export default function Inbox() {
                                     <button className="p-1.5 text-slate-500 dark:text-text-secondary hover:text-primary dark:hover:text-white rounded hover:bg-gray-100 dark:hover:bg-[#233648]"><span className="material-symbols-outlined text-[18px]">attach_file</span></button>
                                     <button className="p-1.5 text-slate-500 dark:text-text-secondary hover:text-primary dark:hover:text-white rounded hover:bg-gray-100 dark:hover:bg-[#233648]"><span className="material-symbols-outlined text-[18px]">sentiment_satisfied</span></button>
                                 </div>
-                                <textarea className="w-full bg-transparent border-none text-slate-900 dark:text-white text-sm focus:ring-0 placeholder:text-slate-400 dark:placeholder:text-text-secondary/60 p-3 h-20 resize-none" placeholder="Reply to Ana..."></textarea>
+                                <textarea value={replyText} onChange={(e) => setReplyText(e.target.value)} className="w-full bg-transparent border-none text-slate-900 dark:text-white text-sm focus:ring-0 placeholder:text-slate-400 dark:placeholder:text-text-secondary/60 p-3 h-20 resize-none" placeholder="Reply to Ana..."></textarea>
                                 <div className="flex justify-between items-center p-2 pt-0">
                                     <span className="text-[10px] text-slate-500 dark:text-text-secondary px-2">Press ⌘+Enter to send</span>
-                                    <button className="bg-primary hover:bg-primary-hover text-white px-4 py-2 rounded-lg text-sm font-bold transition-colors flex items-center gap-2">
+                                    <button onClick={handleSendReply} className="bg-primary hover:bg-primary-hover text-white px-4 py-2 rounded-lg text-sm font-bold transition-colors flex items-center gap-2">
                                         Send Reply
                                         <span className="material-symbols-outlined text-[16px]">send</span>
                                     </button>
