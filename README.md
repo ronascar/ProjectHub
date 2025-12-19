@@ -1,8 +1,8 @@
 # 🚀 ProjectHub - Sistema de Gerenciamento de Projetos
 
 ![NexusPM](https://img.shields.io/badge/NexusPM-Project%20Management-blue)
-![React](https://img.shields.io/badge/React-18.3-61dafb)
-![Vite](https://img.shields.io/badge/Vite-6.0-646cff)
+![React](https://img.shields.io/badge/React-19.2-61dafb)
+![Vite](https://img.shields.io/badge/Vite-7.2-646cff)
 ![TailwindCSS](https://img.shields.io/badge/TailwindCSS-3.4-38bdf8)
 
 Sistema completo de gerenciamento de projetos com interface moderna e intuitiva, desenvolvido com React, Vite e TailwindCSS.
@@ -20,6 +20,13 @@ Sistema completo de gerenciamento de projetos com interface moderna e intuitiva,
 - **Kanban Board**: Gestão visual de tarefas com drag-and-drop
 - **Timeline/Gantt**: Visualização temporal das atividades
 - **Detalhes do Projeto**: Informações completas e histórico
+- **Versionamento**: Controle de versões e histórico de alterações
+
+### ✅ Gestão de Tarefas
+- **Minhas Tarefas**: Visualização personalizada de tarefas atribuídas
+- **Criação/Edição**: Formulário completo para gerenciar tarefas
+- **Inbox**: Central de notificações e tarefas pendentes
+- **Calendário**: Visualização de tarefas por data
 
 ### ⚙️ Configurações do Sistema
 - **Identidade**: Configuração de nome da empresa e logo
@@ -32,6 +39,13 @@ Sistema completo de gerenciamento de projetos com interface moderna e intuitiva,
 - Controle de usuários e permissões
 - Sistema de funções (Roles)
 - Atribuição de tarefas
+- Visualização de membros da equipe
+- Criação e edição de perfis
+
+### 📊 Relatórios e Exportações
+- Geração de relatórios personalizados
+- Exportação de dados em múltiplos formatos
+- Análise de desempenho de projetos
 
 ### 🔐 Autenticação
 - Sistema de login seguro
@@ -40,12 +54,13 @@ Sistema completo de gerenciamento de projetos com interface moderna e intuitiva,
 
 ## 🛠️ Tecnologias
 
-- **Frontend**: React 18.3
-- **Build Tool**: Vite 6.0
+- **Frontend**: React 19.2
+- **Build Tool**: Vite 7.2
 - **Estilização**: TailwindCSS 3.4
-- **Roteamento**: React Router DOM 7.1
+- **Roteamento**: React Router DOM 7.11
+- **TypeScript**: 5.9
 - **Ícones**: Material Symbols (Google)
-- **Drag & Drop**: @dnd-kit/core
+- **Drag & Drop**: @dnd-kit/core 6.3
 - **Fontes**: Inter (Google Fonts)
 
 ## 🎨 Design System
@@ -68,8 +83,8 @@ Sistema completo de gerenciamento de projetos com interface moderna e intuitiva,
 # Clone o repositório
 git clone https://github.com/ronascar/ProjectHub.git
 
-# Entre no diretório do app
-cd ProjectHub/app
+# Entre no diretório
+cd ProjectHub
 
 # Instale as dependências
 npm install
@@ -89,18 +104,18 @@ npm run build
 
 # Preview da build
 npm run preview
-
-# Lint
-npm run lint
 ```
 
 ## 📁 Estrutura do Projeto
 
 ```
-app/
+stitch_dashboard_projecthub/
 ├── src/
 │   ├── components/      # Componentes reutilizáveis
-│   │   └── Sidebar.jsx
+│   │   ├── Sidebar.jsx
+│   │   ├── Header.jsx
+│   │   ├── ProjectCard.jsx
+│   │   └── TaskCard.jsx
 │   ├── context/         # Contextos React
 │   │   ├── AuthContext.jsx
 │   │   └── ThemeContext.jsx
@@ -113,14 +128,31 @@ app/
 │   │   ├── KanbanBoard.jsx
 │   │   ├── Login.jsx
 │   │   ├── ProjectsList.jsx
+│   │   ├── ProjectDetails.jsx
+│   │   ├── ProjectTimeline.jsx
+│   │   ├── ProjectVersioning.jsx
+│   │   ├── CreateProject.jsx
+│   │   ├── MyTasks.jsx
+│   │   ├── TaskForm.jsx
+│   │   ├── Calendar.jsx
+│   │   ├── Inbox.jsx
+│   │   ├── Teams.jsx
+│   │   ├── MemberCreate.jsx
+│   │   ├── MemberEdit.jsx
+│   │   ├── MemberView.jsx
+│   │   ├── Reports.jsx
 │   │   └── Settings.jsx
-│   ├── App.jsx         # Componente principal
+│   ├── App.jsx         # Componente principal e rotas
 │   ├── main.tsx        # Entry point
 │   └── style.css       # Estilos globais
-├── index.html
+├── public/             # Arquivos estáticos
+├── index.html          # HTML principal
 ├── package.json
 ├── tailwind.config.js
-└── vite.config.js
+├── vite.config.ts
+├── tsconfig.json
+├── vercel.json        # Configuração Vercel
+└── DEPLOY_GUIDE.md    # Guia de deploy
 ```
 
 ## 🔑 Credenciais de Teste
@@ -141,6 +173,20 @@ Interface totalmente responsiva, otimizada para:
 - 💻 Tablet (768px - 1024px)
 - 🖥️ Desktop (> 1024px)
 
+## 🚀 Deploy
+
+Para instruções detalhadas de deploy na Vercel, consulte o arquivo [DEPLOY_GUIDE.md](./DEPLOY_GUIDE.md).
+
+### Deploy Rápido
+
+```bash
+# Build local
+npm run build
+
+# Deploy na Vercel
+vercel --prod
+```
+
 ## 🤝 Contribuindo
 
 Contribuições são bem-vindas! Sinta-se à vontade para abrir issues e pull requests.
@@ -156,3 +202,4 @@ Desenvolvido com ❤️ por [ronascar](https://github.com/ronascar)
 ---
 
 **NexusPM** - Transformando a gestão de projetos em uma experiência visual e intuitiva.
+
