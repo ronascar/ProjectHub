@@ -1,4 +1,5 @@
 import { useTheme } from '../context/ThemeContext';
+import { Link } from 'react-router-dom';
 
 export default function Header() {
     const { isDark, toggleTheme } = useTheme();
@@ -32,9 +33,13 @@ export default function Header() {
             {/* Actions */}
             <div className="flex items-center gap-4">
                 {/* New Button */}
-                <button className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary text-white shadow-lg shadow-primary/30 transition-transform hover:scale-105">
+                <Link
+                    to="/projects/create"
+                    className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary text-white shadow-lg shadow-primary/30 transition-transform hover:scale-105"
+                    title="Criar Novo Projeto"
+                >
                     <span className="material-symbols-outlined text-[20px]">add</span>
-                </button>
+                </Link>
 
                 <div className="h-6 w-px bg-gray-200 dark:bg-gray-700" />
 
