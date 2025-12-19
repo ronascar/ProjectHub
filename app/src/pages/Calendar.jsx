@@ -87,6 +87,10 @@ export default function Calendar() {
                     </div>
 
                     <div className="flex items-center gap-4">
+                        <button className="hidden md:flex items-center justify-center rounded-lg bg-primary px-4 h-9 text-sm font-bold text-white shadow-lg shadow-primary/30 transition-transform hover:scale-105 hover:bg-blue-600 mr-2">
+                            <span className="material-symbols-outlined text-[20px] mr-2">add</span>
+                            New Event
+                        </button>
                         <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white tracking-tight">October 2023</h2>
                         <div className="flex items-center rounded-lg border border-gray-200 dark:border-border-dark bg-gray-50 dark:bg-surface-dark p-0.5 ml-2">
                             <button className="p-1 hover:text-slate-900 dark:hover:text-white text-slate-500 dark:text-[#92adc9] hover:bg-white dark:hover:bg-background-dark rounded transition-colors shadow-sm">

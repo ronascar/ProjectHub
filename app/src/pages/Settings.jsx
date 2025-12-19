@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
 const Settings = () => {
-    const [companyName, setCompanyName] = useState('Acme Agency');
+    const [companyName, setCompanyName] = useState('Webnascar');
     const [logoUrl, setLogoUrl] = useState('https://cdn.acme.com/logo.png');
     const [timezone, setTimezone] = useState('UTC-3');
     const [language, setLanguage] = useState('pt-BR');

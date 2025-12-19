@@ -46,8 +46,6 @@ function AppRouter() {
                 <Route path="teams" element={<div className="p-8"><h1 className="text-2xl font-bold dark:text-white">Teams - Coming Soon</h1></div>} />
                 <Route path="reports" element={<Reports />} />
                 <Route path="calendar" element={<Calendar />} />
-
-
                 <Route path="inbox" element={<div className="p-8"><h1 className="text-2xl font-bold dark:text-white">Inbox - Coming Soon</h1></div>} />
                 <Route path="settings" element={<Settings />} />
             </Route>
