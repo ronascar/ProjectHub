@@ -1,18 +1,86 @@
 import React, { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 
-// Mock data para tarefas
+// Mock data para tarefas com informações completas
 const MOCK_TASKS = [
-    { id: 1, name: 'Kick-off Meeting', phase: 'Phase 1: Discovery', assignee: 'PM', color: 'purple', duration: '1d', start: 0, status: 'done', priority: 'high' },
-    { id: 2, name: 'Market Research', phase: 'Phase 1: Discovery', assignee: 'Ana Silva', avatar: 'https://i.pravatar.cc/100?u=ana', color: 'blue', duration: '4d', start: 2, progress: 25, status: 'in-progress', priority: 'high' },
-    { id: 3, name: 'Wireframing', phase: 'Phase 2: Design', assignee: 'Carlos M.', avatar: 'https://i.pravatar.cc/100?u=carlos', color: 'orange', duration: '5d', start: 7, progress: 50, status: 'in-progress', priority: 'medium' },
-    { id: 4, name: 'UI Kit Creation', phase: 'Phase 2: Design', assignee: 'DS', color: 'orange', duration: '3d', start: 14, status: 'pending', priority: 'low' },
+    {
+        id: 1,
+        name: 'Kick-off Meeting',
+        phase: 'Phase 1: Discovery',
+        assignee: 'PM',
+        color: 'purple',
+        duration: '1d',
+        start: 0,
+        width: 40,
+        status: 'done',
+        priority: 'high',
+        type: 'milestone',
+        progress: 100,
+        startDate: 'Oct 01',
+        endDate: 'Oct 01',
+        dependencies: []
+    },
+    {
+        id: 2,
+        name: 'Market Research',
+        phase: 'Phase 1: Discovery',
+        assignee: 'Ana Silva',
+        avatar: 'https://i.pravatar.cc/100?u=ana',
+        color: 'blue',
+        duration: '4d',
+        start: 2,
+        width: 160,
+        progress: 25,
+        status: 'in-progress',
+        priority: 'high',
+        type: 'task',
+        startDate: 'Oct 03',
+        endDate: 'Oct 06',
+        dependencies: [1]
+    },
+    {
+        id: 3,
+        name: 'Wireframing',
+        phase: 'Phase 2: Design',
+        assignee: 'Carlos M.',
+        avatar: 'https://i.pravatar.cc/100?u=carlos',
+        color: 'orange',
+        duration: '5d',
+        start: 7,
+        width: 200,
+        progress: 50,
+        status: 'in-progress',
+        priority: 'medium',
+        type: 'task',
+        startDate: 'Oct 07',
+        endDate: 'Oct 12',
+        dependencies: [2]
+    },
+    {
+        id: 4,
+        name: 'UI Kit Creation',
+        phase: 'Phase 2: Design',
+        assignee: 'DS',
+        color: 'orange',
+        duration: '3d',
+        start: 14,
+        width: 120,
+        status: 'pending',
+        priority: 'low',
+        type: 'task',
+        progress: 0,
+        startDate: 'Oct 14',
+        endDate: 'Oct 17',
+        dependencies: [3]
+    },
 ];
 
 export default function ProjectTimeline() {
     const [currentMonth, setCurrentMonth] = useState('Oct 2023');
     const [viewMode, setViewMode] = useState('Week');
     const [groupBy, setGroupBy] = useState('Phase');
+    const [showGroupDropdown, setShowGroupDropdown] = useState(false);
+    const [hoveredTask, setHoveredTask] = useState(null);
     const [activeFilters, setActiveFilters] = useState({
         assignee: 'Me',
         priority: 'High',
@@ -33,16 +101,30 @@ export default function ProjectTimeline() {
         });
     }, [activeFilters, searchTerm]);
 
-    // Agrupar tarefas
+    // Agrupar tarefas dinamicamente baseado no critério selecionado
     const groupedTasks = useMemo(() => {
         const groups = {};
         filteredTasks.forEach(task => {
-            const key = task.phase;
+            let key;
+            switch (groupBy) {
+                case 'Assignee':
+                    key = task.assignee;
+                    break;
+                case 'Priority':
+                    key = task.priority.charAt(0).toUpperCase() + task.priority.slice(1);
+                    break;
+                case 'Type':
+                    key = task.type === 'milestone' ? 'Milestones' : 'Tasks';
+                    break;
+                case 'Phase':
+                default:
+                    key = task.phase;
+            }
             if (!groups[key]) groups[key] = [];
             groups[key].push(task);
         });
         return groups;
-    }, [filteredTasks]);
+    }, [filteredTasks, groupBy]);
 
     const removeFilter = (filterKey) => {
         setActiveFilters(prev => ({ ...prev, [filterKey]: null }));
@@ -112,12 +194,61 @@ export default function ProjectTimeline() {
                         <div className="flex flex-wrap items-center gap-6">
                             <div className="flex items-center gap-3">
                                 <span className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Group By</span>
-                                <div className="relative group">
-                                    <button className="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-slate-700 dark:text-slate-200 bg-slate-50 dark:bg-[#1d2832] border border-slate-200 dark:border-[#233648] rounded-md hover:bg-slate-100 dark:hover:bg-[#2c3b4a] transition-all shadow-sm">
+                                <div className="relative">
+                                    <button
+                                        onClick={() => setShowGroupDropdown(!showGroupDropdown)}
+                                        className="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-slate-700 dark:text-slate-200 bg-slate-50 dark:bg-[#1d2832] border border-slate-200 dark:border-[#233648] rounded-md hover:bg-slate-100 dark:hover:bg-[#2c3b4a] transition-all shadow-sm"
+                                    >
                                         <span className="material-symbols-outlined text-[18px] text-slate-500">folder_open</span>
-                                        <span>Phase</span>
+                                        <span>{groupBy}</span>
                                         <span className="material-symbols-outlined text-[18px] text-slate-400">arrow_drop_down</span>
                                     </button>
+                                    {showGroupDropdown && (
+                                        <div className="absolute top-full left-0 mt-1 w-48 bg-white dark:bg-[#1d2832] border border-slate-200 dark:border-[#233648] rounded-lg shadow-xl py-1 z-50">
+                                            <div className="px-4 py-2 text-xs font-bold text-slate-400 uppercase tracking-wider">Grouping Options</div>
+                                            <button
+                                                onClick={() => { setGroupBy('Phase'); setShowGroupDropdown(false); }}
+                                                className={`w-full flex items-center gap-2 px-4 py-2 text-sm ${groupBy === 'Phase' ? 'text-primary bg-primary/5' : 'text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-[#2c3b4a]'}`}
+                                            >
+                                                {groupBy === 'Phase' && <span className="material-symbols-outlined text-[16px]">check</span>}
+                                                <span className={groupBy !== 'Phase' ? 'pl-6' : ''}>Project Phase</span>
+                                            </button>
+                                            <button
+                                                onClick={() => { setGroupBy('Assignee'); setShowGroupDropdown(false); }}
+                                                className={`w-full text-left px-4 py-2 text-sm ${groupBy === 'Assignee' ? 'text-primary bg-primary/5' : 'text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-[#2c3b4a]'}`}
+                                            >
+                                                <span className={groupBy === 'Assignee' ? '' : 'pl-6'}>
+                                                    {groupBy === 'Assignee' && <span className="material-symbols-outlined text-[16px] mr-2">check</span>}
+                                                    Assignee
+                                                </span>
+                                            </button>
+                                            <button
+                                                onClick={() => { setGroupBy('Type'); setShowGroupDropdown(false); }}
+                                                className={`w-full text-left px-4 py-2 text-sm ${groupBy === 'Type' ? 'text-primary bg-primary/5' : 'text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-[#2c3b4a]'}`}
+                                            >
+                                                <span className={groupBy === 'Type' ? '' : 'pl-6'}>
+                                                    {groupBy === 'Type' && <span className="material-symbols-outlined text-[16px] mr-2">check</span>}
+                                                    Task Type
+                                                </span>
+                                            </button>
+                                            <button
+                                                onClick={() => { setGroupBy('Priority'); setShowGroupDropdown(false); }}
+                                                className={`w-full text-left px-4 py-2 text-sm ${groupBy === 'Priority' ? 'text-primary bg-primary/5' : 'text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-[#2c3b4a]'}`}
+                                            >
+                                                <span className={groupBy === 'Priority' ? '' : 'pl-6'}>
+                                                    {groupBy === 'Priority' && <span className="material-symbols-outlined text-[16px] mr-2">check</span>}
+                                                    Priority
+                                                </span>
+                                            </button>
+                                            <div className="border-t border-slate-100 dark:border-[#233648] my-1"></div>
+                                            <button
+                                                onClick={() => { setGroupBy('None'); setShowGroupDropdown(false); }}
+                                                className="w-full text-left pl-10 pr-4 py-2 text-sm text-slate-500 hover:bg-slate-50 dark:hover:bg-[#2c3b4a]"
+                                            >
+                                                None
+                                            </button>
+                                        </div>
+                                    )}
                                 </div>
                             </div>
                             <div className="h-6 w-px bg-slate-200 dark:bg-[#233648]"></div>

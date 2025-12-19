@@ -15,6 +15,9 @@ import Reports from './pages/Reports';
 import ProjectTimeline from './pages/ProjectTimeline';
 import Inbox from './pages/Inbox';
 import Teams from './pages/Teams';
+import MemberEdit from './pages/MemberEdit';
+import MemberView from './pages/MemberView';
+import MemberCreate from './pages/MemberCreate';
 import CreateProject from './pages/CreateProject';
 import Settings from './pages/Settings';
 import './style.css';
@@ -48,6 +51,9 @@ function AppRouter() {
                 <Route path="tasks/:taskId/edit" element={<TaskForm />} />
                 <Route path="kanban" element={<KanbanBoard />} />
                 <Route path="teams" element={<Teams />} />
+                <Route path="teams/create" element={<MemberCreate />} />
+                <Route path="teams/view/:id" element={<MemberView />} />
+                <Route path="teams/edit/:id" element={<MemberEdit />} />
                 <Route path="reports" element={<Reports />} />
                 <Route path="calendar" element={<Calendar />} />
                 <Route path="inbox" element={<Inbox />} />

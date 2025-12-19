@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="pt-BR"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Membros da Equipe - Project Management System</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Configuration -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#137fec",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#111a22",
+                        "surface-dark": "#233648",
+                        "surface-dark-hover": "#2a4055",
+                        "text-secondary": "#92adc9",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-white font-display overflow-x-hidden min-h-screen flex flex-col">
+<!-- Top Navigation -->
+<header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-slate-200 dark:border-[#233648] px-10 py-3 bg-white dark:bg-[#111a22] sticky top-0 z-50">
+<div class="flex items-center gap-8">
+<div class="flex items-center gap-4 text-slate-900 dark:text-white">
+<div class="size-8 text-primary">
+<svg class="w-full h-full" fill="none" viewbox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_6_543)">
+<path d="M42.1739 20.1739L27.8261 5.82609C29.1366 7.13663 28.3989 10.1876 26.2002 13.7654C24.8538 15.9564 22.9595 18.3449 20.6522 20.6522C18.3449 22.9595 15.9564 24.8538 13.7654 26.2002C10.1876 28.3989 7.13663 29.1366 5.82609 27.8261L20.1739 42.1739C21.4845 43.4845 24.5355 42.7467 28.1133 40.548C30.3042 39.2016 32.6927 37.3073 35 35C37.3073 32.6927 39.2016 30.3042 40.548 28.1133C42.7467 24.5355 43.4845 21.4845 42.1739 20.1739Z" fill="currentColor"></path>
+<path clip-rule="evenodd" d="M7.24189 26.4066C7.31369 26.4411 7.64204 26.5637 8.52504 26.3738C9.59462 26.1438 11.0343 25.5311 12.7183 24.4963C14.7583 23.2426 17.0256 21.4503 19.238 19.238C21.4503 17.0256 23.2426 14.7583 24.4963 12.7183C25.5311 11.0343 26.1438 9.59463 26.3738 8.52504C26.5637 7.64204 26.4411 7.31369 26.4066 7.24189C26.345 7.21246 26.143 7.14535 25.6664 7.1918C24.9745 7.25925 23.9954 7.5498 22.7699 8.14278C20.3369 9.32007 17.3369 11.4915 14.4142 14.4142C11.4915 17.3369 9.32007 20.3369 8.14278 22.7699C7.5498 23.9954 7.25925 24.9745 7.1918 25.6664C7.14534 26.143 7.21246 26.345 7.24189 26.4066ZM29.9001 10.7285C29.4519 12.0322 28.7617 13.4172 27.9042 14.8126C26.465 17.1544 24.4686 19.6641 22.0664 22.0664C19.6641 24.4686 17.1544 26.465 14.8126 27.9042C13.4172 28.7617 12.0322 29.4519 10.7285 29.9001L21.5754 40.747C21.6001 40.7606 21.8995 40.931 22.8729 40.7217C23.9424 40.4916 25.3821 39.879 27.0661 38.8441C29.1062 37.5904 31.3734 35.7982 33.5858 33.5858C35.7982 31.3734 37.5904 29.1062 38.8441 27.0661C39.879 25.3821 40.4916 23.9425 40.7216 22.8729C40.931 21.8995 40.7606 21.6001 40.747 21.5754L29.9001 10.7285ZM29.2403 4.41187L43.5881 18.7597C44.9757 20.1473 44.9743 22.1235 44.6322 23.7139C44.2714 25.3919 43.4158 27.2666 42.252 29.1604C40.8128 31.5022 38.8165 34.012 36.4142 36.4142C34.012 38.8165 31.5022 40.8128 29.1604 42.252C27.2666 43.4158 25.3919 44.2714 23.7139 44.6322C22.1235 44.9743 20.1473 44.9757 18.7597 43.5881L4.41187 29.2403C3.29027 28.1187 3.08209 26.5973 3.21067 25.2783C3.34099 23.9415 3.8369 22.4852 4.54214 21.0277C5.96129 18.0948 8.43335 14.7382 11.5858 11.5858C14.7382 8.43335 18.0948 5.9613 21.0277 4.54214C22.4852 3.8369 23.9415 3.34099 25.2783 3.21067C26.5973 3.08209 28.1187 3.29028 29.2403 4.41187Z" fill="currentColor" fill-rule="evenodd"></path>
+</g>
+<defs>
+<clippath id="clip0_6_543"><rect fill="white" height="48" width="48"></rect></clippath>
+</defs>
+</svg>
+</div>
+<h2 class="text-slate-900 dark:text-white text-lg font-bold leading-tight tracking-[-0.015em]">PMS Pro</h2>
+</div>
+<div class="hidden md:flex items-center gap-9">
+<a class="text-slate-500 dark:text-text-secondary hover:text-primary dark:hover:text-white text-sm font-medium leading-normal transition-colors" href="#">Dashboard</a>
+<a class="text-slate-500 dark:text-text-secondary hover:text-primary dark:hover:text-white text-sm font-medium leading-normal transition-colors" href="#">Projetos</a>
+<a class="text-slate-500 dark:text-text-secondary hover:text-primary dark:hover:text-white text-sm font-medium leading-normal transition-colors" href="#">Tarefas</a>
+<a class="text-slate-900 dark:text-white text-sm font-bold leading-normal transition-colors" href="#">Equipe</a>
+<a class="text-slate-500 dark:text-text-secondary hover:text-primary dark:hover:text-white text-sm font-medium leading-normal transition-colors" href="#">Relatórios</a>
+</div>
+</div>
+<div class="flex flex-1 justify-end gap-6 items-center">
+<div class="hidden md:flex flex-col min-w-40 !h-10 max-w-64">
+<div class="flex w-full flex-1 items-stretch rounded-lg h-full bg-slate-100 dark:bg-surface-dark border border-slate-200 dark:border-transparent focus-within:ring-2 focus-within:ring-primary focus-within:bg-white dark:focus-within:bg-surface-dark transition-all">
+<div class="text-slate-400 dark:text-text-secondary flex items-center justify-center pl-4">
+<span class="material-symbols-outlined text-[20px]">search</span>
+</div>
+<input class="w-full bg-transparent border-none text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-text-secondary text-sm px-3 focus:ring-0" placeholder="Buscar..."/>
+</div>
+</div>
+<button class="relative flex items-center justify-center text-slate-500 dark:text-text-secondary hover:text-primary dark:hover:text-white transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-0 right-0 size-2 bg-red-500 rounded-full border-2 border-white dark:border-[#111a22]"></span>
+</button>
+<div class="bg-center bg-no-repeat bg-cover rounded-full size-10 border-2 border-slate-200 dark:border-surface-dark cursor-pointer" data-alt="User profile picture showing a smiling man in a suit" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDG_jJZMhv0_i2t0a8zCbxl3hDkYzlzp4JAs-xNkBGKjlS0WptTn1GhQmxpaVawVaXcQK5EQIQEPY94L0pOqYBZgTHf8c-9iasEHcBl_dS3H3MJ0ExNXzhp7dkOBxrFX-aCeDHBFYDgyibfBFZ1eF5PS-kgbDoJRCne2SioxvAwBBaC-Yjohgi5jGPrH2TJa1sm6Cq-_lrn9mTvcyLESdO2FEyO94RTArJGnl4T1wKTl5H3k5RU9n5c-qLVY5RFrV_tCOPQCAF4GUU");'></div>
+</div>
+</header>
+<main class="flex-1 flex justify-center py-8 px-4 md:px-8 lg:px-12">
+<div class="flex flex-col max-w-[1200px] flex-1 gap-8">
+<!-- Breadcrumbs -->
+<div class="flex flex-wrap items-center gap-2 px-1">
+<a class="text-slate-500 dark:text-text-secondary hover:text-primary transition-colors text-sm font-medium" href="#">Home</a>
+<span class="text-slate-400 dark:text-slate-600 text-sm font-medium">/</span>
+<a class="text-slate-500 dark:text-text-secondary hover:text-primary transition-colors text-sm font-medium" href="#">Configurações</a>
+<span class="text-slate-400 dark:text-slate-600 text-sm font-medium">/</span>
+<a class="text-slate-500 dark:text-text-secondary hover:text-primary transition-colors text-sm font-medium" href="#">Membros da Equipe</a>
+<span class="text-slate-400 dark:text-slate-600 text-sm font-medium">/</span>
+<span class="text-slate-900 dark:text-white text-sm font-medium">Editar Membro</span>
+</div>
+<!-- Page Header -->
+<div class="flex flex-col md:flex-row md:items-start justify-between gap-6 pb-6 border-b border-slate-200 dark:border-[#233648]">
+<div class="flex flex-col gap-2">
+<h1 class="text-slate-900 dark:text-white text-3xl md:text-4xl font-black tracking-tight">Editar Membro</h1>
+<p class="text-slate-500 dark:text-text-secondary text-base max-w-2xl">
+                        Gerencie os dados pessoais, informações de contato, endereço e permissões de função para este colaborador.
+                    </p>
+</div>
+<div class="flex gap-3 shrink-0">
+<button class="flex items-center justify-center rounded-lg h-10 px-5 border border-slate-300 dark:border-slate-600 bg-transparent text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-surface-dark transition-colors text-sm font-bold">
+                        Cancelar
+                    </button>
+<button class="flex items-center justify-center rounded-lg h-10 px-6 bg-primary hover:bg-blue-600 text-white shadow-lg shadow-blue-500/20 transition-all text-sm font-bold gap-2">
+<span class="material-symbols-outlined text-[20px]">save</span>
+<span>Salvar Alterações</span>
+</button>
+</div>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+<!-- Left Sidebar: Profile Card -->
+<div class="lg:col-span-4 flex flex-col gap-6">
+<div class="bg-white dark:bg-surface-dark rounded-xl border border-slate-200 dark:border-[#233648] p-6 flex flex-col items-center text-center shadow-sm">
+<div class="relative group cursor-pointer">
+<div class="size-32 rounded-full p-1 border-2 border-dashed border-slate-300 dark:border-slate-600 group-hover:border-primary transition-colors">
+<div class="w-full h-full rounded-full bg-cover bg-center bg-no-repeat" data-alt="Team member profile picture placeholder" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBWcAdbSlZH5pkUlhhm-WmaGcUe-QA_pDcnt1a4qKBL6_mivu7TGhl8O4PBvzJUInlt1Cci1Kfvvnhpq5ZKpry_GGJ_50wbXU88Xc8zCMUsOkUuEVUrjb1VBo0xX0EFpdXGVFyIpZlL0acbNIJsqXsIM-WLHCh6MhB2EICpxpdaLkTMXSGl3HM0dS6nGYoeQ1u7SC_t3z32oBotU3uwxdyycXMhEUyReYjz0thG3HTTU5AhruGHC2QfcTR_qDYSUVo2hftu0mkml3M');"></div>
+</div>
+<div class="absolute bottom-1 right-1 bg-primary text-white rounded-full p-2 shadow-lg hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-[20px] block">edit</span>
+</div>
+</div>
+<div class="mt-4">
+<h3 class="text-xl font-bold text-slate-900 dark:text-white">Ricardo Silva</h3>
+<span class="inline-flex items-center px-2.5 py-0.5 mt-2 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900/40 dark:text-blue-200 border border-blue-200 dark:border-blue-800/50">
+                                Senior Developer
+                            </span>
+</div>
+<div class="grid grid-cols-2 gap-4 w-full mt-8 border-t border-slate-200 dark:border-slate-700/50 pt-6">
+<div class="flex flex-col">
+<span class="text-2xl font-bold text-slate-900 dark:text-white">12</span>
+<span class="text-xs font-medium text-slate-500 dark:text-text-secondary uppercase tracking-wider">Projetos</span>
+</div>
+<div class="flex flex-col border-l border-slate-200 dark:border-slate-700/50">
+<span class="text-2xl font-bold text-slate-900 dark:text-white">34</span>
+<span class="text-xs font-medium text-slate-500 dark:text-text-secondary uppercase tracking-wider">Tarefas</span>
+</div>
+</div>
+</div>
+<!-- Role & Permissions Quick Panel -->
+<div class="bg-white dark:bg-surface-dark rounded-xl border border-slate-200 dark:border-[#233648] p-6 shadow-sm">
+<h4 class="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider mb-4">Acesso &amp; Função</h4>
+<div class="space-y-4">
+<div>
+<label class="block text-xs font-medium text-slate-500 dark:text-text-secondary mb-1.5 uppercase">Função na Empresa</label>
+<div class="relative">
+<select class="w-full bg-slate-50 dark:bg-[#111a22] border border-slate-300 dark:border-slate-600 text-slate-900 dark:text-white text-sm rounded-lg focus:ring-primary focus:border-primary block p-2.5">
+<option>Administrador</option>
+<option>Gerente de Projetos</option>
+<option selected="">Desenvolvedor Full-stack</option>
+<option>Designer UI/UX</option>
+<option>QA Tester</option>
+</select>
+</div>
+</div>
+<div class="flex items-center justify-between py-2">
+<div class="flex flex-col">
+<span class="text-sm font-medium text-slate-900 dark:text-white">Status da Conta</span>
+<span class="text-xs text-slate-500 dark:text-text-secondary">Permitir acesso ao sistema</span>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox" value=""/>
+<div class="w-11 h-6 bg-slate-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primary"></div>
+</label>
+</div>
+</div>
+</div>
+</div>
+<!-- Main Content: Forms -->
+<div class="lg:col-span-8 flex flex-col gap-6">
+<!-- Personal Data -->
+<div class="bg-white dark:bg-surface-dark rounded-xl border border-slate-200 dark:border-[#233648] p-6 md:p-8 shadow-sm">
+<div class="flex items-center gap-3 mb-6 pb-4 border-b border-slate-200 dark:border-slate-700/50">
+<span class="material-symbols-outlined text-primary">person</span>
+<h3 class="text-lg font-bold text-slate-900 dark:text-white">Dados Pessoais</h3>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div class="md:col-span-2">
+<label class="block text-xs font-semibold text-slate-500 dark:text-text-secondary uppercase mb-2">Nome Completo</label>
+<input class="w-full bg-slate-50 dark:bg-[#111a22] border border-slate-300 dark:border-slate-600 text-slate-900 dark:text-white text-sm rounded-lg focus:ring-primary focus:border-primary block p-3 transition-colors placeholder:text-slate-400" placeholder="Digite o nome completo" type="text" value="Ricardo Alves da Silva"/>
+</div>
+<div>
+<label class="block text-xs font-semibold text-slate-500 dark:text-text-secondary uppercase mb-2">E-mail Corporativo</label>
+<div class="flex items-center">
+<span class="inline-flex items-center px-3 h-[46px] text-sm text-slate-500 bg-slate-100 border border-r-0 border-slate-300 rounded-l-lg dark:bg-slate-700 dark:text-slate-400 dark:border-slate-600">
+<span class="material-symbols-outlined text-[18px]">mail</span>
+</span>
+<input class="rounded-none rounded-r-lg bg-slate-50 border text-slate-900 focus:ring-primary focus:border-primary block flex-1 min-w-0 w-full text-sm border-slate-300 p-3 dark:bg-[#111a22] dark:border-slate-600 dark:placeholder-slate-400 dark:text-white h-[46px]" placeholder="nome@empresa.com" type="email" value="ricardo.silva@techco.com"/>
+</div>
+</div>
+<div>
+<label class="block text-xs font-semibold text-slate-500 dark:text-text-secondary uppercase mb-2">CPF</label>
+<input class="w-full bg-slate-50 dark:bg-[#111a22] border border-slate-300 dark:border-slate-600 text-slate-900 dark:text-white text-sm rounded-lg focus:ring-primary focus:border-primary block p-3 transition-colors" placeholder="000.000.000-00" type="text" value="123.456.789-00"/>
+</div>
+<div>
+<label class="block text-xs font-semibold text-slate-500 dark:text-text-secondary uppercase mb-2">Telefone / Celular</label>
+<input class="w-full bg-slate-50 dark:bg-[#111a22] border border-slate-300 dark:border-slate-600 text-slate-900 dark:text-white text-sm rounded-lg focus:ring-primary focus:border-primary block p-3 transition-colors" placeholder="(00) 00000-0000" type="tel" value="(11) 98765-4321"/>
+</div>
+<div>
+<label class="block text-xs font-semibold text-slate-500 dark:text-text-secondary uppercase mb-2">Data de Nascimento</label>
+<input class="w-full bg-slate-50 dark:bg-[#111a22] border border-slate-300 dark:border-slate-600 text-slate-900 dark:text-white text-sm rounded-lg focus:ring-primary focus:border-primary block p-3 transition-colors" type="date" value="1990-05-15"/>
+</div>
+</div>
+</div>
+<!-- Address Data -->
+<div class="bg-white dark:bg-surface-dark rounded-xl border border-slate-200 dark:border-[#233648] p-6 md:p-8 shadow-sm">
+<div class="flex items-center gap-3 mb-6 pb-4 border-b border-slate-200 dark:border-slate-700/50">
+<span class="material-symbols-outlined text-primary">location_on</span>
+<h3 class="text-lg font-bold text-slate-900 dark:text-white">Endereço Completo</h3>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-6 gap-6">
+<div class="md:col-span-2">
+<label class="block text-xs font-semibold text-slate-500 dark:text-text-secondary uppercase mb-2">CEP</label>
+<div class="relative">
+<input class="w-full bg-slate-50 dark:bg-[#111a22] border border-slate-300 dark:border-slate-600 text-slate-900 dark:text-white text-sm rounded-lg focus:ring-primary focus:border-primary block p-3 pr-10 transition-colors" placeholder="00000-000" type="text" value="01310-100"/>
+<div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-slate-400">
+<span class="material-symbols-outlined text-[18px]">search</span>
+</div>
+</div>
+</div>
+<div class="md:col-span-4">
+<label class="block text-xs font-semibold text-slate-500 dark:text-text-secondary uppercase mb-2">Logradouro</label>
+<input class="w-full bg-slate-50 dark:bg-[#111a22] border border-slate-300 dark:border-slate-600 text-slate-900 dark:text-white text-sm rounded-lg focus:ring-primary focus:border-primary block p-3 transition-colors" placeholder="Rua, Avenida, etc." type="text" value="Av. Paulista"/>
+</div>
+<div class="md:col-span-2">
+<label class="block text-xs font-semibold text-slate-500 dark:text-text-secondary uppercase mb-2">Número</label>
+<input class="w-full bg-slate-50 dark:bg-[#111a22] border border-slate-300 dark:border-slate-600 text-slate-900 dark:text-white text-sm rounded-lg focus:ring-primary focus:border-primary block p-3 transition-colors" placeholder="Nº" type="text" value="1578"/>
+</div>
+<div class="md:col-span-4">
+<label class="block text-xs font-semibold text-slate-500 dark:text-text-secondary uppercase mb-2">Complemento</label>
+<input class="w-full bg-slate-50 dark:bg-[#111a22] border border-slate-300 dark:border-slate-600 text-slate-900 dark:text-white text-sm rounded-lg focus:ring-primary focus:border-primary block p-3 transition-colors" placeholder="Apto, Bloco, etc." type="text" value="Apto 45 - Bloco B"/>
+</div>
+<div class="md:col-span-2">
+<label class="block text-xs font-semibold text-slate-500 dark:text-text-secondary uppercase mb-2">Bairro</label>
+<input class="w-full bg-slate-50 dark:bg-[#111a22] border border-slate-300 dark:border-slate-600 text-slate-900 dark:text-white text-sm rounded-lg focus:ring-primary focus:border-primary block p-3 transition-colors" placeholder="Bairro" type="text" value="Bela Vista"/>
+</div>
+<div class="md:col-span-3">
+<label class="block text-xs font-semibold text-slate-500 dark:text-text-secondary uppercase mb-2">Cidade</label>
+<input class="w-full bg-slate-50 dark:bg-[#111a22] border border-slate-300 dark:border-slate-600 text-slate-900 dark:text-white text-sm rounded-lg focus:ring-primary focus:border-primary block p-3 transition-colors" placeholder="Cidade" type="text" value="São Paulo"/>
+</div>
+<div class="md:col-span-1">
+<label class="block text-xs font-semibold text-slate-500 dark:text-text-secondary uppercase mb-2">Estado</label>
+<select class="w-full bg-slate-50 dark:bg-[#111a22] border border-slate-300 dark:border-slate-600 text-slate-900 dark:text-white text-sm rounded-lg focus:ring-primary focus:border-primary block p-3">
+<option>AC</option>
+<option>AL</option>
+<option>AP</option>
+<option>AM</option>
+<option>BA</option>
+<option>CE</option>
+<option>DF</option>
+<option>ES</option>
+<option>GO</option>
+<option>MA</option>
+<option>MT</option>
+<option>MS</option>
+<option>MG</option>
+<option>PA</option>
+<option>PB</option>
+<option>PR</option>
+<option>PE</option>
+<option>PI</option>
+<option>RJ</option>
+<option>RN</option>
+<option>RS</option>
+<option>RO</option>
+<option>RR</option>
+<option>SC</option>
+<option selected="">SP</option>
+<option>SE</option>
+<option>TO</option>
+</select>
+</div>
+</div>
+</div>
+<!-- Linked Tasks (Read Only Preview) -->
+<div class="bg-white dark:bg-surface-dark rounded-xl border border-slate-200 dark:border-[#233648] p-6 md:p-8 shadow-sm mb-10">
+<div class="flex items-center justify-between mb-6 pb-4 border-b border-slate-200 dark:border-slate-700/50">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary">assignment</span>
+<h3 class="text-lg font-bold text-slate-900 dark:text-white">Tarefas Recentes</h3>
+</div>
+<button class="text-primary hover:text-blue-400 text-sm font-bold flex items-center gap-1">
+                                Ver todas
+                                <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+</button>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-sm text-left text-slate-500 dark:text-text-secondary">
+<thead class="text-xs text-slate-700 uppercase bg-slate-50 dark:bg-slate-800/50 dark:text-slate-400">
+<tr>
+<th class="px-6 py-3 rounded-l-lg" scope="col">Tarefa</th>
+<th class="px-6 py-3" scope="col">Projeto</th>
+<th class="px-6 py-3" scope="col">Status</th>
+<th class="px-6 py-3 rounded-r-lg" scope="col">Prazo</th>
+</tr>
+</thead>
+<tbody>
+<tr class="bg-white dark:bg-transparent border-b dark:border-slate-700/50 hover:bg-slate-50 dark:hover:bg-slate-800/30">
+<th class="px-6 py-4 font-medium text-slate-900 dark:text-white whitespace-nowrap" scope="row">
+                                            Implementar autenticação OAuth2
+                                        </th>
+<td class="px-6 py-4">API Core V2</td>
+<td class="px-6 py-4">
+<span class="bg-yellow-100 text-yellow-800 text-xs font-medium px-2.5 py-0.5 rounded dark:bg-yellow-900 dark:text-yellow-300 border border-yellow-200 dark:border-yellow-800">Em Progresso</span>
+</td>
+<td class="px-6 py-4">25 Out, 2023</td>
+</tr>
+<tr class="bg-white dark:bg-transparent border-b dark:border-slate-700/50 hover:bg-slate-50 dark:hover:bg-slate-800/30">
+<th class="px-6 py-4 font-medium text-slate-900 dark:text-white whitespace-nowrap" scope="row">
+                                            Refatorar componente de Dashboard
+                                        </th>
+<td class="px-6 py-4">Frontend Web</td>
+<td class="px-6 py-4">
+<span class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300 border border-green-200 dark:border-green-800">Concluído</span>
+</td>
+<td class="px-6 py-4">20 Out, 2023</td>
+</tr>
+<tr class="bg-white dark:bg-transparent hover:bg-slate-50 dark:hover:bg-slate-800/30">
+<th class="px-6 py-4 font-medium text-slate-900 dark:text-white whitespace-nowrap" scope="row">
+                                            Revisar PR #402 - Database Schema
+                                        </th>
+<td class="px-6 py-4">Database Migration</td>
+<td class="px-6 py-4">
+<span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300 border border-blue-200 dark:border-blue-800">Revisão</span>
+</td>
+<td class="px-6 py-4">Hoje</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</body></html>

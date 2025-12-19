@@ -39,6 +39,7 @@ export default function Teams() {
     const [showOnlineOnly, setShowOnlineOnly] = useState(false);
     const [selectedMembers, setSelectedMembers] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
+    const [openMenuId, setOpenMenuId] = useState(null);
     const itemsPerPage = 5;
 
     // Filter members
@@ -83,6 +84,29 @@ export default function Teams() {
         setCurrentPage(1);
     };
 
+    const handleViewMember = (id) => {
+        console.log('View member:', id);
+        // Navigate to view page
+        window.location.href = `/teams/view/${id}`;
+    };
+
+    const handleEditMember = (id) => {
+        console.log('Edit member:', id);
+        // Navigate to edit page
+        window.location.href = `/teams/edit/${id}`;
+    };
+
+    const handleDeleteMember = (id) => {
+        if (window.confirm('Tem certeza que deseja excluir este membro?')) {
+            console.log('Delete member:', id);
+            // Aqui você faria a chamada para deletar do banco
+        }
+    };
+
+    const toggleMenu = (id) => {
+        setOpenMenuId(openMenuId === id ? null : id);
+    };
+
     return (
         <div className="flex flex-1 justify-center py-6 px-4 sm:px-6 lg:px-8 bg-background-light dark:bg-background-dark min-h-full">
             <div className="flex w-full max-w-[1024px] flex-col gap-6">
@@ -100,7 +124,10 @@ export default function Teams() {
                             <p className="text-base text-slate-600 dark:text-text-secondary">{stats.active} membros ativos em {stats.departments} departamentos</p>
                         </div>
                     </div>
-                    <button className="flex h-10 items-center justify-center rounded-lg bg-primary px-4 text-sm font-bold text-white shadow-md hover:bg-primary-hover transition-colors">
+                    <button
+                        onClick={() => window.location.href = '/teams/create'}
+                        className="flex h-10 items-center justify-center rounded-lg bg-primary px-4 text-sm font-bold text-white shadow-md hover:bg-primary-hover transition-colors"
+                    >
                         <span className="material-symbols-outlined text-[20px] mr-2">person_add</span>
                         Adicionar Membro
                     </button>
@@ -233,9 +260,40 @@ export default function Teams() {
                                 </div>
                             </div>
                             <div className="absolute right-4 top-4 md:static md:col-span-1 md:flex md:justify-end">
-                                <button className="flex size-8 items-center justify-center rounded-full text-slate-400 dark:text-text-secondary hover:bg-gray-100 dark:hover:bg-[#233648] hover:text-slate-900 dark:hover:text-white transition-colors">
-                                    <span className="material-symbols-outlined">more_vert</span>
-                                </button>
+                                <div className="relative">
+                                    <button
+                                        onClick={() => toggleMenu(member.id)}
+                                        className="flex size-8 items-center justify-center rounded-full text-slate-400 dark:text-text-secondary hover:bg-gray-100 dark:hover:bg-[#233648] hover:text-slate-900 dark:hover:text-white transition-colors"
+                                    >
+                                        <span className="material-symbols-outlined">more_vert</span>
+                                    </button>
+                                    {openMenuId === member.id && (
+                                        <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-[#1d2832] border border-slate-200 dark:border-[#233648] rounded-lg shadow-xl py-1 z-50">
+                                            <button
+                                                onClick={() => { handleViewMember(member.id); setOpenMenuId(null); }}
+                                                className="w-full text-left px-4 py-2 text-sm text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-[#2c3b4a] flex items-center gap-2"
+                                            >
+                                                <span className="material-symbols-outlined text-[18px]">visibility</span>
+                                                Visualizar
+                                            </button>
+                                            <button
+                                                onClick={() => { handleEditMember(member.id); setOpenMenuId(null); }}
+                                                className="w-full text-left px-4 py-2 text-sm text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-[#2c3b4a] flex items-center gap-2"
+                                            >
+                                                <span className="material-symbols-outlined text-[18px]">edit</span>
+                                                Editar
+                                            </button>
+                                            <div className="border-t border-slate-100 dark:border-[#233648] my-1"></div>
+                                            <button
+                                                onClick={() => { handleDeleteMember(member.id); setOpenMenuId(null); }}
+                                                className="w-full text-left px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 flex items-center gap-2"
+                                            >
+                                                <span className="material-symbols-outlined text-[18px]">delete</span>
+                                                Excluir
+                                            </button>
+                                        </div>
+                                    )}
+                                </div>
                             </div>
                         </div>
                     ))}
