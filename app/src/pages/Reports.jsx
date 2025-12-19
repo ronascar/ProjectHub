@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 
 export default function Reports() {
     return (
-        <div className="flex flex-col min-h-[calc(100vh-65px)]">
+        <div className="flex flex-col">
             <div className="flex-1 px-4 md:px-10 py-6 md:py-8 w-full max-w-[1400px] mx-auto">
                 {/* Breadcrumbs */}
                 <div className="flex items-center gap-2 mb-6 text-sm">
@@ -340,7 +340,7 @@ export default function Reports() {
                         </div>
 
                         {/* Usage Stats / Promo */}
-                        <div className="bg-surface-dark text-white rounded-xl overflow-hidden relative" style={{ backgroundImage: "url('https://lh3.googleusercontent.com/aida-public/AB6AXuBIteGpBOfiTSxMoFeDTxu3ef9lP3u--zLdbDglZDZQzQCShm8RGO5k6bjYPIDVUsMldDKyvx94eDACgkkq38Pm64YNzlc2b-GogP3kioDIntMnhOcI1MXnQXqYBBaUW5SfBPosn1LUBDL374kz2ERFAxlKmelxwPJ01-FnRqOzvRFYCwb6WjUprTGRRRwbaNKszy8b0-fvrWo8jjSBfqRIYQhU0bQZedynyFYtaK0441LpkACwb08uXFySdPhGPh51HviELjPBGxM')", backgroundSize: "cover", backgroundPosition: "center" }}>
+                        <div className="bg-slate-800 text-white rounded-xl overflow-hidden relative" style={{ backgroundImage: "url('https://lh3.googleusercontent.com/aida-public/AB6AXuBIteGpBOfiTSxMoFeDTxu3ef9lP3u--zLdbDglZDZQzQCShm8RGO5k6bjYPIDVUsMldDKyvx94eDACgkkq38Pm64YNzlc2b-GogP3kioDIntMnhOcI1MXnQXqYBBaUW5SfBPosn1LUBDL374kz2ERFAxlKmelxwPJ01-FnRqOzvRFYCwb6WjUprTGRRRwbaNKszy8b0-fvrWo8jjSBfqRIYQhU0bQZedynyFYtaK0441LpkACwb08uXFySdPhGPh51HviELjPBGxM')", backgroundSize: "cover", backgroundPosition: "center" }}>
                             <div className="absolute inset-0 bg-gradient-to-t from-black/90 to-black/40"></div>
                             <div className="relative p-6 flex flex-col gap-4">
                                 <div className="flex items-center gap-2 text-blue-300">
