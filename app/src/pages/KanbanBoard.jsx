@@ -15,6 +15,21 @@ function TaskCard({ task }) {
         opacity: isDragging ? 0.5 : 1,
     };
 
+    // Função para obter as classes de cor da tag
+    const getTagColorClasses = (tagColor) => {
+        const colorMap = {
+            blue: 'bg-blue-500 text-white',
+            gray: 'bg-slate-600 text-white',
+            purple: 'bg-purple-500 text-white',
+            red: 'bg-red-500 text-white',
+            green: 'bg-emerald-500 text-white',
+            orange: 'bg-orange-500 text-white',
+            pink: 'bg-pink-500 text-white',
+            yellow: 'bg-yellow-500 text-slate-900',
+        };
+        return colorMap[tagColor] || 'bg-slate-500 text-white';
+    };
+
     return (
         <div
             ref={setNodeRef}
@@ -24,7 +39,7 @@ function TaskCard({ task }) {
             className="group bg-white dark:bg-[#1e2a36] p-4 rounded-lg shadow-sm border border-transparent hover:border-primary/40 dark:hover:border-primary/40 cursor-grab active:cursor-grabbing transition-all hover:shadow-md"
         >
             <div className="flex justify-between items-start mb-2">
-                <span className={`bg-${task.tagColor || 'gray'}-100 text-${task.tagColor || 'gray'}-700 dark:bg-${task.tagColor || 'gray'}-900/30 dark:text-${task.tagColor || 'gray'}-300 text-[10px] font-bold px-2 py-1 rounded`}>
+                <span className={`${getTagColorClasses(task.tagColor)} text-[10px] font-bold px-2.5 py-1 rounded uppercase tracking-wide`}>
                     {task.tag}
                 </span>
                 <button className="text-slate-400 hover:text-primary opacity-0 group-hover:opacity-100 transition-opacity">
