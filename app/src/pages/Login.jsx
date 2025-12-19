@@ -67,10 +67,10 @@ export default function Login() {
                     {/* Header Section */}
                     <div className="flex flex-col text-center lg:text-left">
                         <h1 className="text-slate-900 dark:text-white tracking-tight text-[32px] font-bold leading-tight pb-2">
-                            Welcome Back
+                            Bem vindo novamente
                         </h1>
                         <p className="text-slate-500 dark:text-text-secondary text-base font-normal leading-normal">
-                            Enter your credentials to access your account.
+                            Informe seus dados para acessar sua conta.
                         </p>
                     </div>
 
@@ -79,7 +79,7 @@ export default function Login() {
                         {/* Email Field */}
                         <label className="flex flex-col gap-2">
                             <span className="text-slate-700 dark:text-white text-sm font-medium leading-normal">
-                                Email Address
+                                Email
                             </span>
                             <div className="relative">
                                 <input
@@ -99,7 +99,7 @@ export default function Login() {
                         {/* Password Field */}
                         <label className="flex flex-col gap-2">
                             <span className="text-slate-700 dark:text-white text-sm font-medium leading-normal">
-                                Password
+                                Senha
                             </span>
                             <div className="relative flex w-full items-stretch rounded-lg">
                                 <input
@@ -135,11 +135,11 @@ export default function Login() {
                                     onChange={(e) => setRememberMe(e.target.checked)}
                                 />
                                 <span className="text-sm font-medium text-slate-600 dark:text-text-secondary group-hover:text-slate-900 dark:group-hover:text-white transition-colors">
-                                    Remember for 30 days
+                                    Lembrar pelos próximos 30 dias
                                 </span>
                             </label>
                             <a className="text-sm font-semibold text-primary hover:text-blue-400 transition-colors" href="#">
-                                Forgot password?
+                                Esqueceu sua senha?
                             </a>
                         </div>
 
@@ -148,7 +148,7 @@ export default function Login() {
                             className="w-full bg-primary hover:bg-blue-600 active:bg-blue-700 text-white font-semibold h-12 rounded-lg shadow-md shadow-primary/20 transition-all transform active:scale-[0.99] flex items-center justify-center gap-2"
                             type="submit"
                         >
-                            Sign In
+                            Acessar
                         </button>
                     </form>
 
@@ -159,7 +159,7 @@ export default function Login() {
                         </div>
                         <div className="relative flex justify-center text-xs uppercase">
                             <span className="bg-background-light dark:bg-background-dark px-2 text-slate-500 dark:text-text-secondary">
-                                Or continue with
+                                Ou continue com
                             </span>
                         </div>
                     </div>
@@ -186,14 +186,14 @@ export default function Login() {
                     {/* Footer Section */}
                     <div className="mt-4 text-center">
                         <p className="text-sm text-slate-500 dark:text-text-secondary">
-                            Don't have an account?{' '}
+                            Não tem uma conta?{' '}
                             <a className="font-semibold text-primary hover:text-blue-400 transition-colors" href="#">
-                                Sign up for free
+                                Cadastre-se
                             </a>
                         </p>
                     </div>
                     <div className="mt-auto pt-8 text-center text-xs text-slate-400 dark:text-slate-600">
-                        <p>© 2024 PMS System. All rights reserved.</p>
+                        <p>Project Hub © 2025 Todos direitos reservados.</p>
                     </div>
                 </div>
             </div>
