@@ -36,7 +36,7 @@ export default function ProjectsList() {
                 </div>
 
                 {/* Toolbar: Search & Filters */}
-                <div className="flex flex-col lg:flex-row gap-4 lg:items-center justify-between bg-[#192633] dark:bg-surface-dark p-2 rounded-xl border border-gray-200 dark:border-border-dark">
+                <div className="flex flex-col lg:flex-row gap-4 lg:items-center justify-between bg-gray-100 dark:bg-surface-dark p-2 rounded-xl border border-gray-200 dark:border-border-dark">
                     {/* Search Bar */}
                     <div className="flex w-full lg:max-w-md items-center rounded-lg bg-white dark:bg-[#233648] h-10 border border-transparent focus-within:border-primary transition-colors">
                         <div className="text-gray-400 dark:text-text-secondary pl-3 flex items-center justify-center">
