@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Calendário - Nexus Agency</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;family=Noto+Sans:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#137fec",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#101922",
+                        "card-dark": "#111a22",
+                        "border-dark": "#233648",
+                        "text-secondary": "#92adc9",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom scrollbar for better look in dark mode */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #111a22; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #233648; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #344c63; 
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-white font-display overflow-hidden h-screen flex">
+<!-- Sidebar -->
+<aside class="w-64 flex-col bg-card-dark border-r border-border-dark hidden lg:flex flex-shrink-0">
+<div class="flex h-full flex-col justify-between p-4">
+<div class="flex flex-col gap-4">
+<!-- Branding -->
+<div class="flex gap-3 px-2">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10" data-alt="Abstract blue geometric logo for Nexus Agency" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDWtY59HaCXU8xCcwKURgsSBTbm-3C5yfbbODGjiILZlpMu204PZND8YxGa7cgtiyi7ZdsoxfQD7gc0hCsNQmlUiDVhu4QpXon8om92TtCT4dGBoXjcKuLbHXfOKcSJIbWwawcQecBBfkjyHyvCC27PajuUq6ClfILNSPOF82dUkuXk4WMY64KRVbXxZBsnDpMdbcujO8hmEMOYt5ZY48g5ZRmGGxQmes8IUKZ3Odh6WUO-GmhNN6uNxGyRQqfACtWcW24upVGvpxs");'></div>
+<div class="flex flex-col justify-center">
+<h1 class="text-white text-base font-medium leading-normal">Nexus Agency</h1>
+<p class="text-text-secondary text-xs font-normal leading-normal">Management System</p>
+</div>
+</div>
+<!-- Navigation -->
+<div class="flex flex-col gap-2 mt-4">
+<a class="flex items-center gap-3 px-3 py-2 text-text-secondary hover:text-white hover:bg-border-dark rounded-lg transition-colors" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<p class="text-sm font-medium leading-normal">Dashboard</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-text-secondary hover:text-white hover:bg-border-dark rounded-lg transition-colors" href="#">
+<span class="material-symbols-outlined">work</span>
+<p class="text-sm font-medium leading-normal">Projects</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg bg-primary/20 text-primary" href="#">
+<span class="material-symbols-outlined fill-1">calendar_month</span>
+<p class="text-sm font-bold leading-normal">Calendar</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-text-secondary hover:text-white hover:bg-border-dark rounded-lg transition-colors" href="#">
+<span class="material-symbols-outlined">group</span>
+<p class="text-sm font-medium leading-normal">Team</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-text-secondary hover:text-white hover:bg-border-dark rounded-lg transition-colors" href="#">
+<span class="material-symbols-outlined">bar_chart</span>
+<p class="text-sm font-medium leading-normal">Reports</p>
+</a>
+</div>
+</div>
+<div class="flex flex-col gap-2">
+<a class="flex items-center gap-3 px-3 py-2 text-text-secondary hover:text-white hover:bg-border-dark rounded-lg transition-colors" href="#">
+<span class="material-symbols-outlined">settings</span>
+<p class="text-sm font-medium leading-normal">Settings</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-text-secondary hover:text-white hover:bg-border-dark rounded-lg transition-colors" href="#">
+<span class="material-symbols-outlined">logout</span>
+<p class="text-sm font-medium leading-normal">Log Out</p>
+</a>
+</div>
+</div>
+</aside>
+<!-- Main Content Wrapper -->
+<div class="flex flex-col flex-1 min-w-0">
+<!-- Top Header -->
+<header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-border-dark bg-card-dark px-6 py-3 flex-shrink-0">
+<div class="flex items-center gap-8">
+<!-- Mobile Menu Trigger -->
+<button class="lg:hidden text-white">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<h2 class="text-white text-lg font-bold leading-tight tracking-[-0.015em] hidden sm:block">Calendário</h2>
+<!-- Search -->
+<label class="flex flex-col min-w-40 !h-10 max-w-64 hidden md:flex">
+<div class="flex w-full flex-1 items-stretch rounded-lg h-full bg-border-dark group focus-within:ring-2 ring-primary/50 transition-all">
+<div class="text-text-secondary flex items-center justify-center pl-4 rounded-l-lg border-r-0">
+<span class="material-symbols-outlined text-[20px]">search</span>
+</div>
+<input class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-white focus:outline-0 focus:ring-0 border-none bg-transparent placeholder:text-text-secondary px-4 rounded-l-none border-l-0 pl-2 text-base font-normal leading-normal" placeholder="Search events..." value=""/>
+</div>
+</label>
+</div>
+<!-- Header Actions -->
+<div class="flex flex-1 justify-end gap-6 items-center">
+<div class="flex gap-2">
+<button class="flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-primary hover:bg-blue-600 text-white text-sm font-bold leading-normal tracking-[0.015em] transition-colors shadow-lg shadow-primary/20">
+<span class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[20px]">add</span>
+<span class="truncate hidden sm:inline">New Event</span>
+</span>
+</button>
+<button class="flex size-10 cursor-pointer items-center justify-center overflow-hidden rounded-lg bg-border-dark hover:bg-[#2f455a] text-white transition-colors">
+<span class="material-symbols-outlined text-[20px]">notifications</span>
+</button>
+<button class="flex size-10 cursor-pointer items-center justify-center overflow-hidden rounded-lg bg-border-dark hover:bg-[#2f455a] text-white transition-colors">
+<span class="material-symbols-outlined text-[20px]">settings</span>
+</button>
+</div>
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10 ring-2 ring-border-dark cursor-pointer" data-alt="User profile picture of a smiling man" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuD4T8afV8k8XCuqOFUtOPvrv3jneB_5uzlhQxKCX_W_Rw2TgkMplDfUiqwV3HnerHEsVetLAWwcCZHyHJv8vkG5R4DD8Fo4UzyeQg2-WWlJi-IwmyIL2b2ORRISh_Z9Krk_4nQeklXcMuIpHOROlp2-mzSkKiyBmzQJdCRkGs-lvC5K9YQfKcLspCeRMcAGHtdRTKoVGAvtISwGpeWzgeHBbGrFPPoZUAWKDvvQ4I8o5PAvuMoTG9dVvt6yIBkSnoWJSd6-cIlbgqg");'></div>
+</div>
+</header>
+<!-- Main Workspace -->
+<main class="flex flex-1 overflow-hidden relative">
+<!-- Filters Sidebar (Collapsible) -->
+<div class="w-80 border-r border-border-dark bg-card-dark overflow-y-auto hidden xl:block flex-shrink-0 p-4">
+<!-- Mini Calendar -->
+<div class="mb-8">
+<div class="flex items-center justify-between mb-4 px-2">
+<span class="text-white font-bold">October 2023</span>
+<div class="flex gap-1">
+<button class="p-1 hover:bg-border-dark rounded text-white"><span class="material-symbols-outlined text-sm">chevron_left</span></button>
+<button class="p-1 hover:bg-border-dark rounded text-white"><span class="material-symbols-outlined text-sm">chevron_right</span></button>
+</div>
+</div>
+<!-- Reuse simple grid from context but simplified -->
+<div class="grid grid-cols-7 text-center gap-y-2">
+<span class="text-xs text-text-secondary font-medium">S</span>
+<span class="text-xs text-text-secondary font-medium">M</span>
+<span class="text-xs text-text-secondary font-medium">T</span>
+<span class="text-xs text-text-secondary font-medium">W</span>
+<span class="text-xs text-text-secondary font-medium">T</span>
+<span class="text-xs text-text-secondary font-medium">F</span>
+<span class="text-xs text-text-secondary font-medium">S</span>
+<!-- Empty days -->
+<span></span><span></span><span></span>
+<!-- Dates -->
+<button class="size-8 mx-auto flex items-center justify-center rounded-full text-sm text-white hover:bg-border-dark">1</button>
+<button class="size-8 mx-auto flex items-center justify-center rounded-full text-sm text-white hover:bg-border-dark">2</button>
+<button class="size-8 mx-auto flex items-center justify-center rounded-full text-sm text-white hover:bg-border-dark">3</button>
+<button class="size-8 mx-auto flex items-center justify-center rounded-full text-sm text-white hover:bg-border-dark">4</button>
+<button class="size-8 mx-auto flex items-center justify-center rounded-full text-sm bg-primary text-white shadow-md shadow-primary/40">5</button>
+<button class="size-8 mx-auto flex items-center justify-center rounded-full text-sm text-white hover:bg-border-dark">6</button>
+<button class="size-8 mx-auto flex items-center justify-center rounded-full text-sm text-white hover:bg-border-dark">7</button>
+<button class="size-8 mx-auto flex items-center justify-center rounded-full text-sm text-white hover:bg-border-dark">8</button>
+<button class="size-8 mx-auto flex items-center justify-center rounded-full text-sm text-white hover:bg-border-dark">9</button>
+<button class="size-8 mx-auto flex items-center justify-center rounded-full text-sm text-white hover:bg-border-dark">10</button>
+<button class="size-8 mx-auto flex items-center justify-center rounded-full text-sm text-white hover:bg-border-dark">11</button>
+<button class="size-8 mx-auto flex items-center justify-center rounded-full text-sm text-white hover:bg-border-dark">12</button>
+<button class="size-8 mx-auto flex items-center justify-center rounded-full text-sm text-white hover:bg-border-dark">13</button>
+<button class="size-8 mx-auto flex items-center justify-center rounded-full text-sm text-white hover:bg-border-dark">14</button>
+<button class="size-8 mx-auto flex items-center justify-center rounded-full text-sm text-white hover:bg-border-dark">15</button>
+<button class="size-8 mx-auto flex items-center justify-center rounded-full text-sm text-white hover:bg-border-dark">16</button>
+<button class="size-8 mx-auto flex items-center justify-center rounded-full text-sm text-white hover:bg-border-dark">17</button>
+<button class="size-8 mx-auto flex items-center justify-center rounded-full text-sm text-white hover:bg-border-dark">18</button>
+<button class="size-8 mx-auto flex items-center justify-center rounded-full text-sm text-white hover:bg-border-dark">19</button>
+<button class="size-8 mx-auto flex items-center justify-center rounded-full text-sm text-white hover:bg-border-dark">20</button>
+<button class="size-8 mx-auto flex items-center justify-center rounded-full text-sm text-white hover:bg-border-dark">21</button>
+<button class="size-8 mx-auto flex items-center justify-center rounded-full text-sm text-white hover:bg-border-dark">22</button>
+<button class="size-8 mx-auto flex items-center justify-center rounded-full text-sm text-white hover:bg-border-dark">23</button>
+<button class="size-8 mx-auto flex items-center justify-center rounded-full text-sm text-white hover:bg-border-dark">24</button>
+<button class="size-8 mx-auto flex items-center justify-center rounded-full text-sm text-white hover:bg-border-dark">25</button>
+<button class="size-8 mx-auto flex items-center justify-center rounded-full text-sm text-white hover:bg-border-dark">26</button>
+<button class="size-8 mx-auto flex items-center justify-center rounded-full text-sm text-white hover:bg-border-dark">27</button>
+<button class="size-8 mx-auto flex items-center justify-center rounded-full text-sm text-white hover:bg-border-dark">28</button>
+<button class="size-8 mx-auto flex items-center justify-center rounded-full text-sm text-white hover:bg-border-dark">29</button>
+<button class="size-8 mx-auto flex items-center justify-center rounded-full text-sm text-white hover:bg-border-dark">30</button>
+</div>
+</div>
+<!-- Projects Filter -->
+<div class="mb-8">
+<h3 class="text-text-secondary text-xs font-bold uppercase tracking-wider mb-3 px-2">Projects</h3>
+<div class="space-y-1">
+<label class="flex items-center gap-3 px-2 py-1.5 hover:bg-border-dark rounded-md cursor-pointer group">
+<input checked="" class="rounded border-border-dark bg-background-dark text-primary focus:ring-0 focus:ring-offset-0 size-4" type="checkbox"/>
+<span class="size-2.5 rounded-full bg-primary"></span>
+<span class="text-sm text-white flex-1 group-hover:text-primary transition-colors">Website Redesign</span>
+</label>
+<label class="flex items-center gap-3 px-2 py-1.5 hover:bg-border-dark rounded-md cursor-pointer group">
+<input checked="" class="rounded border-border-dark bg-background-dark text-primary focus:ring-0 focus:ring-offset-0 size-4" type="checkbox"/>
+<span class="size-2.5 rounded-full bg-purple-500"></span>
+<span class="text-sm text-white flex-1 group-hover:text-primary transition-colors">Mobile App</span>
+</label>
+<label class="flex items-center gap-3 px-2 py-1.5 hover:bg-border-dark rounded-md cursor-pointer group">
+<input checked="" class="rounded border-border-dark bg-background-dark text-primary focus:ring-0 focus:ring-offset-0 size-4" type="checkbox"/>
+<span class="size-2.5 rounded-full bg-green-500"></span>
+<span class="text-sm text-white flex-1 group-hover:text-primary transition-colors">Marketing Q4</span>
+</label>
+<label class="flex items-center gap-3 px-2 py-1.5 hover:bg-border-dark rounded-md cursor-pointer group">
+<input class="rounded border-border-dark bg-background-dark text-primary focus:ring-0 focus:ring-offset-0 size-4" type="checkbox"/>
+<span class="size-2.5 rounded-full bg-orange-500"></span>
+<span class="text-sm text-white flex-1 group-hover:text-primary transition-colors">Internal Ops</span>
+</label>
+</div>
+</div>
+<!-- Team Filter -->
+<div>
+<h3 class="text-text-secondary text-xs font-bold uppercase tracking-wider mb-3 px-2">Team</h3>
+<div class="space-y-2">
+<div class="flex items-center gap-3 px-2 py-1.5 hover:bg-border-dark rounded-md cursor-pointer">
+<div class="size-8 rounded-full bg-cover" data-alt="Portrait of Sarah" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuB7FN7qAR7r8qpSYqEv-0XodfW7pe9UrvdQ1O2X-gi0UKg4_7xIecCDqREfKj6cCDOYjMXbVEshl_lXKvmFJInI7mhuhTUACHuiS44uKrqIQhMvHiFKOlj09w9Q1ch_ZFjcQj6rmHNkwiELeat-hufI4Y8nXsylhxdemjlWfX9Rl3E1SElhbjyEhmq97s0po06bs_3Bx_23RQdyYo9NfhQOCfs5ADXllTtCFGn9fhX53tEpcrliCTocIQTY-u3vPDKTk5iJIAAr_hE");'></div>
+<span class="text-sm text-white">Sarah Connor</span>
+</div>
+<div class="flex items-center gap-3 px-2 py-1.5 hover:bg-border-dark rounded-md cursor-pointer">
+<div class="size-8 rounded-full bg-cover" data-alt="Portrait of Michael" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCqa1UHBLJbC1wDjV91jwF46ZH-SPDoOloRlwrJE9fDFNMgc84Enx1K4HqspyRV2lCOszbFZXk05IlEEjktNig6YHlmxdGhuHVLLwy9bWVEz-qt-o3LBWRsmMGkuPsCyaQJY9qDQnQGqykn8lRJHt-NAKomd2AoJyCqflDWuFu2wvloZ0NQczCMKa6lDBcsH3P1bz6S-8YT-c_0A2iL2Q-u0PvQtKW07t2bq5D7z87w9tpPG0CwdmvMqsE2z2SPrmLdFTYAmT0SUNY");'></div>
+<span class="text-sm text-white">Michael Chen</span>
+</div>
+<div class="flex items-center gap-3 px-2 py-1.5 hover:bg-border-dark rounded-md cursor-pointer">
+<div class="size-8 rounded-full bg-cover" data-alt="Portrait of Jessica" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCwKeVqWJ8gWVd7zkWq9J8eBnaDaJbYbOqrnuXr1-5q8LrYa1SnANT7eyCBDM813VZUZSPzApI7cI0n_Og35FasGaB8kcc5hP2iZAcs5D2DswlnKT8oFP--McOLk8bjaD7Jb1a0YTrD-axIxQtZisKqMZ5Vbgx6hwX8twyDU7vG98rYhR3oUB1PeXWWTZbHzQbb7wut2jna38zNLIy4GuQqUa3gRL28Jw5sMB4HsspY-C63kp45mPgCXGUzDLc-zc1GquAjQzAwSTo");'></div>
+<span class="text-sm text-white">Jessica Jones</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Calendar Grid Area -->
+<div class="flex-1 flex flex-col min-w-0 bg-background-dark h-full">
+<!-- Calendar Toolbar -->
+<div class="flex flex-col sm:flex-row items-start sm:items-center justify-between p-6 gap-4 border-b border-border-dark bg-background-dark z-10">
+<div class="flex items-center gap-4">
+<h2 class="text-2xl sm:text-3xl font-bold text-white tracking-tight">October 2023</h2>
+<div class="flex items-center rounded-lg border border-border-dark bg-card-dark p-0.5 ml-2">
+<button class="p-1 hover:text-white text-text-secondary hover:bg-background-dark rounded transition-colors">
+<span class="material-symbols-outlined">chevron_left</span>
+</button>
+<button class="p-1 hover:text-white text-text-secondary hover:bg-background-dark rounded transition-colors">
+<span class="material-symbols-outlined">chevron_right</span>
+</button>
+</div>
+<button class="hidden sm:block ml-2 px-3 py-1.5 text-sm font-bold text-white border border-border-dark rounded-lg hover:bg-border-dark transition-colors">
+                            Today
+                        </button>
+</div>
+<!-- View Toggle -->
+<div class="flex items-center p-1 bg-card-dark rounded-lg border border-border-dark">
+<label class="cursor-pointer">
+<input class="peer sr-only" name="view" type="radio"/>
+<span class="flex items-center justify-center px-4 py-1.5 text-sm font-medium text-text-secondary rounded-md peer-checked:bg-background-dark peer-checked:text-white peer-checked:shadow-sm transition-all hover:text-white">Day</span>
+</label>
+<label class="cursor-pointer">
+<input class="peer sr-only" name="view" type="radio"/>
+<span class="flex items-center justify-center px-4 py-1.5 text-sm font-medium text-text-secondary rounded-md peer-checked:bg-background-dark peer-checked:text-white peer-checked:shadow-sm transition-all hover:text-white">Week</span>
+</label>
+<label class="cursor-pointer">
+<input checked="" class="peer sr-only" name="view" type="radio"/>
+<span class="flex items-center justify-center px-4 py-1.5 text-sm font-medium text-text-secondary rounded-md peer-checked:bg-background-dark peer-checked:text-white peer-checked:shadow-sm transition-all hover:text-white">Month</span>
+</label>
+</div>
+</div>
+<!-- Calendar Grid (Month View) -->
+<div class="flex-1 overflow-y-auto p-6">
+<div class="bg-card-dark rounded-xl border border-border-dark shadow-sm overflow-hidden min-h-[800px] flex flex-col">
+<!-- Days Header -->
+<div class="grid grid-cols-7 border-b border-border-dark bg-background-dark/50">
+<div class="py-3 text-center text-sm font-semibold text-text-secondary uppercase tracking-wider">Mon</div>
+<div class="py-3 text-center text-sm font-semibold text-text-secondary uppercase tracking-wider">Tue</div>
+<div class="py-3 text-center text-sm font-semibold text-text-secondary uppercase tracking-wider">Wed</div>
+<div class="py-3 text-center text-sm font-semibold text-text-secondary uppercase tracking-wider">Thu</div>
+<div class="py-3 text-center text-sm font-semibold text-text-secondary uppercase tracking-wider">Fri</div>
+<div class="py-3 text-center text-sm font-semibold text-text-secondary uppercase tracking-wider text-primary">Sat</div>
+<div class="py-3 text-center text-sm font-semibold text-text-secondary uppercase tracking-wider text-primary">Sun</div>
+</div>
+<!-- Days Grid -->
+<div class="grid grid-cols-7 flex-1 auto-rows-fr bg-border-dark gap-px">
+<!-- Week 1 -->
+<div class="bg-card-dark p-2 min-h-[120px] flex flex-col gap-1 relative group hover:bg-[#1a2632] transition-colors">
+<span class="text-text-secondary text-sm font-medium p-1 opacity-50">25</span>
+</div>
+<div class="bg-card-dark p-2 min-h-[120px] flex flex-col gap-1 relative group hover:bg-[#1a2632] transition-colors">
+<span class="text-text-secondary text-sm font-medium p-1 opacity-50">26</span>
+</div>
+<div class="bg-card-dark p-2 min-h-[120px] flex flex-col gap-1 relative group hover:bg-[#1a2632] transition-colors">
+<span class="text-text-secondary text-sm font-medium p-1 opacity-50">27</span>
+</div>
+<div class="bg-card-dark p-2 min-h-[120px] flex flex-col gap-1 relative group hover:bg-[#1a2632] transition-colors">
+<span class="text-text-secondary text-sm font-medium p-1 opacity-50">28</span>
+</div>
+<div class="bg-card-dark p-2 min-h-[120px] flex flex-col gap-1 relative group hover:bg-[#1a2632] transition-colors">
+<span class="text-text-secondary text-sm font-medium p-1 opacity-50">29</span>
+</div>
+<div class="bg-card-dark p-2 min-h-[120px] flex flex-col gap-1 relative group hover:bg-[#1a2632] transition-colors">
+<span class="text-text-secondary text-sm font-medium p-1 opacity-50">30</span>
+</div>
+<div class="bg-card-dark p-2 min-h-[120px] flex flex-col gap-1 relative group hover:bg-[#1a2632] transition-colors">
+<span class="text-white text-sm font-medium p-1">1</span>
+</div>
+<!-- Week 2 -->
+<div class="bg-card-dark p-2 min-h-[120px] flex flex-col gap-1 relative group hover:bg-[#1a2632] transition-colors">
+<span class="text-white text-sm font-medium p-1">2</span>
+<!-- Event -->
+<div class="bg-primary/20 border-l-2 border-primary rounded-r px-2 py-1 text-xs text-white truncate cursor-pointer hover:bg-primary/30 transition-colors">
+<span class="font-bold">09:00</span> Sprint Planning
+                                </div>
+</div>
+<div class="bg-card-dark p-2 min-h-[120px] flex flex-col gap-1 relative group hover:bg-[#1a2632] transition-colors">
+<span class="text-white text-sm font-medium p-1">3</span>
+</div>
+<div class="bg-card-dark p-2 min-h-[120px] flex flex-col gap-1 relative group hover:bg-[#1a2632] transition-colors">
+<span class="text-white text-sm font-medium p-1">4</span>
+<div class="bg-purple-500/20 border-l-2 border-purple-500 rounded-r px-2 py-1 text-xs text-white truncate cursor-pointer hover:bg-purple-500/30 transition-colors">
+<span class="font-bold">14:00</span> Design Review
+                                </div>
+<div class="bg-green-500/20 border-l-2 border-green-500 rounded-r px-2 py-1 text-xs text-white truncate cursor-pointer hover:bg-green-500/30 transition-colors">
+<span class="font-bold">16:00</span> Client Call
+                                </div>
+</div>
+<div class="bg-card-dark p-2 min-h-[120px] flex flex-col gap-1 relative group hover:bg-[#1a2632] transition-colors">
+<span class="text-white text-sm font-bold bg-primary rounded-full size-7 flex items-center justify-center shadow-lg shadow-primary/40">5</span>
+<div class="bg-orange-500/20 border-l-2 border-orange-500 rounded-r px-2 py-1 text-xs text-white truncate cursor-pointer hover:bg-orange-500/30 transition-colors">
+<span class="font-bold">11:30</span> Team Lunch
+                                </div>
+</div>
+<div class="bg-card-dark p-2 min-h-[120px] flex flex-col gap-1 relative group hover:bg-[#1a2632] transition-colors">
+<span class="text-white text-sm font-medium p-1">6</span>
+</div>
+<div class="bg-card-dark p-2 min-h-[120px] flex flex-col gap-1 relative group hover:bg-[#1a2632] transition-colors">
+<span class="text-white text-sm font-medium p-1">7</span>
+</div>
+<!-- Week 3 -->
+<div class="bg-card-dark p-2 min-h-[120px] flex flex-col gap-1 relative group hover:bg-[#1a2632] transition-colors">
+<span class="text-white text-sm font-medium p-1">8</span>
+</div>
+<div class="bg-card-dark p-2 min-h-[120px] flex flex-col gap-1 relative group hover:bg-[#1a2632] transition-colors">
+<span class="text-white text-sm font-medium p-1">9</span>
+<div class="bg-primary/20 border-l-2 border-primary rounded-r px-2 py-1 text-xs text-white truncate cursor-pointer hover:bg-primary/30 transition-colors">
+<span class="font-bold">10:00</span> Daily Standup
+                                </div>
+</div>
+<div class="bg-card-dark p-2 min-h-[120px] flex flex-col gap-1 relative group hover:bg-[#1a2632] transition-colors">
+<span class="text-white text-sm font-medium p-1">10</span>
+<div class="bg-red-500/20 border-l-2 border-red-500 rounded-r px-2 py-1 text-xs text-white truncate cursor-pointer hover:bg-red-500/30 transition-colors">
+<span class="font-bold">EOD</span> Project Delivery
+                                </div>
+</div>
+<div class="bg-card-dark p-2 min-h-[120px] flex flex-col gap-1 relative group hover:bg-[#1a2632] transition-colors">
+<span class="text-white text-sm font-medium p-1">11</span>
+</div>
+<div class="bg-card-dark p-2 min-h-[120px] flex flex-col gap-1 relative group hover:bg-[#1a2632] transition-colors">
+<span class="text-white text-sm font-medium p-1">12</span>
+<div class="bg-purple-500/20 border-l-2 border-purple-500 rounded-r px-2 py-1 text-xs text-white truncate cursor-pointer hover:bg-purple-500/30 transition-colors">
+<span class="font-bold">15:00</span> UX Workshop
+                                </div>
+</div>
+<div class="bg-card-dark p-2 min-h-[120px] flex flex-col gap-1 relative group hover:bg-[#1a2632] transition-colors">
+<span class="text-white text-sm font-medium p-1">13</span>
+</div>
+<div class="bg-card-dark p-2 min-h-[120px] flex flex-col gap-1 relative group hover:bg-[#1a2632] transition-colors">
+<span class="text-white text-sm font-medium p-1">14</span>
+</div>
+<!-- Week 4 -->
+<div class="bg-card-dark p-2 min-h-[120px] flex flex-col gap-1 relative group hover:bg-[#1a2632] transition-colors">
+<span class="text-white text-sm font-medium p-1">15</span>
+</div>
+<div class="bg-card-dark p-2 min-h-[120px] flex flex-col gap-1 relative group hover:bg-[#1a2632] transition-colors">
+<span class="text-white text-sm font-medium p-1">16</span>
+<div class="bg-primary/20 border-l-2 border-primary rounded-r px-2 py-1 text-xs text-white truncate cursor-pointer hover:bg-primary/30 transition-colors">
+<span class="font-bold">09:00</span> Sprint Planning
+                                </div>
+</div>
+<div class="bg-card-dark p-2 min-h-[120px] flex flex-col gap-1 relative group hover:bg-[#1a2632] transition-colors">
+<span class="text-white text-sm font-medium p-1">17</span>
+</div>
+<div class="bg-card-dark p-2 min-h-[120px] flex flex-col gap-1 relative group hover:bg-[#1a2632] transition-colors">
+<span class="text-white text-sm font-medium p-1">18</span>
+</div>
+<div class="bg-card-dark p-2 min-h-[120px] flex flex-col gap-1 relative group hover:bg-[#1a2632] transition-colors">
+<span class="text-white text-sm font-medium p-1">19</span>
+<div class="bg-green-500/20 border-l-2 border-green-500 rounded-r px-2 py-1 text-xs text-white truncate cursor-pointer hover:bg-green-500/30 transition-colors">
+<span class="font-bold">10:00</span> Q4 Strategy
+                                </div>
+</div>
+<div class="bg-card-dark p-2 min-h-[120px] flex flex-col gap-1 relative group hover:bg-[#1a2632] transition-colors">
+<span class="text-white text-sm font-medium p-1">20</span>
+</div>
+<div class="bg-card-dark p-2 min-h-[120px] flex flex-col gap-1 relative group hover:bg-[#1a2632] transition-colors">
+<span class="text-white text-sm font-medium p-1">21</span>
+</div>
+<!-- Week 5 -->
+<div class="bg-card-dark p-2 min-h-[120px] flex flex-col gap-1 relative group hover:bg-[#1a2632] transition-colors">
+<span class="text-white text-sm font-medium p-1">22</span>
+<div class="bg-purple-500/20 border-l-2 border-purple-500 rounded-r px-2 py-1 text-xs text-white truncate cursor-pointer hover:bg-purple-500/30 transition-colors">
+<span class="font-bold">13:00</span> Design Huddle
+                                </div>
+</div>
+<div class="bg-card-dark p-2 min-h-[120px] flex flex-col gap-1 relative group hover:bg-[#1a2632] transition-colors">
+<span class="text-white text-sm font-medium p-1">23</span>
+</div>
+<div class="bg-card-dark p-2 min-h-[120px] flex flex-col gap-1 relative group hover:bg-[#1a2632] transition-colors">
+<span class="text-white text-sm font-medium p-1">24</span>
+</div>
+<div class="bg-card-dark p-2 min-h-[120px] flex flex-col gap-1 relative group hover:bg-[#1a2632] transition-colors">
+<span class="text-white text-sm font-medium p-1">25</span>
+<div class="bg-orange-500/20 border-l-2 border-orange-500 rounded-r px-2 py-1 text-xs text-white truncate cursor-pointer hover:bg-orange-500/30 transition-colors">
+<span class="font-bold">14:00</span> Hiring Sync
+                                </div>
+</div>
+<div class="bg-card-dark p-2 min-h-[120px] flex flex-col gap-1 relative group hover:bg-[#1a2632] transition-colors">
+<span class="text-white text-sm font-medium p-1">26</span>
+</div>
+<div class="bg-card-dark p-2 min-h-[120px] flex flex-col gap-1 relative group hover:bg-[#1a2632] transition-colors">
+<span class="text-white text-sm font-medium p-1">27</span>
+</div>
+<div class="bg-card-dark p-2 min-h-[120px] flex flex-col gap-1 relative group hover:bg-[#1a2632] transition-colors">
+<span class="text-white text-sm font-medium p-1">28</span>
+</div>
+<!-- Week 6 (partial) -->
+<div class="bg-card-dark p-2 min-h-[120px] flex flex-col gap-1 relative group hover:bg-[#1a2632] transition-colors">
+<span class="text-white text-sm font-medium p-1">29</span>
+</div>
+<div class="bg-card-dark p-2 min-h-[120px] flex flex-col gap-1 relative group hover:bg-[#1a2632] transition-colors">
+<span class="text-white text-sm font-medium p-1">30</span>
+<div class="bg-primary/20 border-l-2 border-primary rounded-r px-2 py-1 text-xs text-white truncate cursor-pointer hover:bg-primary/30 transition-colors">
+<span class="font-bold">09:00</span> Sprint Planning
+                                </div>
+</div>
+<div class="bg-card-dark p-2 min-h-[120px] flex flex-col gap-1 relative group hover:bg-[#1a2632] transition-colors">
+<span class="text-white text-sm font-medium p-1">31</span>
+</div>
+<div class="bg-card-dark p-2 min-h-[120px] flex flex-col gap-1 relative group hover:bg-[#1a2632] transition-colors">
+<span class="text-text-secondary text-sm font-medium p-1 opacity-50">1</span>
+</div>
+<div class="bg-card-dark p-2 min-h-[120px] flex flex-col gap-1 relative group hover:bg-[#1a2632] transition-colors">
+<span class="text-text-secondary text-sm font-medium p-1 opacity-50">2</span>
+</div>
+<div class="bg-card-dark p-2 min-h-[120px] flex flex-col gap-1 relative group hover:bg-[#1a2632] transition-colors">
+<span class="text-text-secondary text-sm font-medium p-1 opacity-50">3</span>
+</div>
+<div class="bg-card-dark p-2 min-h-[120px] flex flex-col gap-1 relative group hover:bg-[#1a2632] transition-colors">
+<span class="text-text-secondary text-sm font-medium p-1 opacity-50">4</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+</body></html>

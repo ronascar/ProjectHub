@@ -7,6 +7,12 @@ import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import ProjectsList from './pages/ProjectsList';
 import KanbanBoard from './pages/KanbanBoard';
+import ProjectDetails from './pages/ProjectDetails';
+import TaskForm from './pages/TaskForm';
+import MyTasks from './pages/MyTasks';
+import Calendar from './pages/Calendar';
+import Reports from './pages/Reports';
+import ProjectTimeline from './pages/ProjectTimeline';
 import Settings from './pages/Settings';
 import './style.css';
 
@@ -31,11 +37,17 @@ function AppRouter() {
             >
                 <Route index element={<Dashboard />} />
                 <Route path="projects" element={<ProjectsList />} />
+                <Route path="projects/:projectId" element={<ProjectDetails />} />
+                <Route path="projects/:projectId/timeline" element={<ProjectTimeline />} />
+                <Route path="tasks" element={<MyTasks />} />
+                <Route path="tasks/create" element={<TaskForm />} />
+                <Route path="tasks/:taskId/edit" element={<TaskForm />} />
                 <Route path="kanban" element={<KanbanBoard />} />
                 <Route path="teams" element={<div className="p-8"><h1 className="text-2xl font-bold dark:text-white">Teams - Coming Soon</h1></div>} />
-                <Route path="reports" element={<div className="p-8"><h1 className="text-2xl font-bold dark:text-white">Reports - Coming Soon</h1></div>} />
-                <Route path="calendar" element={<div className="p-8"><h1 className="text-2xl font-bold dark:text-white">Calendar - Coming Soon</h1></div>} />
-                <Route path="tasks" element={<div className="p-8"><h1 className="text-2xl font-bold dark:text-white">My Tasks - Coming Soon</h1></div>} />
+                <Route path="reports" element={<Reports />} />
+                <Route path="calendar" element={<Calendar />} />
+
+
                 <Route path="inbox" element={<div className="p-8"><h1 className="text-2xl font-bold dark:text-white">Inbox - Coming Soon</h1></div>} />
                 <Route path="settings" element={<Settings />} />
             </Route>

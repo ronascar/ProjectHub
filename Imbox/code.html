@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Caixa de Entrada - TechFlow</title>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Theme Configuration -->
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#137fec",
+              "background-light": "#f6f7f8",
+              "background-dark": "#111a22", // Matches the component examples
+              "surface-dark": "#1c2936",
+              "surface-highlight": "#233648",
+              "text-secondary": "#92adc9",
+            },
+            fontFamily: {
+              "display": ["Inter", "Noto Sans", "sans-serif"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            font-size: 24px;
+        }
+        .material-symbols-outlined.filled {
+            font-variation-settings: 'FILL' 1;
+        }
+        /* Hide scrollbar for cleaner UI */
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-white h-screen overflow-hidden flex selection:bg-primary/30">
+<!-- Sidebar Navigation -->
+<aside class="w-[280px] shrink-0 h-full bg-[#111a22] border-r border-[#233648] flex flex-col z-20 hidden lg:flex">
+<div class="p-6 pb-2">
+<div class="flex gap-3 items-center mb-8">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10 shadow-lg shadow-primary/20" data-alt="Abstract blue tech logo" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAFWtsePTPnjCj8jcUK9PDT0kdleMdaYYeyaqondCPy3axXpdtjaNOEX7wFaCjhJmuNyE0xO83KMWQ4tA4LnHiAMFYNFxkoL8b92a5SzPpuP8-Xbo6ANaYOMWu0eMDhBh0vJdX2kRzEF413uMbbwqw6Z5A7MAgABgDbxCHht01FUORU3RM27aKAvVlfG0jPtbiEH58Uu25V8EcB-Vnra3PW4WNsX3o4qKUc6UlNXf2dtCIGRYtM2cPFXaIU_kC0HvFZcvpTD30IJ2c");'>
+</div>
+<div class="flex flex-col">
+<h1 class="text-white text-lg font-bold leading-tight tracking-tight">TechFlow</h1>
+<p class="text-text-secondary text-xs font-normal">Agency Workspace</p>
+</div>
+</div>
+</div>
+<nav class="flex flex-col gap-2 px-4 flex-1 overflow-y-auto">
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-text-secondary hover:bg-[#233648] hover:text-white transition-colors group" href="#">
+<span class="material-symbols-outlined group-hover:scale-110 transition-transform">dashboard</span>
+<p class="text-sm font-medium">Dashboard</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-text-secondary hover:bg-[#233648] hover:text-white transition-colors group" href="#">
+<span class="material-symbols-outlined group-hover:scale-110 transition-transform">work</span>
+<p class="text-sm font-medium">Projects</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-text-secondary hover:bg-[#233648] hover:text-white transition-colors group" href="#">
+<span class="material-symbols-outlined group-hover:scale-110 transition-transform">task_alt</span>
+<p class="text-sm font-medium">Tasks</p>
+</a>
+<!-- Active State -->
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-gradient-to-r from-primary/20 to-transparent border-l-4 border-primary text-white" href="#">
+<span class="material-symbols-outlined filled text-primary">inbox</span>
+<p class="text-sm font-bold">Inbox</p>
+<span class="ml-auto bg-primary text-white text-[10px] font-bold px-2 py-0.5 rounded-full">5</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-text-secondary hover:bg-[#233648] hover:text-white transition-colors group" href="#">
+<span class="material-symbols-outlined group-hover:scale-110 transition-transform">bar_chart</span>
+<p class="text-sm font-medium">Reports</p>
+</a>
+<div class="mt-4 pt-4 border-t border-[#233648]">
+<p class="px-3 text-xs font-semibold text-text-secondary uppercase tracking-wider mb-2">Favorites</p>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-text-secondary hover:text-white group" href="#">
+<div class="w-2 h-2 rounded-full bg-purple-500"></div>
+<p class="text-sm">Website Redesign</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-text-secondary hover:text-white group" href="#">
+<div class="w-2 h-2 rounded-full bg-emerald-500"></div>
+<p class="text-sm">Mobile App Q3</p>
+</a>
+</div>
+</nav>
+<div class="p-4 border-t border-[#233648]">
+<div class="flex items-center gap-3 p-2 rounded-lg hover:bg-[#233648] cursor-pointer">
+<div class="bg-center bg-no-repeat bg-cover rounded-full h-8 w-8" data-alt="User profile picture" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAziFpXuVX0cnKtwTwP_WTGC4iuSu4GkdKqLOj2RHRpfO1IkULDDyFQlYNJW3A8yXVFTyXQFAWj8jvlR4H12qtcymUtvYREcB17a9nYu38n5H_EsLe85wx0-o4Ft1EknnUiT_N6_upHc01JUN4_arTn-QqxXa4O-Lu6vTbyMKLS8wQXx5GsACNKqaOK-S6lAtrNjNgT0kcskbqv9K4sp5dRtrkX5KF_ARhdTDg8EyBFrzbOazIP_RBIl_clMMKgOuXwIvSPvleuCL8");'></div>
+<div class="flex flex-col overflow-hidden">
+<p class="text-sm font-medium text-white truncate">Pedro Santos</p>
+<p class="text-xs text-text-secondary truncate">pedro@techflow.com</p>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 flex flex-col min-w-0 bg-background-dark relative">
+<!-- Header Section -->
+<header class="flex flex-col bg-[#111a22] z-10 shrink-0 border-b border-[#233648]">
+<!-- Top Bar: Title & Search -->
+<div class="flex items-center justify-between px-6 py-4 gap-4">
+<div class="flex items-center gap-4">
+<button class="lg:hidden text-text-secondary">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<h1 class="text-2xl font-bold text-white tracking-tight">Caixa de Entrada</h1>
+</div>
+<!-- Search Bar -->
+<div class="max-w-md w-full hidden md:block">
+<div class="flex w-full items-center rounded-lg bg-[#1c2936] border border-[#233648] focus-within:border-primary/50 transition-colors h-10 overflow-hidden">
+<div class="text-text-secondary pl-3 flex items-center justify-center">
+<span class="material-symbols-outlined" style="font-size: 20px;">search</span>
+</div>
+<input class="w-full bg-transparent border-none text-white text-sm focus:ring-0 placeholder:text-text-secondary/70 h-full" placeholder="Search messages, tasks, or projects..."/>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<button class="p-2 text-text-secondary hover:text-white rounded-lg hover:bg-[#233648] transition-colors tooltip" title="Mark all as read">
+<span class="material-symbols-outlined">done_all</span>
+</button>
+<button class="p-2 text-text-secondary hover:text-white rounded-lg hover:bg-[#233648] transition-colors">
+<span class="material-symbols-outlined">settings</span>
+</button>
+</div>
+</div>
+<!-- Tabs -->
+<div class="px-6">
+<div class="flex gap-8">
+<a class="relative flex flex-col items-center justify-center pb-3 pt-1 text-white group" href="#">
+<p class="text-sm font-bold leading-normal tracking-[0.015em]">All</p>
+<div class="absolute bottom-0 h-[3px] w-full bg-primary rounded-t-full"></div>
+</a>
+<a class="relative flex flex-col items-center justify-center pb-3 pt-1 text-text-secondary hover:text-white transition-colors group" href="#">
+<p class="text-sm font-bold leading-normal tracking-[0.015em]">Mentions</p>
+<div class="absolute bottom-0 h-[3px] w-full bg-transparent group-hover:bg-[#233648] rounded-t-full transition-colors"></div>
+</a>
+<a class="relative flex flex-col items-center justify-center pb-3 pt-1 text-text-secondary hover:text-white transition-colors group" href="#">
+<p class="text-sm font-bold leading-normal tracking-[0.015em]">Assignments</p>
+<div class="absolute bottom-0 h-[3px] w-full bg-transparent group-hover:bg-[#233648] rounded-t-full transition-colors"></div>
+</a>
+<a class="relative flex flex-col items-center justify-center pb-3 pt-1 text-text-secondary hover:text-white transition-colors group" href="#">
+<p class="text-sm font-bold leading-normal tracking-[0.015em]">Approvals</p>
+<span class="absolute -right-2 top-0 flex h-2 w-2">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+<span class="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
+</span>
+<div class="absolute bottom-0 h-[3px] w-full bg-transparent group-hover:bg-[#233648] rounded-t-full transition-colors"></div>
+</a>
+</div>
+</div>
+</header>
+<!-- Content Split View -->
+<div class="flex flex-1 overflow-hidden">
+<!-- LIST VIEW (Left Panel) -->
+<div class="w-full md:w-[400px] xl:w-[450px] flex flex-col border-r border-[#233648] bg-[#111a22] overflow-y-auto scrollbar-hide shrink-0">
+<!-- Item 1: Active -->
+<div class="flex gap-4 p-4 border-l-[3px] border-l-primary bg-[#1c2936] cursor-pointer hover:bg-[#1f2e3d] transition-colors group relative">
+<div class="shrink-0 relative">
+<div class="bg-center bg-no-repeat bg-cover rounded-full h-10 w-10 border border-[#233648]" data-alt="Ana Silva profile" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBOqT8eSkV3VbXg42_0iqmA_GDk2LK2QO8ZZrVPOqm1eEOhO3q0wPnFV9M9OGgl2WPr-i05DX7wWkc15WTRLNYEU8AKJE2vgJpgrKmppvZ4fd2EzLlWAImwZVh9OyLa2XiQyNwKj2l8dfFfHqNeWL9nl0BOnRXtXK-PW_qiYwSAg8MFKTQAK41_fn8_FORpqwZtWuf6R5_6l7MZNKVnOwuZEv1SizEWK2z4Dh0yB0xq61TNYRFRap237cJHCSlN-zH0VAhJx5ZkwQU");'></div>
+<div class="absolute -bottom-1 -right-1 bg-primary text-white rounded-full p-[2px] border-2 border-[#1c2936]">
+<span class="material-symbols-outlined text-[12px] leading-none block">alternate_email</span>
+</div>
+</div>
+<div class="flex flex-1 flex-col justify-start min-w-0">
+<div class="flex justify-between items-baseline mb-1">
+<p class="text-white text-sm font-bold truncate pr-2">Ana Silva</p>
+<p class="text-primary text-xs font-medium whitespace-nowrap">2m ago</p>
+</div>
+<p class="text-text-secondary text-xs mb-1 truncate">mentioned you in <span class="text-primary font-medium">Website Redesign</span></p>
+<p class="text-white/80 text-sm font-normal line-clamp-2 leading-snug">Can you check the latest Figma mockup? I think the gradient on the hero section needs adjustment.</p>
+</div>
+</div>
+<!-- Item 2: Unread -->
+<div class="flex gap-4 p-4 border-l-[3px] border-l-transparent border-b border-b-[#1c2936] hover:bg-[#1c2936] cursor-pointer transition-colors relative">
+<div class="shrink-0 relative">
+<div class="bg-center bg-no-repeat bg-cover rounded-full h-10 w-10 border border-[#233648]" data-alt="Carlos Mendes profile" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuB9xaJDCUOlA0YTLQHhcVXzLml5x-yE-LVpIHNdpHMC8msOCdyZVBVhvZvDdoubZbohJcGbBrAh8TT23KFzyOQnroFm7a6JLuOStl0h0Ok5tYfohXQ1mYUn4qiFntOcPVEMIWujeNAMAr0fwnir1UszMOelXvcMmPGxjX-vpCnNlEEqpg0zyF87HnT7wkLaeToqbggslhCwAbR4wzsON0ToCFwCZbf4jc8U0r5lA_v05qnSompCyHalyuLq5f8u9-4IEsuf8i46lyE");'></div>
+<div class="absolute -bottom-1 -right-1 bg-emerald-500 text-white rounded-full p-[2px] border-2 border-[#111a22]">
+<span class="material-symbols-outlined text-[12px] leading-none block">check_circle</span>
+</div>
+</div>
+<div class="flex flex-1 flex-col justify-start min-w-0">
+<div class="flex justify-between items-baseline mb-1">
+<p class="text-white text-sm font-medium truncate pr-2">Carlos Mendes</p>
+<p class="text-text-secondary text-xs whitespace-nowrap">1h ago</p>
+</div>
+<p class="text-text-secondary text-xs mb-1 truncate">completed a task in <span class="text-emerald-400 font-medium">Mobile App Q3</span></p>
+<p class="text-text-secondary text-sm font-normal line-clamp-1">Marked "API Integration" as done.</p>
+</div>
+<div class="absolute top-4 right-4 h-2 w-2 rounded-full bg-primary"></div>
+</div>
+<!-- Item 3: Approval -->
+<div class="flex gap-4 p-4 border-l-[3px] border-l-transparent border-b border-b-[#1c2936] hover:bg-[#1c2936] cursor-pointer transition-colors relative">
+<div class="shrink-0 relative">
+<div class="flex items-center justify-center bg-[#233648] text-white rounded-full h-10 w-10 border border-[#324d67]">
+<span class="font-bold text-sm">TF</span>
+</div>
+<div class="absolute -bottom-1 -right-1 bg-amber-500 text-white rounded-full p-[2px] border-2 border-[#111a22]">
+<span class="material-symbols-outlined text-[12px] leading-none block">assignment_turned_in</span>
+</div>
+</div>
+<div class="flex flex-1 flex-col justify-start min-w-0">
+<div class="flex justify-between items-baseline mb-1">
+<p class="text-white text-sm font-medium truncate pr-2">System Notification</p>
+<p class="text-text-secondary text-xs whitespace-nowrap">3h ago</p>
+</div>
+<p class="text-amber-400 text-xs mb-1 font-medium uppercase tracking-wide">Approval Requested</p>
+<p class="text-text-secondary text-sm font-normal line-clamp-2">Client has requested approval for the Q3 Marketing Budget proposal.</p>
+</div>
+</div>
+<!-- Item 4: Read -->
+<div class="flex gap-4 p-4 border-l-[3px] border-l-transparent border-b border-b-[#1c2936] hover:bg-[#1c2936] cursor-pointer transition-colors relative opacity-70 hover:opacity-100">
+<div class="shrink-0 relative">
+<div class="bg-center bg-no-repeat bg-cover rounded-full h-10 w-10 border border-[#233648]" data-alt="Sofia profile" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDTGbenKUOihTsYbl74GKR61JWmODipMYtS9QogjZaxmqzAI6WztJEU4SXwiBEh2hPrnp6Jx_HHfH7aDM6ec5bfGaqA6fQZvpDE4Fz7ee3PlewaF42quOPimRbXgdArh8dv8a6NWTDQw8oZ2jem_TdeltpWrMzJwpj3tJrGj91dSGQxclWm1kd6zPRtO6iDbJmNNpLLh7xoFOmx6NB24Iq_k_4HaAXkKQvPBFwIIHU2ppdP1W668aZGS-ovwSVRsm6jt1MzVuNTLSU");'></div>
+</div>
+<div class="flex flex-1 flex-col justify-start min-w-0">
+<div class="flex justify-between items-baseline mb-1">
+<p class="text-white text-sm font-medium truncate pr-2">Sofia Martinez</p>
+<p class="text-text-secondary text-xs whitespace-nowrap">Yesterday</p>
+</div>
+<p class="text-text-secondary text-xs mb-1 truncate">commented on <span class="text-white font-medium">Design System</span></p>
+<p class="text-text-secondary text-sm font-normal line-clamp-1">Added new color tokens.</p>
+</div>
+</div>
+</div>
+<!-- DETAIL VIEW (Right Panel) - Hidden on mobile, flex on md -->
+<div class="hidden md:flex flex-1 flex-col bg-[#111a22] relative">
+<!-- Empty State (Hidden via CSS logic, shown if needed) -->
+<!-- <div class="hidden flex flex-col items-center justify-center h-full text-center p-10">
+                    <div class="bg-[#1c2936] p-6 rounded-full mb-4">
+                        <span class="material-symbols-outlined text-primary text-6xl">inbox</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-2">Select an item to read</h3>
+                    <p class="text-text-secondary">Nothing selected yet.</p>
+                </div> -->
+<!-- Detail Content -->
+<div class="flex flex-col h-full">
+<!-- Context Header -->
+<div class="px-8 py-5 border-b border-[#233648] bg-[#111a22] flex justify-between items-center shadow-sm z-10">
+<div>
+<div class="flex items-center gap-2 text-xs text-text-secondary mb-1">
+<span class="flex items-center gap-1 hover:text-white cursor-pointer transition-colors">
+<span class="material-symbols-outlined text-[14px]">folder</span>
+                                    Website Redesign
+                                </span>
+<span class="material-symbols-outlined text-[10px]">chevron_right</span>
+<span class="hover:text-white cursor-pointer transition-colors">Tasks</span>
+</div>
+<h2 class="text-xl font-bold text-white flex items-center gap-3">
+                                Fix Login Bug #402
+                                <span class="px-2.5 py-0.5 rounded-full bg-amber-500/10 text-amber-500 text-xs font-bold border border-amber-500/20 uppercase tracking-wide">In Review</span>
+</h2>
+</div>
+<div class="flex gap-2">
+<button class="p-2 text-text-secondary hover:text-white rounded-lg hover:bg-[#233648] transition-colors" title="Snooze">
+<span class="material-symbols-outlined">snooze</span>
+</button>
+<button class="p-2 text-text-secondary hover:text-white rounded-lg hover:bg-[#233648] transition-colors" title="More options">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</div>
+</div>
+<!-- Conversation Stream -->
+<div class="flex-1 overflow-y-auto p-8 flex flex-col gap-6 bg-[#0f161d]">
+<!-- System Message -->
+<div class="flex justify-center my-2">
+<div class="bg-[#1c2936] text-text-secondary text-xs py-1 px-3 rounded-full border border-[#233648]">
+                                Today, October 24
+                            </div>
+</div>
+<!-- Previous Comment -->
+<div class="flex gap-4">
+<div class="bg-center bg-no-repeat bg-cover rounded-full h-8 w-8 shrink-0 mt-1" data-alt="John Doe profile" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuATvO2yujB5AMGv9P9w5UubH2YvKSjEgRtTlEcnlmVTqIAnG-9XAml2bmehnVXW-sRjMv2WXZ5N2DD-Q7_agvLAAiL_OJvS67HIeVerahFpFPA8V60c8hO8fR0Ubi9lz80VGlYiKcmNTIJjUCvxwbE1OA40uD7gCLYtNiz86LmW8dLo4S7Dx3nRry-NVVgWXuOuVKVuAItsR9OxdId3jyo95w1eipflNDLyGamVAtti71G6eVuQVXkHevOBthOI204KR34iHaqUpVw");'></div>
+<div class="flex flex-col max-w-[80%]">
+<div class="flex items-baseline gap-2 mb-1">
+<span class="text-sm font-bold text-white">John Doe</span>
+<span class="text-xs text-text-secondary">09:42 AM</span>
+</div>
+<div class="bg-[#1c2936] p-3 rounded-lg rounded-tl-none border border-[#233648]">
+<p class="text-sm text-gray-200 leading-relaxed">I've pushed the fix to the staging environment. Can someone review it?</p>
+</div>
+</div>
+</div>
+<!-- System Action -->
+<div class="flex items-center gap-4 pl-12 opacity-70">
+<div class="w-0.5 h-full bg-[#233648]"></div>
+<div class="flex items-center gap-2 text-xs text-text-secondary">
+<span class="material-symbols-outlined text-[14px]">history</span>
+<span>John Doe changed status from <span class="text-white font-medium">In Progress</span> to <span class="text-amber-500 font-medium">In Review</span></span>
+</div>
+</div>
+<!-- Current Focus Message (Highlighted) -->
+<div class="flex gap-4 group/message">
+<div class="bg-center bg-no-repeat bg-cover rounded-full h-10 w-10 shrink-0 mt-1 ring-2 ring-primary ring-offset-2 ring-offset-[#0f161d]" data-alt="Ana Silva profile" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCWc8T5DZpySaiHOdTzTj3k9J-w_sKIot7MosAvp0iq1Q-UHMa1y8LdJ4fGuJKmn49T-aeaCD3Uv6txivKCZQkH2aCklRQaJxTqLdBHOmI1H5umkDot_H9dBCInl45CsU4Oen2ekZPCVKVTRlamNeyYHxV73iAryDZIOYiIKUbBLaWkVLNrfhUOTkmbWGOwVDN9y9wt_Tv8SgZv987O2vB9YWPT8ZnEa9S44nJlop3hVrbKjBQdDaUFntNeAKt1gbCQ8BB65QAzAVU");'></div>
+<div class="flex flex-col w-full">
+<div class="flex items-baseline gap-2 mb-1">
+<span class="text-sm font-bold text-white">Ana Silva</span>
+<span class="text-xs text-text-secondary">10:15 AM</span>
+</div>
+<div class="bg-[#1c2936] p-4 rounded-xl rounded-tl-none border border-primary/30 shadow-sm relative group-hover/message:bg-[#203040] transition-colors">
+<p class="text-sm text-white leading-relaxed">
+<span class="text-primary font-medium bg-primary/10 px-1 rounded">@Pedro Santos</span> Can you check the latest Figma mockup? I think the gradient on the hero section needs adjustment to match the dark mode palette better.
+                                   </p>
+<!-- Attachment Preview -->
+<div class="mt-3 flex gap-3">
+<div class="group cursor-pointer border border-[#324d67] rounded-lg overflow-hidden bg-[#111a22] hover:border-primary transition-colors">
+<div class="h-20 w-32 bg-cover bg-center" data-alt="Gradient preview thumbnail" style="background-image: linear-gradient(135deg, #137fec 0%, #0f161d 100%);"></div>
+<div class="p-2 flex items-center gap-2">
+<span class="material-symbols-outlined text-[#92adc9] text-[16px]">image</span>
+<span class="text-[10px] text-text-secondary font-medium">hero-gradient.png</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Action Area -->
+<div class="p-6 bg-[#111a22] border-t border-[#233648]">
+<!-- Quick Actions -->
+<div class="flex gap-2 mb-4">
+<button class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#1c2936] border border-[#233648] hover:border-emerald-500/50 hover:bg-emerald-500/10 transition-colors group">
+<span class="material-symbols-outlined text-[16px] text-emerald-500">check_circle</span>
+<span class="text-xs font-medium text-emerald-500">Approve Fix</span>
+</button>
+<button class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#1c2936] border border-[#233648] hover:border-primary/50 hover:bg-primary/10 transition-colors group">
+<span class="material-symbols-outlined text-[16px] text-primary">schedule</span>
+<span class="text-xs font-medium text-primary">Remind me later</span>
+</button>
+</div>
+<!-- Input -->
+<div class="bg-[#1c2936] rounded-xl border border-[#233648] focus-within:border-primary/50 focus-within:ring-1 focus-within:ring-primary/50 transition-all shadow-sm">
+<div class="p-2 border-b border-[#233648] flex gap-1">
+<button class="p-1.5 text-text-secondary hover:text-white rounded hover:bg-[#233648]"><span class="material-symbols-outlined text-[18px]">format_bold</span></button>
+<button class="p-1.5 text-text-secondary hover:text-white rounded hover:bg-[#233648]"><span class="material-symbols-outlined text-[18px]">format_italic</span></button>
+<button class="p-1.5 text-text-secondary hover:text-white rounded hover:bg-[#233648]"><span class="material-symbols-outlined text-[18px]">list</span></button>
+<div class="w-[1px] bg-[#233648] mx-1"></div>
+<button class="p-1.5 text-text-secondary hover:text-white rounded hover:bg-[#233648]"><span class="material-symbols-outlined text-[18px]">attach_file</span></button>
+<button class="p-1.5 text-text-secondary hover:text-white rounded hover:bg-[#233648]"><span class="material-symbols-outlined text-[18px]">sentiment_satisfied</span></button>
+</div>
+<textarea class="w-full bg-transparent border-none text-white text-sm focus:ring-0 placeholder:text-text-secondary/60 p-3 h-20 resize-none" placeholder="Reply to Ana..."></textarea>
+<div class="flex justify-between items-center p-2 pt-0">
+<span class="text-[10px] text-text-secondary px-2">Press ⌘+Enter to send</span>
+<button class="bg-primary hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-bold transition-colors flex items-center gap-2">
+                                    Send Reply
+                                    <span class="material-symbols-outlined text-[16px]">send</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</body></html>

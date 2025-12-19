@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { mockProjects } from '../data/mockData';
 
 export default function ProjectsList() {
@@ -53,8 +54,8 @@ export default function ProjectsList() {
                                 key={status}
                                 onClick={() => setStatusFilter(status)}
                                 className={`flex h-8 shrink-0 items-center justify-center gap-x-2 rounded-lg pl-3 pr-2 border transition-colors ${statusFilter === status
-                                        ? 'bg-primary border-primary text-white'
-                                        : 'bg-white dark:bg-[#233648] border-gray-200 dark:border-border-dark text-slate-700 dark:text-white hover:bg-gray-50 dark:hover:bg-[#324d67]'
+                                    ? 'bg-primary border-primary text-white'
+                                    : 'bg-white dark:bg-[#233648] border-gray-200 dark:border-border-dark text-slate-700 dark:text-white hover:bg-gray-50 dark:hover:bg-[#324d67]'
                                     }`}
                             >
                                 <span className="text-xs font-medium">{status}</span>
@@ -99,9 +100,12 @@ export default function ProjectsList() {
                                                         <span className="material-symbols-outlined">{project.icon}</span>
                                                     </div>
                                                     <div>
-                                                        <p className="text-sm font-medium leading-normal text-slate-900 dark:text-white group-hover:text-primary transition-colors cursor-pointer">
+                                                        <Link
+                                                            to="/projects/details"
+                                                            className="text-sm font-medium leading-normal text-slate-900 dark:text-white group-hover:text-primary transition-colors cursor-pointer block"
+                                                        >
                                                             {project.name}
-                                                        </p>
+                                                        </Link>
                                                         <p className="text-xs mt-0.5 text-gray-500 dark:text-text-secondary md:hidden">
                                                             {project.client}
                                                         </p>
@@ -119,9 +123,9 @@ export default function ProjectsList() {
                                                     <div className="h-1.5 w-full rounded-full bg-gray-200 dark:bg-[#324d67] overflow-hidden">
                                                         <div
                                                             className={`h-full rounded-full ${project.progress >= 75 ? 'bg-green-500' :
-                                                                    project.progress >= 50 ? 'bg-primary' :
-                                                                        project.progress >= 25 ? 'bg-orange-500' :
-                                                                            'bg-red-500'
+                                                                project.progress >= 50 ? 'bg-primary' :
+                                                                    project.progress >= 25 ? 'bg-orange-500' :
+                                                                        'bg-red-500'
                                                                 }`}
                                                             style={{ width: `${project.progress}%` }}
                                                         />
@@ -130,9 +134,9 @@ export default function ProjectsList() {
                                             </td>
                                             <td className="px-6 py-4">
                                                 <span className={`inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset ${project.status === 'Concluído' ? 'bg-green-400/10 text-green-400 ring-green-400/30' :
-                                                        project.status === 'Atrasado' ? 'bg-red-400/10 text-red-400 ring-red-400/30' :
-                                                            project.status === 'Planejamento' ? 'bg-orange-400/10 text-orange-400 ring-orange-400/30' :
-                                                                'bg-blue-400/10 text-blue-400 ring-blue-400/30'
+                                                    project.status === 'Atrasado' ? 'bg-red-400/10 text-red-400 ring-red-400/30' :
+                                                        project.status === 'Planejamento' ? 'bg-orange-400/10 text-orange-400 ring-orange-400/30' :
+                                                            'bg-blue-400/10 text-blue-400 ring-blue-400/30'
                                                     }`}>
                                                     {project.status}
                                                 </span>

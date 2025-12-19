@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { DndContext, closestCorners, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
 import { SortableContext, verticalListSortingStrategy, useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
@@ -83,9 +84,9 @@ function KanbanColumn({ title, tasks, count, color = 'gray' }) {
                 <div className="flex items-center gap-2">
                     <h3 className="text-sm font-bold text-slate-700 dark:text-white uppercase tracking-wider">{title}</h3>
                     <span className={`ml-1 px-2 py-0.5 rounded-full text-xs font-semibold ${color === 'primary' ? 'bg-blue-100 dark:bg-primary/20 text-blue-700 dark:text-blue-300' :
-                            color === 'amber' ? 'bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300' :
-                                color === 'emerald' ? 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300' :
-                                    'bg-slate-200 dark:bg-[#233648] text-slate-600 dark:text-slate-300'
+                        color === 'amber' ? 'bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300' :
+                            color === 'emerald' ? 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300' :
+                                'bg-slate-200 dark:bg-[#233648] text-slate-600 dark:text-slate-300'
                         }`}>
                         {count}
                     </span>
@@ -105,7 +106,7 @@ function KanbanColumn({ title, tasks, count, color = 'gray' }) {
     );
 }
 
-export default function KanbanBoard() {
+export default function KanbanBoard({ showHeader = true }) {
     const [tasks, setTasks] = useState(mockTasks);
     const sensors = useSensors(useSensor(PointerSensor));
 
@@ -138,58 +139,60 @@ export default function KanbanBoard() {
     return (
         <div className="flex flex-col h-full overflow-hidden">
             {/* Header Section */}
-            <header className="flex flex-col gap-4 p-6 pb-2 bg-background-light dark:bg-background-dark border-b border-transparent">
-                {/* Breadcrumbs */}
-                <div className="flex items-center gap-2">
-                    <span className="text-slate-500 dark:text-[#92adc9] text-sm font-medium">Projects</span>
-                    <span className="text-slate-400 dark:text-[#586e85] text-sm">/</span>
-                    <span className="text-slate-900 dark:text-white text-sm font-medium">Project Alpha</span>
-                </div>
-
-                {/* Page Heading & Actions */}
-                <div className="flex flex-wrap justify-between items-end gap-4">
-                    <div className="flex flex-col gap-1">
-                        <h2 className="text-3xl font-black tracking-tight text-slate-900 dark:text-white">Sprint 24 Board</h2>
-                        <p className="text-slate-500 dark:text-[#92adc9] text-base">
-                            Manage tasks and track progress for the upcoming release.
-                        </p>
+            {showHeader && (
+                <header className="flex flex-col gap-4 p-6 pb-2 bg-background-light dark:bg-background-dark border-b border-transparent">
+                    {/* Breadcrumbs */}
+                    <div className="flex items-center gap-2">
+                        <span className="text-slate-500 dark:text-[#92adc9] text-sm font-medium">Projects</span>
+                        <span className="text-slate-400 dark:text-[#586e85] text-sm">/</span>
+                        <span className="text-slate-900 dark:text-white text-sm font-medium">Project Alpha</span>
                     </div>
-                    <div className="flex gap-3">
-                        <div className="hidden md:flex -space-x-2">
-                            {[1, 2, 3].map(i => (
-                                <div key={i} className="inline-block size-8 rounded-full ring-2 ring-white dark:ring-[#101922]">
-                                    <img src={`https://i.pravatar.cc/150?img=${i}`} alt="Team member" className="w-full h-full rounded-full object-cover" />
+
+                    {/* Page Heading & Actions */}
+                    <div className="flex flex-wrap justify-between items-end gap-4">
+                        <div className="flex flex-col gap-1">
+                            <h2 className="text-3xl font-black tracking-tight text-slate-900 dark:text-white">Sprint 24 Board</h2>
+                            <p className="text-slate-500 dark:text-[#92adc9] text-base">
+                                Manage tasks and track progress for the upcoming release.
+                            </p>
+                        </div>
+                        <div className="flex gap-3">
+                            <div className="hidden md:flex -space-x-2">
+                                {[1, 2, 3].map(i => (
+                                    <div key={i} className="inline-block size-8 rounded-full ring-2 ring-white dark:ring-[#101922]">
+                                        <img src={`https://i.pravatar.cc/150?img=${i}`} alt="Team member" className="w-full h-full rounded-full object-cover" />
+                                    </div>
+                                ))}
+                                <div className="flex items-center justify-center size-8 rounded-full ring-2 ring-white dark:ring-[#101922] bg-slate-100 dark:bg-[#233648] text-xs font-medium text-slate-600 dark:text-white cursor-pointer hover:bg-slate-200 dark:hover:bg-[#2d465e]">
+                                    +3
                                 </div>
-                            ))}
-                            <div className="flex items-center justify-center size-8 rounded-full ring-2 ring-white dark:ring-[#101922] bg-slate-100 dark:bg-[#233648] text-xs font-medium text-slate-600 dark:text-white cursor-pointer hover:bg-slate-200 dark:hover:bg-[#2d465e]">
-                                +3
                             </div>
+                            <button className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-[#233648] border border-slate-200 dark:border-transparent text-slate-700 dark:text-white rounded-lg text-sm font-medium hover:bg-slate-50 dark:hover:bg-[#2d465e] transition-colors">
+                                <span className="material-symbols-outlined text-[20px]">filter_list</span>
+                                <span>Filter</span>
+                            </button>
+                            <Link to="/tasks/create" className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg text-sm font-bold shadow-lg shadow-blue-500/20 hover:bg-blue-600 transition-colors">
+                                <span className="material-symbols-outlined text-[20px]">add</span>
+                                <span>New Task</span>
+                            </Link>
                         </div>
-                        <button className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-[#233648] border border-slate-200 dark:border-transparent text-slate-700 dark:text-white rounded-lg text-sm font-medium hover:bg-slate-50 dark:hover:bg-[#2d465e] transition-colors">
-                            <span className="material-symbols-outlined text-[20px]">filter_list</span>
-                            <span>Filter</span>
-                        </button>
-                        <button className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg text-sm font-bold shadow-lg shadow-blue-500/20 hover:bg-blue-600 transition-colors">
-                            <span className="material-symbols-outlined text-[20px]">add</span>
-                            <span>New Task</span>
-                        </button>
                     </div>
-                </div>
 
-                {/* Search */}
-                <div className="flex items-center w-full max-w-lg mt-2">
-                    <div className="relative w-full group">
-                        <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-slate-400 group-focus-within:text-primary transition-colors">
-                            <span className="material-symbols-outlined text-[20px]">search</span>
+                    {/* Search */}
+                    <div className="flex items-center w-full max-w-lg mt-2">
+                        <div className="relative w-full group">
+                            <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-slate-400 group-focus-within:text-primary transition-colors">
+                                <span className="material-symbols-outlined text-[20px]">search</span>
+                            </div>
+                            <input
+                                className="block w-full p-2.5 pl-10 text-sm text-slate-900 border border-slate-200 rounded-lg bg-white focus:ring-primary focus:border-primary dark:bg-[#1e2a36] dark:border-transparent dark:placeholder-slate-500 dark:text-white dark:focus:ring-primary focus:outline-none transition-all shadow-sm"
+                                placeholder="Search tasks by title, tag, or assignee..."
+                                type="text"
+                            />
                         </div>
-                        <input
-                            className="block w-full p-2.5 pl-10 text-sm text-slate-900 border border-slate-200 rounded-lg bg-white focus:ring-primary focus:border-primary dark:bg-[#1e2a36] dark:border-transparent dark:placeholder-slate-500 dark:text-white dark:focus:ring-primary focus:outline-none transition-all shadow-sm"
-                            placeholder="Search tasks by title, tag, or assignee..."
-                            type="text"
-                        />
                     </div>
-                </div>
-            </header>
+                </header>
+            )}
 
             {/* Kanban Board Area */}
             <div className="flex-1 overflow-x-auto overflow-y-hidden p-6">
