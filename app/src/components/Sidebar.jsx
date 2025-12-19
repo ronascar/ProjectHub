@@ -5,17 +5,17 @@ export default function Sidebar() {
     const { user, logout } = useAuth();
 
     const navItems = [
-        { path: '/', icon: 'dashboard', label: 'Dashboard', filled: true },
-        { path: '/projects', icon: 'folder_open', label: 'Projects' },
+        { path: '/', icon: 'dashboard', label: 'Painel', filled: true },
+        { path: '/projects', icon: 'folder_open', label: 'Projetos' },
         { path: '/kanban', icon: 'view_kanban', label: 'Kanban' },
-        { path: '/teams', icon: 'group', label: 'Teams' },
-        { path: '/reports', icon: 'bar_chart', label: 'Reports' },
-        { path: '/calendar', icon: 'calendar_month', label: 'Calendar' },
+        { path: '/teams', icon: 'group', label: 'Equipes' },
+        { path: '/reports', icon: 'bar_chart', label: 'Relatórios' },
+        { path: '/calendar', icon: 'calendar_month', label: 'Calendário' },
     ];
 
     const workspaceItems = [
-        { path: '/tasks', icon: 'assignment', label: 'My Tasks', badge: 3 },
-        { path: '/inbox', icon: 'inbox', label: 'Inbox' },
+        { path: '/tasks', icon: 'assignment', label: 'Minhas Tarefas', badge: 3 },
+        { path: '/inbox', icon: 'inbox', label: 'Caixa de Entrada' },
     ];
 
     return (
@@ -82,7 +82,7 @@ export default function Sidebar() {
                     {/* Workspace Section */}
                     <div className="mt-4">
                         <h4 className="mb-2 px-3 text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-500">
-                            Workspace
+                            Área de Trabalho
                         </h4>
                         {workspaceItems.map((item) => (
                             <NavLink
@@ -114,14 +114,14 @@ export default function Sidebar() {
                         className="flex items-center gap-3 rounded-lg px-3 py-2 text-gray-600 transition-colors hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-surface-dark-lighter dark:hover:text-white"
                     >
                         <span className="material-symbols-outlined">settings</span>
-                        <span className="font-medium">Settings</span>
+                        <span className="font-medium">Configurações</span>
                     </NavLink>
                     <button
                         onClick={logout}
                         className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-gray-600 transition-colors hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-surface-dark-lighter dark:hover:text-white"
                     >
                         <span className="material-symbols-outlined">logout</span>
-                        <span className="font-medium">Log out</span>
+                        <span className="font-medium">Sair</span>
                     </button>
                 </div>
             </div>

@@ -90,7 +90,7 @@ export default function Reports() {
             <div className="flex-1 px-4 md:px-10 py-6 md:py-8 w-full max-w-[1400px] mx-auto">
                 {/* Breadcrumbs */}
                 <div className="flex items-center gap-2 mb-6 text-sm">
-                    <Link to="/" className="text-slate-500 dark:text-text-secondary hover:text-primary dark:hover:text-white transition-colors">Home</Link>
+                    <Link to="/" className="text-slate-500 dark:text-text-secondary hover:text-primary dark:hover:text-white transition-colors">Início</Link>
                     <span className="text-slate-400 dark:text-gray-600">/</span>
                     <span className="text-slate-500 dark:text-text-secondary">Relatórios</span>
                     <span className="text-slate-400 dark:text-gray-600">/</span>
@@ -283,8 +283,8 @@ export default function Reports() {
                                                     key={i}
                                                     onClick={() => setCurrentPage(i + 1)}
                                                     className={`relative inline-flex items-center px-4 py-2 border text-sm font-medium ${currentPage === i + 1
-                                                            ? 'z-10 bg-primary/10 border-primary text-primary'
-                                                            : 'bg-white dark:bg-surface-dark border-slate-300 dark:border-border-dark text-slate-500 dark:text-text-secondary hover:bg-slate-50 dark:hover:bg-background-dark'
+                                                        ? 'z-10 bg-primary/10 border-primary text-primary'
+                                                        : 'bg-white dark:bg-surface-dark border-slate-300 dark:border-border-dark text-slate-500 dark:text-text-secondary hover:bg-slate-50 dark:hover:bg-background-dark'
                                                         }`}
                                                 >
                                                     {i + 1}

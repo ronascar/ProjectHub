@@ -171,10 +171,10 @@ export default function ProjectsList() {
                         <div className="flex items-center justify-between border-t border-gray-200 dark:border-border-dark bg-gray-50 dark:bg-[#192633] px-6 py-3">
                             <div className="flex flex-1 justify-between sm:hidden">
                                 <button className="relative inline-flex items-center rounded-md border border-gray-300 dark:border-border-dark bg-white dark:bg-[#233648] px-4 py-2 text-sm font-medium text-gray-700 dark:text-text-secondary hover:bg-gray-50 dark:hover:bg-[#324d67]">
-                                    Previous
+                                    Anterior
                                 </button>
                                 <button className="relative ml-3 inline-flex items-center rounded-md border border-gray-300 dark:border-border-dark bg-white dark:bg-[#233648] px-4 py-2 text-sm font-medium text-gray-700 dark:text-text-secondary hover:bg-gray-50 dark:hover:bg-[#324d67]">
-                                    Next
+                                    Próximo
                                 </button>
                             </div>
                             <div className="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
@@ -188,7 +188,7 @@ export default function ProjectsList() {
                                 <div>
                                     <nav aria-label="Pagination" className="isolate inline-flex -space-x-px rounded-md shadow-sm">
                                         <a className="relative inline-flex items-center rounded-l-md px-2 py-2 text-gray-400 dark:text-text-secondary ring-1 ring-inset ring-gray-300 dark:ring-border-dark hover:bg-gray-50 dark:hover:bg-[#324d67] focus:z-20 focus:outline-offset-0" href="#">
-                                            <span className="sr-only">Previous</span>
+                                            <span className="sr-only">Anterior</span>
                                             <span className="material-symbols-outlined text-[20px]">chevron_left</span>
                                         </a>
                                         <a aria-current="page" className="relative z-10 inline-flex items-center bg-primary px-4 py-2 text-sm font-semibold text-white focus:z-20" href="#">
@@ -198,7 +198,7 @@ export default function ProjectsList() {
                                             2
                                         </a>
                                         <a className="relative inline-flex items-center rounded-r-md px-2 py-2 text-gray-400 dark:text-text-secondary ring-1 ring-inset ring-gray-300 dark:ring-border-dark hover:bg-gray-50 dark:hover:bg-[#324d67] focus:z-20 focus:outline-offset-0" href="#">
-                                            <span className="sr-only">Next</span>
+                                            <span className="sr-only">Próximo</span>
                                             <span className="material-symbols-outlined text-[20px]">chevron_right</span>
                                         </a>
                                     </nav>

@@ -29,10 +29,10 @@ export default function Login() {
                         <span className="material-symbols-outlined text-4xl">grid_view</span>
                     </div>
                     <h2 className="text-3xl font-bold tracking-tight text-white mb-4">
-                        Manage Projects with Precision
+                        Gerencie Projetos com Precisão
                     </h2>
                     <p className="text-text-secondary text-lg leading-relaxed">
-                        Scalable, secure, and designed for high-performance teams. Join thousands of developers and agencies streamlining their workflow.
+                        Escalável, seguro e projetado para equipes de alto desempenho. Junte-se a milhares de desenvolvedores e agências otimizando seu fluxo de trabalho.
                     </p>
                     {/* Testimonial / Social Proof */}
                     <div className="mt-12 pt-8 border-t border-border-dark/50 flex flex-col items-center gap-4">
@@ -49,7 +49,7 @@ export default function Login() {
                                 +2k
                             </div>
                         </div>
-                        <p className="text-sm text-text-secondary">Trusted by teams worldwide</p>
+                        <p className="text-sm text-text-secondary">Confiado por equipes em todo o mundo</p>
                     </div>
                 </div>
             </div>

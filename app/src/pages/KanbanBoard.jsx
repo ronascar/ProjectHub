@@ -143,17 +143,17 @@ export default function KanbanBoard({ showHeader = true }) {
                 <header className="flex flex-col gap-4 p-6 pb-2 bg-background-light dark:bg-background-dark border-b border-transparent">
                     {/* Breadcrumbs */}
                     <div className="flex items-center gap-2">
-                        <span className="text-slate-500 dark:text-[#92adc9] text-sm font-medium">Projects</span>
+                        <span className="text-slate-500 dark:text-[#92adc9] text-sm font-medium">Projetos</span>
                         <span className="text-slate-400 dark:text-[#586e85] text-sm">/</span>
-                        <span className="text-slate-900 dark:text-white text-sm font-medium">Project Alpha</span>
+                        <span className="text-slate-900 dark:text-white text-sm font-medium">Projeto Alpha</span>
                     </div>
 
                     {/* Page Heading & Actions */}
                     <div className="flex flex-wrap justify-between items-end gap-4">
                         <div className="flex flex-col gap-1">
-                            <h2 className="text-3xl font-black tracking-tight text-slate-900 dark:text-white">Sprint 24 Board</h2>
+                            <h2 className="text-3xl font-black tracking-tight text-slate-900 dark:text-white">Quadro Sprint 24</h2>
                             <p className="text-slate-500 dark:text-[#92adc9] text-base">
-                                Manage tasks and track progress for the upcoming release.
+                                Gerencie tarefas e acompanhe o progresso para o próximo lançamento.
                             </p>
                         </div>
                         <div className="flex gap-3">
@@ -169,11 +169,11 @@ export default function KanbanBoard({ showHeader = true }) {
                             </div>
                             <button className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-[#233648] border border-slate-200 dark:border-transparent text-slate-700 dark:text-white rounded-lg text-sm font-medium hover:bg-slate-50 dark:hover:bg-[#2d465e] transition-colors">
                                 <span className="material-symbols-outlined text-[20px]">filter_list</span>
-                                <span>Filter</span>
+                                <span>Filtrar</span>
                             </button>
                             <Link to="/tasks/create" className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg text-sm font-bold shadow-lg shadow-blue-500/20 hover:bg-blue-600 transition-colors">
                                 <span className="material-symbols-outlined text-[20px]">add</span>
-                                <span>New Task</span>
+                                <span>Nova Tarefa</span>
                             </Link>
                         </div>
                     </div>
@@ -186,7 +186,7 @@ export default function KanbanBoard({ showHeader = true }) {
                             </div>
                             <input
                                 className="block w-full p-2.5 pl-10 text-sm text-slate-900 border border-slate-200 rounded-lg bg-white focus:ring-primary focus:border-primary dark:bg-[#1e2a36] dark:border-transparent dark:placeholder-slate-500 dark:text-white dark:focus:ring-primary focus:outline-none transition-all shadow-sm"
-                                placeholder="Search tasks by title, tag, or assignee..."
+                                placeholder="Buscar tarefas por título, tag ou responsável..."
                                 type="text"
                             />
                         </div>

@@ -29,8 +29,8 @@ const TEAM_MEMBERS = [
     { name: 'Jessica Jones', img: 'https://i.pravatar.cc/100?u=jessica' }
 ];
 
-const DAYS_OF_WEEK = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+const DAYS_OF_WEEK = ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'];
+const MONTHS = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
 
 const getColorClasses = (color) => {
     const colors = {
@@ -172,10 +172,10 @@ export default function Calendar() {
                             <button
                                 key={i}
                                 className={`size-8 mx-auto flex items-center justify-center rounded-full text-sm transition-colors ${isToday(dayData.date)
-                                        ? 'bg-primary text-white shadow-md shadow-primary/40'
-                                        : dayData.isCurrentMonth
-                                            ? 'text-slate-700 dark:text-white hover:bg-gray-100 dark:hover:bg-border-dark'
-                                            : 'text-slate-400 dark:text-slate-600'
+                                    ? 'bg-primary text-white shadow-md shadow-primary/40'
+                                    : dayData.isCurrentMonth
+                                        ? 'text-slate-700 dark:text-white hover:bg-gray-100 dark:hover:bg-border-dark'
+                                        : 'text-slate-400 dark:text-slate-600'
                                     }`}
                             >
                                 {dayData.day}
@@ -293,10 +293,10 @@ export default function Calendar() {
                                             }`}
                                     >
                                         <span className={`text-sm font-medium p-1 ${isToday(dayData.date)
-                                                ? 'text-white bg-primary rounded-full size-7 flex items-center justify-center shadow-lg shadow-primary/40'
-                                                : dayData.isCurrentMonth
-                                                    ? 'text-slate-700 dark:text-white'
-                                                    : 'text-slate-400 dark:text-[#92adc9]'
+                                            ? 'text-white bg-primary rounded-full size-7 flex items-center justify-center shadow-lg shadow-primary/40'
+                                            : dayData.isCurrentMonth
+                                                ? 'text-slate-700 dark:text-white'
+                                                : 'text-slate-400 dark:text-[#92adc9]'
                                             }`}>
                                             {dayData.day}
                                         </span>

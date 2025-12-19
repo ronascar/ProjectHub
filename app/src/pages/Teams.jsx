@@ -12,7 +12,7 @@ const MOCK_MEMBERS = [
     { id: 8, name: 'Pedro Costa', email: 'pedro.c@taskmaster.com', avatar: 'https://i.pravatar.cc/100?u=pedro', initials: 'PC', color: 'indigo', role: 'Support Lead', roleIcon: 'support_agent', department: 'Customer Success', projects: 4, workload: 50, isOnline: false },
 ];
 
-const DEPARTMENTS = ['All Departments', 'Management', 'Engineering', 'Product', 'Product Design', 'Marketing', 'Customer Success'];
+const DEPARTMENTS = ['Todos os Departamentos', 'Management', 'Engineering', 'Product', 'Product Design', 'Marketing', 'Customer Success'];
 
 const getRoleClasses = (role) => {
     const classes = {
@@ -87,22 +87,22 @@ export default function Teams() {
         <div className="flex flex-1 justify-center py-6 px-4 sm:px-6 lg:px-8 bg-background-light dark:bg-background-dark min-h-full">
             <div className="flex w-full max-w-[1024px] flex-col gap-6">
                 <div className="flex items-center gap-2 text-sm">
-                    <a className="text-slate-500 dark:text-text-secondary hover:underline" href="#">Workspace</a>
+                    <a className="text-slate-500 dark:text-text-secondary hover:underline" href="#">Área de Trabalho</a>
                     <span className="text-slate-500 dark:text-text-secondary">/</span>
-                    <span className="font-medium text-slate-900 dark:text-white">Team Management</span>
+                    <span className="font-medium text-slate-900 dark:text-white">Gerenciamento de Equipe</span>
                 </div>
 
                 <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
                     <div className="flex flex-col gap-2">
-                        <h1 className="text-3xl font-black leading-tight tracking-tight text-slate-900 dark:text-white sm:text-4xl">Team Members</h1>
+                        <h1 className="text-3xl font-black leading-tight tracking-tight text-slate-900 dark:text-white sm:text-4xl">Membros da Equipe</h1>
                         <div className="flex items-center gap-2">
                             <span className="flex h-2 w-2 rounded-full bg-green-500"></span>
-                            <p className="text-base text-slate-600 dark:text-text-secondary">{stats.active} Active members in {stats.departments} departments</p>
+                            <p className="text-base text-slate-600 dark:text-text-secondary">{stats.active} membros ativos em {stats.departments} departamentos</p>
                         </div>
                     </div>
                     <button className="flex h-10 items-center justify-center rounded-lg bg-primary px-4 text-sm font-bold text-white shadow-md hover:bg-primary-hover transition-colors">
                         <span className="material-symbols-outlined text-[20px] mr-2">person_add</span>
-                        Add Member
+                        Adicionar Membro
                     </button>
                 </div>
 
@@ -114,7 +114,7 @@ export default function Teams() {
                                 value={searchTerm}
                                 onChange={(e) => { setSearchTerm(e.target.value); setCurrentPage(1); }}
                                 className="h-12 w-full rounded-lg border border-gray-200 dark:border-border-dark bg-gray-50 dark:bg-[#111a22] pl-11 pr-4 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-text-secondary focus:border-primary focus:ring-0"
-                                placeholder="Search members by name, email or role..."
+                                placeholder="Buscar membros por nome, e-mail ou função..."
                             />
                         </div>
                         <div className="flex gap-4">
@@ -131,7 +131,7 @@ export default function Teams() {
                             <button
                                 onClick={clearFilters}
                                 className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg border border-gray-200 dark:border-border-dark bg-gray-50 dark:bg-[#111a22] text-slate-500 dark:text-text-secondary hover:border-primary hover:text-primary transition-colors"
-                                title="Clear filters"
+                                title="Limpar filtros"
                             >
                                 <span className="material-symbols-outlined">tune</span>
                             </button>
@@ -142,33 +142,33 @@ export default function Teams() {
                         <button
                             onClick={() => { setShowOnlineOnly(!showOnlineOnly); setCurrentPage(1); }}
                             className={`group flex h-8 shrink-0 items-center gap-2 rounded-lg px-3 transition-colors border ${showOnlineOnly
-                                    ? 'bg-primary/10 border-primary/30 hover:bg-primary/20'
-                                    : 'bg-gray-50 dark:bg-[#111a22] border-gray-200 dark:border-border-dark hover:bg-gray-100 dark:hover:bg-[#1a2632]'
+                                ? 'bg-primary/10 border-primary/30 hover:bg-primary/20'
+                                : 'bg-gray-50 dark:bg-[#111a22] border-gray-200 dark:border-border-dark hover:bg-gray-100 dark:hover:bg-[#1a2632]'
                                 }`}
                         >
-                            <span className={`text-xs font-semibold ${showOnlineOnly ? 'text-primary' : 'text-slate-700 dark:text-slate-300'}`}>Active Now</span>
+                            <span className={`text-xs font-semibold ${showOnlineOnly ? 'text-primary' : 'text-slate-700 dark:text-slate-300'}`}>Ativos Agora</span>
                             <span className="flex h-5 w-5 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-white">{stats.active}</span>
                             {showOnlineOnly && <span className="material-symbols-outlined text-[16px] text-primary">close</span>}
                         </button>
                         <button
                             onClick={() => { setRoleFilter(roleFilter === 'Administrator' ? null : 'Administrator'); setCurrentPage(1); }}
                             className={`flex h-8 shrink-0 items-center gap-2 rounded-lg border px-3 transition-colors ${roleFilter === 'Administrator'
-                                    ? 'bg-purple-500/10 border-purple-300 dark:border-purple-900/30'
-                                    : 'bg-gray-50 dark:bg-[#111a22] border-gray-200 dark:border-border-dark hover:bg-gray-100 dark:hover:bg-[#1a2632]'
+                                ? 'bg-purple-500/10 border-purple-300 dark:border-purple-900/30'
+                                : 'bg-gray-50 dark:bg-[#111a22] border-gray-200 dark:border-border-dark hover:bg-gray-100 dark:hover:bg-[#1a2632]'
                                 }`}
                         >
                             <span className="material-symbols-outlined text-[18px] text-purple-500">admin_panel_settings</span>
-                            <span className="text-xs font-medium text-slate-700 dark:text-slate-300">Administrators</span>
+                            <span className="text-xs font-medium text-slate-700 dark:text-slate-300">Administradores</span>
                         </button>
                         <button
                             onClick={() => { setRoleFilter(roleFilter === 'Developer' ? null : 'Developer'); setCurrentPage(1); }}
                             className={`flex h-8 shrink-0 items-center gap-2 rounded-lg border px-3 transition-colors ${roleFilter === 'Developer'
-                                    ? 'bg-emerald-500/10 border-emerald-300 dark:border-emerald-900/30'
-                                    : 'bg-gray-50 dark:bg-[#111a22] border-gray-200 dark:border-border-dark hover:bg-gray-100 dark:hover:bg-[#1a2632]'
+                                ? 'bg-emerald-500/10 border-emerald-300 dark:border-emerald-900/30'
+                                : 'bg-gray-50 dark:bg-[#111a22] border-gray-200 dark:border-border-dark hover:bg-gray-100 dark:hover:bg-[#1a2632]'
                                 }`}
                         >
                             <span className="material-symbols-outlined text-[18px] text-emerald-500">code</span>
-                            <span className="text-xs font-medium text-slate-700 dark:text-slate-300">Developers</span>
+                            <span className="text-xs font-medium text-slate-700 dark:text-slate-300">Desenvolvedores</span>
                         </button>
                     </div>
                 </div>
@@ -176,10 +176,10 @@ export default function Teams() {
                 <div className="flex flex-col overflow-hidden rounded-xl border border-gray-200 dark:border-border-dark bg-white dark:bg-surface-dark shadow-sm">
                     {/* Member List Header */}
                     <div className="hidden grid-cols-12 gap-4 border-b border-gray-200 dark:border-border-dark bg-gray-50 dark:bg-[#111a22] px-6 py-3 text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-text-secondary md:grid">
-                        <div className="col-span-4 pl-8">Member</div>
-                        <div className="col-span-2">Role</div>
-                        <div className="col-span-2">Department</div>
-                        <div className="col-span-3">Workload</div>
+                        <div className="col-span-4 pl-8">Membro</div>
+                        <div className="col-span-2">Função</div>
+                        <div className="col-span-2">Departamento</div>
+                        <div className="col-span-3">Carga de Trabalho</div>
                         <div className="col-span-1 text-right"></div>
                     </div>
 
@@ -213,19 +213,19 @@ export default function Teams() {
                                 </div>
                             </div>
                             <div className="col-span-1 md:col-span-2 flex items-center gap-2">
-                                <span className="md:hidden text-xs font-medium text-slate-500 uppercase w-20">Role:</span>
+                                <span className="md:hidden text-xs font-medium text-slate-500 uppercase w-20">Função:</span>
                                 <div className={`flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-bold border ${getRoleClasses(member.role)}`}>
                                     <span className="material-symbols-outlined text-[16px]">{member.roleIcon}</span>
                                     {member.role}
                                 </div>
                             </div>
                             <div className="col-span-1 md:col-span-2 flex items-center gap-2">
-                                <span className="md:hidden text-xs font-medium text-slate-500 uppercase w-20">Team:</span>
+                                <span className="md:hidden text-xs font-medium text-slate-500 uppercase w-20">Equipe:</span>
                                 <div className="text-sm font-medium text-slate-700 dark:text-slate-300">{member.department}</div>
                             </div>
                             <div className="col-span-1 md:col-span-3 flex flex-col justify-center gap-1">
                                 <div className="flex items-center justify-between text-xs mb-1">
-                                    <span className="text-slate-500 dark:text-slate-400">{member.projects} Active Projects</span>
+                                    <span className="text-slate-500 dark:text-slate-400">{member.projects} Projetos Ativos</span>
                                     <span className="font-bold text-slate-900 dark:text-white">{member.workload}%</span>
                                 </div>
                                 <div className="h-1.5 w-full rounded-full bg-gray-200 dark:bg-slate-700">
@@ -243,14 +243,14 @@ export default function Teams() {
                     {filteredMembers.length === 0 && (
                         <div className="px-6 py-12 text-center">
                             <span className="material-symbols-outlined text-4xl text-slate-300 dark:text-slate-600 mb-2">search_off</span>
-                            <p className="text-slate-500 dark:text-text-secondary">No members found matching your criteria</p>
+                            <p className="text-slate-500 dark:text-text-secondary">Nenhum membro encontrado com seus critérios</p>
                         </div>
                     )}
 
                     {/* Pagination */}
                     <div className="flex items-center justify-between px-6 py-4 bg-gray-50 dark:bg-[#111a22]">
                         <p className="text-sm text-slate-500 dark:text-text-secondary">
-                            Showing <span className="font-medium text-slate-900 dark:text-white">{((currentPage - 1) * itemsPerPage) + 1}</span> to <span className="font-medium text-slate-900 dark:text-white">{Math.min(currentPage * itemsPerPage, filteredMembers.length)}</span> of <span className="font-medium text-slate-900 dark:text-white">{filteredMembers.length}</span> members
+                            Mostrando <span className="font-medium text-slate-900 dark:text-white">{((currentPage - 1) * itemsPerPage) + 1}</span> a <span className="font-medium text-slate-900 dark:text-white">{Math.min(currentPage * itemsPerPage, filteredMembers.length)}</span> de <span className="font-medium text-slate-900 dark:text-white">{filteredMembers.length}</span> membros
                         </p>
                         <div className="flex gap-2">
                             <button
@@ -258,14 +258,14 @@ export default function Teams() {
                                 disabled={currentPage === 1}
                                 className="flex items-center justify-center rounded-lg border border-gray-200 dark:border-border-dark bg-white dark:bg-surface-dark px-3 py-1.5 text-sm font-medium text-slate-600 dark:text-text-secondary hover:bg-gray-50 dark:hover:bg-[#233648] transition-colors disabled:opacity-50"
                             >
-                                Previous
+                                Anterior
                             </button>
                             <button
                                 onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
                                 disabled={currentPage === totalPages || totalPages === 0}
                                 className="flex items-center justify-center rounded-lg border border-gray-200 dark:border-border-dark bg-white dark:bg-surface-dark px-3 py-1.5 text-sm font-medium text-slate-600 dark:text-text-secondary hover:bg-gray-50 dark:hover:bg-[#233648] transition-colors disabled:opacity-50"
                             >
-                                Next
+                                Próximo
                             </button>
                         </div>
                     </div>
