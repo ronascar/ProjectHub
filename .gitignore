@@ -1,33 +1,50 @@
-# Dependencies
-node_modules/
-.pnp
-.pnp.js
-
-# Testing
-coverage/
-
-# Production
-dist/
-build/
-
-# Misc
-.DS_Store
+# Logs
+logs
 *.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-.env
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
+pnpm-debug.log*
+lerna-debug.log*
 
-# IDE
-.vscode/
-.idea/
-*.swp
-*.swo
-*~
+node_modules
+dist
+dist-ssr
+*.local
 
-# OS
-Thumbs.db
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Template folders (HTML prototypes - not needed for deployment)
+calendário/
+configurações_do_sistema/
+criação/
+dashboard_(gerente_de_projetos)/
+detalhes_do_projeto/
+equipe/
+exportações_e_relatórios/
+gestão_de_tarefas_(kanban)/
+lista_de_projetos/
+membros/
+minhas_tarefas/
+página_de_login/
+team/
+versionamento_e_histórico_1/
+versionamento_e_histórico_2/
+visualização_de_tarefas_(timeline/
+Criação_e_edição_de_tarefas/
+Imbox/
+
+# Deployment scripts and docs
+move-to-root.ps1
+test-build.bat
+MOVE_TO_ROOT.md
+FIX_404.md
