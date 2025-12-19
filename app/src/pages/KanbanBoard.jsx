@@ -94,7 +94,7 @@ function TaskCard({ task }) {
 // Kanban Column Component
 function KanbanColumn({ title, tasks, count, color = 'gray' }) {
     return (
-        <div className="flex flex-col w-80 h-full rounded-xl bg-slate-100/50 dark:bg-[#16212e] border border-slate-200/50 dark:border-slate-800/50">
+        <div className="flex flex-col h-full rounded-xl bg-slate-100/50 dark:bg-[#16212e] border border-slate-200/50 dark:border-slate-800/50">
             <div className={`flex items-center justify-between p-4 flex-shrink-0 ${color !== 'gray' ? `border-t-2 border-${color}-500` : ''} rounded-t-xl`}>
                 <div className="flex items-center gap-2">
                     <h3 className="text-sm font-bold text-slate-700 dark:text-white uppercase tracking-wider">{title}</h3>
@@ -155,7 +155,7 @@ export default function KanbanBoard({ showHeader = true }) {
         <div className="flex flex-col h-full overflow-hidden">
             {/* Header Section */}
             {showHeader && (
-                <header className="flex flex-col gap-4 p-6 pb-2 bg-background-light dark:bg-background-dark border-b border-transparent">
+                <header className="flex flex-col gap-4 p-6 pb-2 bg-background-light dark:bg-background-dark border-b border-transparent flex-shrink-0">
                     {/* Breadcrumbs */}
                     <div className="flex items-center gap-2">
                         <span className="text-slate-500 dark:text-[#92adc9] text-sm font-medium">Projetos</span>
@@ -210,15 +210,17 @@ export default function KanbanBoard({ showHeader = true }) {
             )}
 
             {/* Kanban Board Area */}
-            <div className="flex-1 overflow-x-auto overflow-y-hidden p-6">
-                <DndContext sensors={sensors} collisionDetection={closestCorners} onDragEnd={handleDragEnd}>
-                    <div className="flex h-full gap-6 min-w-max pb-4">
-                        <KanbanColumn title="Backlog" tasks={tasks.backlog} count={tasks.backlog.length} color="gray" />
-                        <KanbanColumn title="Em andamento" tasks={tasks.inProgress} count={tasks.inProgress.length} color="primary" />
-                        <KanbanColumn title="Em teste" tasks={tasks.testing} count={tasks.testing.length} color="amber" />
-                        <KanbanColumn title="Concluída" tasks={tasks.done} count={tasks.done.length} color="emerald" />
-                    </div>
-                </DndContext>
+            <div className="flex-1 overflow-hidden">
+                <div className="h-full p-6">
+                    <DndContext sensors={sensors} collisionDetection={closestCorners} onDragEnd={handleDragEnd}>
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 h-full">
+                            <KanbanColumn title="Backlog" tasks={tasks.backlog} count={tasks.backlog.length} color="gray" />
+                            <KanbanColumn title="Em andamento" tasks={tasks.inProgress} count={tasks.inProgress.length} color="primary" />
+                            <KanbanColumn title="Em teste" tasks={tasks.testing} count={tasks.testing.length} color="amber" />
+                            <KanbanColumn title="Concluída" tasks={tasks.done} count={tasks.done.length} color="emerald" />
+                        </div>
+                    </DndContext>
+                </div>
             </div>
         </div>
     );
