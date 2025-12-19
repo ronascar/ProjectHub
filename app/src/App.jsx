@@ -13,6 +13,9 @@ import MyTasks from './pages/MyTasks';
 import Calendar from './pages/Calendar';
 import Reports from './pages/Reports';
 import ProjectTimeline from './pages/ProjectTimeline';
+import Inbox from './pages/Inbox';
+import Teams from './pages/Teams';
+import CreateProject from './pages/CreateProject';
 import Settings from './pages/Settings';
 import './style.css';
 
@@ -37,16 +40,17 @@ function AppRouter() {
             >
                 <Route index element={<Dashboard />} />
                 <Route path="projects" element={<ProjectsList />} />
+                <Route path="projects/create" element={<CreateProject />} />
                 <Route path="projects/:projectId" element={<ProjectDetails />} />
                 <Route path="projects/:projectId/timeline" element={<ProjectTimeline />} />
                 <Route path="tasks" element={<MyTasks />} />
                 <Route path="tasks/create" element={<TaskForm />} />
                 <Route path="tasks/:taskId/edit" element={<TaskForm />} />
                 <Route path="kanban" element={<KanbanBoard />} />
-                <Route path="teams" element={<div className="p-8"><h1 className="text-2xl font-bold dark:text-white">Teams - Coming Soon</h1></div>} />
+                <Route path="teams" element={<Teams />} />
                 <Route path="reports" element={<Reports />} />
                 <Route path="calendar" element={<Calendar />} />
-                <Route path="inbox" element={<div className="p-8"><h1 className="text-2xl font-bold dark:text-white">Inbox - Coming Soon</h1></div>} />
+                <Route path="inbox" element={<Inbox />} />
                 <Route path="settings" element={<Settings />} />
             </Route>
         </Routes>

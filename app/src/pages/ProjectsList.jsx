@@ -26,10 +26,13 @@ export default function ProjectsList() {
                             Gerencie todos os seus projetos, prazos e equipes em um só lugar.
                         </p>
                     </div>
-                    <button className="flex items-center justify-center gap-2 rounded-lg h-10 px-5 bg-primary hover:bg-blue-600 transition-colors text-white text-sm font-bold leading-normal shadow-lg shadow-blue-500/20">
+                    <Link
+                        to="/projects/create"
+                        className="flex items-center justify-center gap-2 rounded-lg h-10 px-5 bg-primary hover:bg-blue-600 transition-colors text-white text-sm font-bold leading-normal shadow-lg shadow-blue-500/20"
+                    >
                         <span className="material-symbols-outlined text-[20px]">add</span>
                         <span className="truncate">Novo Projeto</span>
-                    </button>
+                    </Link>
                 </div>
 
                 {/* Toolbar: Search & Filters */}
