@@ -7,6 +7,8 @@
   "author": "ronascar",
   "scripts": {
     "dev": "vite",
+    "dev:server": "node server/index.cjs",
+    "dev:all": "concurrently \"npm run dev\" \"npm run dev:server\"",
     "build": "tsc && vite build",
     "preview": "vite preview",
     "db:generate": "prisma generate",
@@ -35,6 +37,11 @@
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",
     "@dnd-kit/sortable": "^10.0.0",
+    "bcryptjs": "^3.0.3",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "express": "^5.2.1",
+    "jsonwebtoken": "^9.0.3",
     "react": "^19.2.3",
     "react-dom": "^19.2.3",
     "react-router-dom": "^7.11.0"
