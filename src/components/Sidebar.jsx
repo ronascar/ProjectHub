@@ -8,7 +8,9 @@ export default function Sidebar({ isMobile = false, onClose }) {
         { path: '/', icon: 'dashboard', label: 'Painel', filled: true },
         { path: '/projects', icon: 'folder_open', label: 'Projetos' },
         { path: '/kanban', icon: 'view_kanban', label: 'Kanban' },
+        { path: '/clients', icon: 'domain', label: 'Clientes' },
         { path: '/teams', icon: 'group', label: 'Equipes' },
+        { path: '/users', icon: 'manage_accounts', label: 'Usuários', adminOnly: true },
         { path: '/reports', icon: 'bar_chart', label: 'Relatórios' },
         { path: '/calendar', icon: 'calendar_month', label: 'Calendário' },
     ];
@@ -76,7 +78,7 @@ export default function Sidebar({ isMobile = false, onClose }) {
                         </div>
 
                         {/* Main Navigation */}
-                        {navItems.map((item) => (
+                        {navItems.filter(item => !item.adminOnly || user?.role === 'ADMIN').map((item) => (
                             <NavLink
                                 key={item.path}
                                 to={item.path}

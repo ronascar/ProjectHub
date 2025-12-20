@@ -21,7 +21,9 @@ import MemberView from './pages/MemberView';
 import MemberCreate from './pages/MemberCreate';
 import CreateProject from './pages/CreateProject';
 import ClientsList from './pages/ClientsList';
+import ClientForm from './pages/ClientForm';
 import UsersList from './pages/UsersList';
+import UserForm from './pages/UserForm';
 import Settings from './pages/Settings';
 import './style.css';
 
@@ -62,7 +64,12 @@ function AppRouter() {
                 <Route path="reports" element={<Reports />} />
                 <Route path="calendar" element={<Calendar />} />
                 <Route path="clients" element={<ClientsList />} />
+                <Route path="clients/create" element={<ClientForm />} />
+                <Route path="clients/edit/:id" element={<ClientForm />} />
+                <Route path="clients/:id" element={<ClientForm />} /> {/* Redirecionando view para form por enquanto, ou criar view separada */}
                 <Route path="users" element={<UsersList />} />
+                <Route path="users/create" element={<UserForm />} />
+                <Route path="users/edit/:id" element={<UserForm />} />
                 <Route path="inbox" element={<Inbox />} />
                 <Route path="settings" element={<Settings />} />
             </Route>
