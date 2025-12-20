@@ -1,17 +1,86 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { mockProjects } from '../data/mockData';
 
 export default function ProjectsList() {
     const [searchTerm, setSearchTerm] = useState('');
     const [statusFilter, setStatusFilter] = useState('Todos');
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 5;
 
-    const filteredProjects = mockProjects.filter(project => {
-        const matchesSearch = project.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            project.client.toLowerCase().includes(searchTerm.toLowerCase());
-        const matchesStatus = statusFilter === 'Todos' || project.status === statusFilter;
-        return matchesSearch && matchesStatus;
-    });
+    const filteredProjects = useMemo(() => {
+        return mockProjects.filter(project => {
+            const matchesSearch = project.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                project.client.toLowerCase().includes(searchTerm.toLowerCase());
+            const matchesStatus = statusFilter === 'Todos' || project.status === statusFilter;
+            return matchesSearch && matchesStatus;
+        });
+    }, [searchTerm, statusFilter]);
+
+    // Calculate pagination
+    const totalPages = Math.ceil(filteredProjects.length / itemsPerPage);
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    const paginatedProjects = filteredProjects.slice(startIndex, endIndex);
+
+    // Reset to page 1 when filters change
+    const handleSearchChange = (e) => {
+        setSearchTerm(e.target.value);
+        setCurrentPage(1);
+    };
+
+    const handleStatusFilterChange = (status) => {
+        setStatusFilter(status);
+        setCurrentPage(1);
+    };
+
+    // Pagination handlers
+    const goToPage = (page) => {
+        if (page >= 1 && page <= totalPages) {
+            setCurrentPage(page);
+        }
+    };
+
+    const goToPreviousPage = () => {
+        if (currentPage > 1) {
+            setCurrentPage(currentPage - 1);
+        }
+    };
+
+    const goToNextPage = () => {
+        if (currentPage < totalPages) {
+            setCurrentPage(currentPage + 1);
+        }
+    };
+
+    // Generate page numbers to display
+    const getPageNumbers = () => {
+        const pages = [];
+        const maxVisiblePages = 5;
+
+        if (totalPages <= maxVisiblePages) {
+            for (let i = 1; i <= totalPages; i++) {
+                pages.push(i);
+            }
+        } else {
+            if (currentPage <= 3) {
+                for (let i = 1; i <= 4; i++) pages.push(i);
+                pages.push('...');
+                pages.push(totalPages);
+            } else if (currentPage >= totalPages - 2) {
+                pages.push(1);
+                pages.push('...');
+                for (let i = totalPages - 3; i <= totalPages; i++) pages.push(i);
+            } else {
+                pages.push(1);
+                pages.push('...');
+                for (let i = currentPage - 1; i <= currentPage + 1; i++) pages.push(i);
+                pages.push('...');
+                pages.push(totalPages);
+            }
+        }
+        return pages;
+    };
 
     return (
         <div className="flex-1 flex flex-col overflow-y-auto">
@@ -46,7 +115,7 @@ export default function ProjectsList() {
                             className="w-full bg-transparent border-none text-slate-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-text-secondary focus:ring-0 text-sm h-full px-3"
                             placeholder="Buscar por nome, cliente ou ID..."
                             value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
+                            onChange={handleSearchChange}
                         />
                     </div>
 
@@ -55,7 +124,7 @@ export default function ProjectsList() {
                         {['Todos', 'Em Andamento', 'Atrasado', 'Concluído', 'Planejamento'].map((status) => (
                             <button
                                 key={status}
-                                onClick={() => setStatusFilter(status)}
+                                onClick={() => handleStatusFilterChange(status)}
                                 className={`flex h-8 shrink-0 items-center justify-center gap-x-2 rounded-lg pl-3 pr-2 border transition-colors ${statusFilter === status
                                     ? 'bg-primary border-primary text-white'
                                     : 'bg-white dark:bg-[#233648] border-gray-200 dark:border-border-dark text-slate-700 dark:text-white hover:bg-gray-50 dark:hover:bg-[#324d67]'
@@ -95,7 +164,7 @@ export default function ProjectsList() {
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-gray-200 dark:divide-border-dark">
-                                    {filteredProjects.map((project) => (
+                                    {paginatedProjects.map((project) => (
                                         <tr key={project.id} className="hover:bg-gray-50 dark:hover:bg-[#233648]/50 transition-colors group">
                                             <td className="px-6 py-4">
                                                 <div className="flex items-center gap-3">
@@ -168,43 +237,85 @@ export default function ProjectsList() {
                         </div>
 
                         {/* Pagination */}
-                        <div className="flex items-center justify-between border-t border-gray-200 dark:border-border-dark bg-gray-50 dark:bg-[#192633] px-6 py-3">
-                            <div className="flex flex-1 justify-between sm:hidden">
-                                <button className="relative inline-flex items-center rounded-md border border-gray-300 dark:border-border-dark bg-white dark:bg-[#233648] px-4 py-2 text-sm font-medium text-gray-700 dark:text-text-secondary hover:bg-gray-50 dark:hover:bg-[#324d67]">
-                                    Anterior
-                                </button>
-                                <button className="relative ml-3 inline-flex items-center rounded-md border border-gray-300 dark:border-border-dark bg-white dark:bg-[#233648] px-4 py-2 text-sm font-medium text-gray-700 dark:text-text-secondary hover:bg-gray-50 dark:hover:bg-[#324d67]">
-                                    Próximo
-                                </button>
-                            </div>
-                            <div className="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
-                                <div>
-                                    <p className="text-sm text-gray-500 dark:text-text-secondary">
-                                        Mostrando <span className="font-medium text-slate-900 dark:text-white">1</span> a{' '}
-                                        <span className="font-medium text-slate-900 dark:text-white">{filteredProjects.length}</span> de{' '}
-                                        <span className="font-medium text-slate-900 dark:text-white">{mockProjects.length}</span> projetos
-                                    </p>
+                        {totalPages > 0 && (
+                            <div className="flex items-center justify-between border-t border-gray-200 dark:border-border-dark bg-gray-50 dark:bg-[#192633] px-6 py-3">
+                                {/* Mobile pagination */}
+                                <div className="flex flex-1 justify-between sm:hidden">
+                                    <button
+                                        onClick={goToPreviousPage}
+                                        disabled={currentPage === 1}
+                                        className={`relative inline-flex items-center rounded-md border border-gray-300 dark:border-border-dark bg-white dark:bg-[#233648] px-4 py-2 text-sm font-medium transition-colors ${currentPage === 1 ? 'text-gray-400 dark:text-gray-600 cursor-not-allowed' : 'text-gray-700 dark:text-text-secondary hover:bg-gray-50 dark:hover:bg-[#324d67]'}`}
+                                    >
+                                        Anterior
+                                    </button>
+                                    <span className="flex items-center text-sm text-gray-500 dark:text-text-secondary">
+                                        {currentPage} / {totalPages}
+                                    </span>
+                                    <button
+                                        onClick={goToNextPage}
+                                        disabled={currentPage === totalPages}
+                                        className={`relative ml-3 inline-flex items-center rounded-md border border-gray-300 dark:border-border-dark bg-white dark:bg-[#233648] px-4 py-2 text-sm font-medium transition-colors ${currentPage === totalPages ? 'text-gray-400 dark:text-gray-600 cursor-not-allowed' : 'text-gray-700 dark:text-text-secondary hover:bg-gray-50 dark:hover:bg-[#324d67]'}`}
+                                    >
+                                        Próximo
+                                    </button>
                                 </div>
-                                <div>
-                                    <nav aria-label="Pagination" className="isolate inline-flex -space-x-px rounded-md shadow-sm">
-                                        <a className="relative inline-flex items-center rounded-l-md px-2 py-2 text-gray-400 dark:text-text-secondary ring-1 ring-inset ring-gray-300 dark:ring-border-dark hover:bg-gray-50 dark:hover:bg-[#324d67] focus:z-20 focus:outline-offset-0" href="#">
-                                            <span className="sr-only">Anterior</span>
-                                            <span className="material-symbols-outlined text-[20px]">chevron_left</span>
-                                        </a>
-                                        <a aria-current="page" className="relative z-10 inline-flex items-center bg-primary px-4 py-2 text-sm font-semibold text-white focus:z-20" href="#">
-                                            1
-                                        </a>
-                                        <a className="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-700 dark:text-text-secondary ring-1 ring-inset ring-gray-300 dark:ring-border-dark hover:bg-gray-50 dark:hover:bg-[#324d67] focus:z-20 focus:outline-offset-0" href="#">
-                                            2
-                                        </a>
-                                        <a className="relative inline-flex items-center rounded-r-md px-2 py-2 text-gray-400 dark:text-text-secondary ring-1 ring-inset ring-gray-300 dark:ring-border-dark hover:bg-gray-50 dark:hover:bg-[#324d67] focus:z-20 focus:outline-offset-0" href="#">
-                                            <span className="sr-only">Próximo</span>
-                                            <span className="material-symbols-outlined text-[20px]">chevron_right</span>
-                                        </a>
-                                    </nav>
+                                {/* Desktop pagination */}
+                                <div className="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
+                                    <div>
+                                        <p className="text-sm text-gray-500 dark:text-text-secondary">
+                                            Mostrando <span className="font-medium text-slate-900 dark:text-white">{filteredProjects.length === 0 ? 0 : startIndex + 1}</span> a{' '}
+                                            <span className="font-medium text-slate-900 dark:text-white">{Math.min(endIndex, filteredProjects.length)}</span> de{' '}
+                                            <span className="font-medium text-slate-900 dark:text-white">{filteredProjects.length}</span> projetos
+                                        </p>
+                                    </div>
+                                    <div>
+                                        <nav aria-label="Pagination" className="isolate inline-flex -space-x-px rounded-md shadow-sm">
+                                            {/* Previous button */}
+                                            <button
+                                                onClick={goToPreviousPage}
+                                                disabled={currentPage === 1}
+                                                className={`relative inline-flex items-center rounded-l-md px-2 py-2 ring-1 ring-inset ring-gray-300 dark:ring-border-dark focus:z-20 focus:outline-offset-0 transition-colors ${currentPage === 1 ? 'text-gray-300 dark:text-gray-600 cursor-not-allowed bg-gray-100 dark:bg-[#1a2836]' : 'text-gray-400 dark:text-text-secondary hover:bg-gray-50 dark:hover:bg-[#324d67]'}`}
+                                            >
+                                                <span className="sr-only">Anterior</span>
+                                                <span className="material-symbols-outlined text-[20px]">chevron_left</span>
+                                            </button>
+                                            {/* Page numbers */}
+                                            {getPageNumbers().map((page, index) => (
+                                                page === '...' ? (
+                                                    <span
+                                                        key={`ellipsis-${index}`}
+                                                        className="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-700 dark:text-text-secondary ring-1 ring-inset ring-gray-300 dark:ring-border-dark"
+                                                    >
+                                                        ...
+                                                    </span>
+                                                ) : (
+                                                    <button
+                                                        key={page}
+                                                        onClick={() => goToPage(page)}
+                                                        aria-current={currentPage === page ? 'page' : undefined}
+                                                        className={`relative inline-flex items-center px-4 py-2 text-sm font-semibold focus:z-20 transition-colors ${currentPage === page
+                                                                ? 'z-10 bg-primary text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary'
+                                                                : 'text-gray-700 dark:text-text-secondary ring-1 ring-inset ring-gray-300 dark:ring-border-dark hover:bg-gray-50 dark:hover:bg-[#324d67]'
+                                                            }`}
+                                                    >
+                                                        {page}
+                                                    </button>
+                                                )
+                                            ))}
+                                            {/* Next button */}
+                                            <button
+                                                onClick={goToNextPage}
+                                                disabled={currentPage === totalPages}
+                                                className={`relative inline-flex items-center rounded-r-md px-2 py-2 ring-1 ring-inset ring-gray-300 dark:ring-border-dark focus:z-20 focus:outline-offset-0 transition-colors ${currentPage === totalPages ? 'text-gray-300 dark:text-gray-600 cursor-not-allowed bg-gray-100 dark:bg-[#1a2836]' : 'text-gray-400 dark:text-text-secondary hover:bg-gray-50 dark:hover:bg-[#324d67]'}`}
+                                            >
+                                                <span className="sr-only">Próximo</span>
+                                                <span className="material-symbols-outlined text-[20px]">chevron_right</span>
+                                            </button>
+                                        </nav>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                        )}
                     </div>
                 </div>
             </div>

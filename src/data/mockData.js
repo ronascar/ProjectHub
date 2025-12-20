@@ -79,6 +79,114 @@ export const mockProjects = [
         team: [
             { id: 9, name: "Rachel Green", avatar: "https://i.pravatar.cc/150?img=9" }
         ]
+    },
+    {
+        id: 6,
+        name: "Dashboard Analytics",
+        client: "DataViz Corp",
+        progress: 85,
+        status: "Em Andamento",
+        dueDate: "2024-02-15",
+        priority: "high",
+        type: "Web App",
+        icon: "analytics",
+        color: "blue",
+        team: [
+            { id: 10, name: "Mark Stevens", avatar: "https://i.pravatar.cc/150?img=10" }
+        ]
+    },
+    {
+        id: 7,
+        name: "CRM Integration",
+        client: "SalesForce Pro",
+        progress: 45,
+        status: "Em Andamento",
+        dueDate: "2024-03-01",
+        priority: "medium",
+        type: "Integration",
+        icon: "sync",
+        color: "purple",
+        team: [
+            { id: 11, name: "Anna White", avatar: "https://i.pravatar.cc/150?img=11" },
+            { id: 12, name: "John Black", avatar: "https://i.pravatar.cc/150?img=12" }
+        ]
+    },
+    {
+        id: 8,
+        name: "API Gateway",
+        client: "CloudNet",
+        progress: 60,
+        status: "Em Andamento",
+        dueDate: "2024-02-28",
+        priority: "high",
+        type: "Backend",
+        icon: "api",
+        color: "green",
+        team: [
+            { id: 13, name: "Steve Ross", avatar: "https://i.pravatar.cc/150?img=13" }
+        ]
+    },
+    {
+        id: 9,
+        name: "Mobile Banking",
+        client: "FinTech Bank",
+        progress: 20,
+        status: "Planejamento",
+        dueDate: "2024-05-01",
+        priority: "high",
+        type: "Mobile App",
+        icon: "account_balance",
+        color: "orange",
+        team: [
+            { id: 14, name: "Diana Cruz", avatar: "https://i.pravatar.cc/150?img=14" },
+            { id: 15, name: "Paul Martin", avatar: "https://i.pravatar.cc/150?img=15" }
+        ]
+    },
+    {
+        id: 10,
+        name: "IoT Dashboard",
+        client: "SmartHome Inc",
+        progress: 90,
+        status: "Em Andamento",
+        dueDate: "2024-01-30",
+        priority: "medium",
+        type: "Web App",
+        icon: "devices",
+        color: "blue",
+        team: [
+            { id: 16, name: "Kevin Lee", avatar: "https://i.pravatar.cc/150?img=16" }
+        ]
+    },
+    {
+        id: 11,
+        name: "E-learning Platform",
+        client: "EduTech",
+        progress: 100,
+        status: "Concluído",
+        dueDate: "2023-12-15",
+        priority: "medium",
+        type: "Web App",
+        icon: "school",
+        color: "green",
+        team: [
+            { id: 17, name: "Laura Smith", avatar: "https://i.pravatar.cc/150?img=17" },
+            { id: 18, name: "Robert Brown", avatar: "https://i.pravatar.cc/150?img=18" }
+        ]
+    },
+    {
+        id: 12,
+        name: "Inventory System",
+        client: "Warehouse Plus",
+        progress: 35,
+        status: "Atrasado",
+        dueDate: "2023-12-01",
+        priority: "high",
+        type: "Web App",
+        icon: "inventory_2",
+        color: "pink",
+        team: [
+            { id: 19, name: "Chris Walker", avatar: "https://i.pravatar.cc/150?img=19" }
+        ]
     }
 ];
 
