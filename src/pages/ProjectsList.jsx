@@ -1,27 +1,62 @@
-import { useState, useMemo } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { mockProjects } from '../data/mockData';
+import { projectsAPI } from '../services/api';
 import { useCustomConfirm } from '../components/CustomConfirm';
 
 export default function ProjectsList() {
     const navigate = useNavigate();
     const { showConfirm, ConfirmComponent } = useCustomConfirm();
+
+    // State
+    const [projects, setProjects] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
     const [searchTerm, setSearchTerm] = useState('');
     const [statusFilter, setStatusFilter] = useState('Todos');
     const [currentPage, setCurrentPage] = useState(1);
     const [openMenuId, setOpenMenuId] = useState(null);
     const itemsPerPage = 5;
 
+    // Load projects from API
+    useEffect(() => {
+        loadProjects();
+    }, []);
+
+    const loadProjects = async () => {
+        try {
+            setLoading(true);
+            setError(null);
+            const data = await projectsAPI.list();
+            setProjects(data);
+        } catch (err) {
+            console.error('Error loading projects:', err);
+            setError('Erro ao carregar projetos. Tente novamente.');
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    // Filter projects
     const filteredProjects = useMemo(() => {
-        return mockProjects.filter(project => {
-            const matchesSearch = project.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                project.client.toLowerCase().includes(searchTerm.toLowerCase());
-            const matchesStatus = statusFilter === 'Todos' || project.status === statusFilter;
+        return projects.filter(project => {
+            const matchesSearch =
+                project.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                (project.client?.name || '').toLowerCase().includes(searchTerm.toLowerCase());
+
+            const statusMap = {
+                'Todos': true,
+                'Em Andamento': project.status === 'IN_PROGRESS',
+                'Atrasado': project.status === 'ON_HOLD' || (project.dueDate && new Date(project.dueDate) < new Date() && project.status !== 'COMPLETED'),
+                'Concluído': project.status === 'COMPLETED',
+                'Planejamento': project.status === 'PLANNING'
+            };
+            const matchesStatus = statusMap[statusFilter];
+
             return matchesSearch && matchesStatus;
         });
-    }, [searchTerm, statusFilter]);
+    }, [projects, searchTerm, statusFilter]);
 
-    // Calculate pagination
+    // Pagination
     const totalPages = Math.ceil(filteredProjects.length / itemsPerPage);
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
@@ -100,17 +135,54 @@ export default function ProjectsList() {
         navigate(`/projects/edit/${id}`);
     };
 
-    const handleDeleteProject = (project) => {
+    const handleDeleteProject = async (project) => {
         showConfirm({
             title: 'Excluir Projeto',
             message: `Tem certeza que deseja excluir o projeto "${project.name}"? Esta ação não pode ser desfeita.`,
             type: 'danger',
             confirmText: 'Sim, Excluir',
             cancelText: 'Cancelar',
-            onConfirm: () => {
-                console.log('Delete project:', project.id);
-                // Aqui você faria a chamada para deletar do banco
+            onConfirm: async () => {
+                try {
+                    await projectsAPI.delete(project.id);
+                    // Reload projects after deletion
+                    await loadProjects();
+                    // Reset to first page if current page is now empty
+                    const newTotalPages = Math.ceil((projects.length - 1) / itemsPerPage);
+                    if (currentPage > newTotalPages && newTotalPages > 0) {
+                        setCurrentPage(newTotalPages);
+                    }
+                } catch (err) {
+                    console.error('Error deleting project:', err);
+                    setError('Erro ao excluir projeto. Tente novamente.');
+                }
             }
+        });
+    };
+
+    // Helper functions
+    const getStatusLabel = (status) => {
+        const statusMap = {
+            'PLANNING': 'Planejamento',
+            'IN_PROGRESS': 'Em Andamento',
+            'ON_HOLD': 'Pausado',
+            'COMPLETED': 'Concluído',
+            'CANCELLED': 'Cancelado'
+        };
+        return statusMap[status] || status;
+    };
+
+    const isProjectOverdue = (project) => {
+        if (!project.dueDate || project.status === 'COMPLETED') return false;
+        return new Date(project.dueDate) < new Date();
+    };
+
+    const formatDate = (dateString) => {
+        if (!dateString) return 'Sem prazo';
+        return new Date(dateString).toLocaleDateString('pt-BR', {
+            day: '2-digit',
+            month: 'short',
+            year: 'numeric'
         });
     };
 
@@ -137,6 +209,20 @@ export default function ProjectsList() {
                             <span className="truncate">Novo Projeto</span>
                         </Link>
                     </div>
+
+                    {/* Error Message */}
+                    {error && (
+                        <div className="rounded-lg bg-red-50 p-4 dark:bg-red-900/20">
+                            <div className="flex">
+                                <div className="flex-shrink-0">
+                                    <span className="material-symbols-outlined text-red-400">error</span>
+                                </div>
+                                <div className="ml-3">
+                                    <p className="text-sm font-medium text-red-800 dark:text-red-200">{error}</p>
+                                </div>
+                            </div>
+                        </div>
+                    )}
 
                     {/* Toolbar: Search & Filters */}
                     <div className="flex flex-col lg:flex-row gap-4 lg:items-center justify-between bg-gray-100 dark:bg-surface-dark p-2 rounded-xl border border-gray-200 dark:border-border-dark">
@@ -173,134 +259,161 @@ export default function ProjectsList() {
                     {/* Projects Table */}
                     <div className="w-full">
                         <div className="w-full overflow-hidden rounded-xl border border-gray-200 dark:border-border-dark bg-white dark:bg-[#192633] shadow-xl shadow-black/5 dark:shadow-black/20">
-                            <div className="overflow-x-auto">
-                                <table className="w-full text-left border-collapse">
-                                    <thead>
-                                        <tr className="bg-gray-50 dark:bg-[#233648] border-b border-gray-200 dark:border-border-dark">
-                                            <th className="px-6 py-4 text-gray-500 dark:text-text-secondary text-xs font-semibold uppercase tracking-wider w-[25%]">
-                                                Nome do Projeto
-                                            </th>
-                                            <th className="px-6 py-4 text-gray-500 dark:text-text-secondary text-xs font-semibold uppercase tracking-wider w-[15%] hidden sm:table-cell">
-                                                Cliente
-                                            </th>
-                                            <th className="px-6 py-4 text-gray-500 dark:text-text-secondary text-xs font-semibold uppercase tracking-wider w-[20%]">
-                                                Progresso
-                                            </th>
-                                            <th className="px-6 py-4 text-gray-500 dark:text-text-secondary text-xs font-semibold uppercase tracking-wider w-[15%]">
-                                                Status
-                                            </th>
-                                            <th className="px-6 py-4 text-gray-500 dark:text-text-secondary text-xs font-semibold uppercase tracking-wider w-[15%] hidden md:table-cell">
-                                                Prazo
-                                            </th>
-                                            <th className="px-6 py-4 text-gray-500 dark:text-text-secondary text-xs font-semibold uppercase tracking-wider w-[10%] text-right">
-                                                Ações
-                                            </th>
-                                        </tr>
-                                    </thead>
-                                    <tbody className="divide-y divide-gray-200 dark:divide-border-dark">
-                                        {paginatedProjects.map((project) => (
-                                            <tr key={project.id} className="hover:bg-gray-50 dark:hover:bg-[#233648]/50 transition-colors group">
-                                                <td className="px-6 py-4">
-                                                    <div className="flex items-center gap-3">
-                                                        <div className={`bg-${project.color}-500/20 p-2 rounded-lg text-${project.color}-600 dark:text-${project.color}-400`}>
-                                                            <span className="material-symbols-outlined">{project.icon}</span>
-                                                        </div>
-                                                        <div>
-                                                            <Link
-                                                                to="/projects/details"
-                                                                className="text-sm font-medium leading-normal text-slate-900 dark:text-white group-hover:text-primary transition-colors cursor-pointer block"
-                                                            >
-                                                                {project.name}
-                                                            </Link>
-                                                            <p className="text-xs mt-0.5 text-gray-500 dark:text-text-secondary md:hidden">
-                                                                {project.client}
-                                                            </p>
-                                                        </div>
-                                                    </div>
-                                                </td>
-                                                <td className="px-6 py-4 hidden sm:table-cell">
-                                                    <p className="text-sm font-normal text-gray-500 dark:text-text-secondary">{project.client}</p>
-                                                </td>
-                                                <td className="px-6 py-4">
-                                                    <div className="flex flex-col gap-1.5 w-full max-w-[140px]">
-                                                        <div className="flex justify-between text-xs">
-                                                            <span className="font-medium text-slate-900 dark:text-white">{project.progress}%</span>
-                                                        </div>
-                                                        <div className="h-1.5 w-full rounded-full bg-gray-200 dark:bg-[#324d67] overflow-hidden">
-                                                            <div
-                                                                className={`h-full rounded-full ${project.progress >= 75 ? 'bg-green-500' :
-                                                                    project.progress >= 50 ? 'bg-primary' :
-                                                                        project.progress >= 25 ? 'bg-orange-500' :
-                                                                            'bg-red-500'
-                                                                    }`}
-                                                                style={{ width: `${project.progress}%` }}
-                                                            />
-                                                        </div>
-                                                    </div>
-                                                </td>
-                                                <td className="px-6 py-4">
-                                                    <span className={`inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset ${project.status === 'Concluído' ? 'bg-green-400/10 text-green-400 ring-green-400/30' :
-                                                        project.status === 'Atrasado' ? 'bg-red-400/10 text-red-400 ring-red-400/30' :
-                                                            project.status === 'Planejamento' ? 'bg-orange-400/10 text-orange-400 ring-orange-400/30' :
-                                                                'bg-blue-400/10 text-blue-400 ring-blue-400/30'
-                                                        }`}>
-                                                        {project.status}
-                                                    </span>
-                                                </td>
-                                                <td className="px-6 py-4 hidden md:table-cell">
-                                                    <div className="flex items-center gap-2">
-                                                        <span className={`material-symbols-outlined text-[18px] ${project.status === 'Atrasado' ? 'text-red-400' : 'text-gray-400 dark:text-text-secondary'
-                                                            }`}>
-                                                            calendar_today
-                                                        </span>
-                                                        <span className={`text-sm ${project.status === 'Atrasado' ? 'text-red-400 font-medium' : 'text-gray-500 dark:text-text-secondary'
-                                                            }`}>
-                                                            {new Date(project.dueDate).toLocaleDateString('pt-BR', { day: '2-digit', month: 'short', year: 'numeric' })}
-                                                        </span>
-                                                    </div>
-                                                </td>
-                                                <td className="px-6 py-4 text-right">
-                                                    <div className="relative">
-                                                        <button
-                                                            onClick={() => toggleMenu(project.id)}
-                                                            className="flex size-8 items-center justify-center rounded-full text-gray-400 dark:text-text-secondary hover:bg-gray-100 dark:hover:bg-[#324d67] hover:text-slate-900 dark:hover:text-white transition-colors"
-                                                        >
-                                                            <span className="material-symbols-outlined">more_vert</span>
-                                                        </button>
-                                                        {openMenuId === project.id && (
-                                                            <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-[#1d2832] border border-slate-200 dark:border-[#233648] rounded-lg shadow-xl py-1 z-50">
-                                                                <button
-                                                                    onClick={() => { handleViewProject(project.id); setOpenMenuId(null); }}
-                                                                    className="w-full text-left px-4 py-2 text-sm text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-[#2c3b4a] flex items-center gap-2"
-                                                                >
-                                                                    <span className="material-symbols-outlined text-[18px]">visibility</span>
-                                                                    Visualizar
-                                                                </button>
-                                                                <button
-                                                                    onClick={() => { handleEditProject(project.id); setOpenMenuId(null); }}
-                                                                    className="w-full text-left px-4 py-2 text-sm text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-[#2c3b4a] flex items-center gap-2"
-                                                                >
-                                                                    <span className="material-symbols-outlined text-[18px]">edit</span>
-                                                                    Editar
-                                                                </button>
-                                                                <div className="border-t border-slate-100 dark:border-[#233648] my-1"></div>
-                                                                <button
-                                                                    onClick={() => { handleDeleteProject(project); setOpenMenuId(null); }}
-                                                                    className="w-full text-left px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 flex items-center gap-2"
-                                                                >
-                                                                    <span className="material-symbols-outlined text-[18px]">delete</span>
-                                                                    Excluir
-                                                                </button>
-                                                            </div>
-                                                        )}
-                                                    </div>
-                                                </td>
+                            {loading ? (
+                                <div className="flex items-center justify-center py-20">
+                                    <div className="text-center">
+                                        <div className="inline-block h-12 w-12 animate-spin rounded-full border-4 border-solid border-primary border-r-transparent"></div>
+                                        <p className="mt-4 text-gray-500 dark:text-gray-400">Carregando projetos...</p>
+                                    </div>
+                                </div>
+                            ) : filteredProjects.length === 0 ? (
+                                <div className="flex flex-col items-center justify-center py-20">
+                                    <span className="material-symbols-outlined text-gray-400 dark:text-gray-600" style={{ fontSize: '64px' }}>folder_off</span>
+                                    <p className="mt-4 text-lg font-medium text-gray-900 dark:text-white">Nenhum projeto encontrado</p>
+                                    <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                                        {searchTerm || statusFilter !== 'Todos'
+                                            ? 'Tente ajustar os filtros de busca'
+                                            : 'Comece criando seu primeiro projeto'}
+                                    </p>
+                                </div>
+                            ) : (
+                                <div className="overflow-x-auto">
+                                    <table className="w-full text-left border-collapse">
+                                        <thead>
+                                            <tr className="bg-gray-50 dark:bg-[#233648] border-b border-gray-200 dark:border-border-dark">
+                                                <th className="px-6 py-4 text-gray-500 dark:text-text-secondary text-xs font-semibold uppercase tracking-wider w-[25%]">
+                                                    Nome do Projeto
+                                                </th>
+                                                <th className="px-6 py-4 text-gray-500 dark:text-text-secondary text-xs font-semibold uppercase tracking-wider w-[15%] hidden sm:table-cell">
+                                                    Cliente
+                                                </th>
+                                                <th className="px-6 py-4 text-gray-500 dark:text-text-secondary text-xs font-semibold uppercase tracking-wider w-[20%]">
+                                                    Progresso
+                                                </th>
+                                                <th className="px-6 py-4 text-gray-500 dark:text-text-secondary text-xs font-semibold uppercase tracking-wider w-[15%]">
+                                                    Status
+                                                </th>
+                                                <th className="px-6 py-4 text-gray-500 dark:text-text-secondary text-xs font-semibold uppercase tracking-wider w-[15%] hidden md:table-cell">
+                                                    Prazo
+                                                </th>
+                                                <th className="px-6 py-4 text-gray-500 dark:text-text-secondary text-xs font-semibold uppercase tracking-wider w-[10%] text-right">
+                                                    Ações
+                                                </th>
                                             </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
-                            </div>
-
+                                        </thead>
+                                        <tbody className="divide-y divide-gray-200 dark:divide-border-dark">
+                                            {paginatedProjects.map((project) => {
+                                                const isOverdue = isProjectOverdue(project);
+                                                return (
+                                                    <tr key={project.id} className="hover:bg-gray-50 dark:hover:bg-[#233648]/50 transition-colors group">
+                                                        <td className="px-6 py-4">
+                                                            <div className="flex items-center gap-3">
+                                                                <div
+                                                                    className="p-2 rounded-lg"
+                                                                    style={{
+                                                                        backgroundColor: `${project.color}20`,
+                                                                        color: project.color
+                                                                    }}
+                                                                >
+                                                                    <span className="material-symbols-outlined">folder</span>
+                                                                </div>
+                                                                <div>
+                                                                    <Link
+                                                                        to={`/projects/details/${project.id}`}
+                                                                        className="text-sm font-medium leading-normal text-slate-900 dark:text-white group-hover:text-primary transition-colors cursor-pointer block"
+                                                                    >
+                                                                        {project.name}
+                                                                    </Link>
+                                                                    <p className="text-xs mt-0.5 text-gray-500 dark:text-text-secondary md:hidden">
+                                                                        {project.client?.name || 'Sem cliente'}
+                                                                    </p>
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                        <td className="px-6 py-4 hidden sm:table-cell">
+                                                            <p className="text-sm font-normal text-gray-500 dark:text-text-secondary">
+                                                                {project.client?.name || 'Sem cliente'}
+                                                            </p>
+                                                        </td>
+                                                        <td className="px-6 py-4">
+                                                            <div className="flex flex-col gap-1.5 w-full max-w-[140px]">
+                                                                <div className="flex justify-between text-xs">
+                                                                    <span className="font-medium text-slate-900 dark:text-white">{project.progress || 0}%</span>
+                                                                </div>
+                                                                <div className="h-1.5 w-full rounded-full bg-gray-200 dark:bg-[#324d67] overflow-hidden">
+                                                                    <div
+                                                                        className={`h-full rounded-full ${(project.progress || 0) >= 75 ? 'bg-green-500' :
+                                                                            (project.progress || 0) >= 50 ? 'bg-primary' :
+                                                                                (project.progress || 0) >= 25 ? 'bg-orange-500' :
+                                                                                    'bg-red-500'
+                                                                            }`}
+                                                                        style={{ width: `${project.progress || 0}%` }}
+                                                                    />
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                        <td className="px-6 py-4">
+                                                            <span className={`inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset ${project.status === 'COMPLETED' ? 'bg-green-400/10 text-green-400 ring-green-400/30' :
+                                                                    isOverdue ? 'bg-red-400/10 text-red-400 ring-red-400/30' :
+                                                                        project.status === 'PLANNING' ? 'bg-orange-400/10 text-orange-400 ring-orange-400/30' :
+                                                                            'bg-blue-400/10 text-blue-400 ring-blue-400/30'
+                                                                }`}>
+                                                                {isOverdue && project.status !== 'COMPLETED' ? 'Atrasado' : getStatusLabel(project.status)}
+                                                            </span>
+                                                        </td>
+                                                        <td className="px-6 py-4 hidden md:table-cell">
+                                                            <div className="flex items-center gap-2">
+                                                                <span className={`material-symbols-outlined text-[18px] ${isOverdue ? 'text-red-400' : 'text-gray-400 dark:text-text-secondary'}`}>
+                                                                    calendar_today
+                                                                </span>
+                                                                <span className={`text-sm ${isOverdue ? 'text-red-400 font-medium' : 'text-gray-500 dark:text-text-secondary'}`}>
+                                                                    {formatDate(project.dueDate)}
+                                                                </span>
+                                                            </div>
+                                                        </td>
+                                                        <td className="px-6 py-4 text-right">
+                                                            <div className="relative">
+                                                                <button
+                                                                    onClick={() => toggleMenu(project.id)}
+                                                                    className="flex size-8 items-center justify-center rounded-full text-gray-400 dark:text-text-secondary hover:bg-gray-100 dark:hover:bg-[#324d67] hover:text-slate-900 dark:hover:text-white transition-colors"
+                                                                >
+                                                                    <span className="material-symbols-outlined">more_vert</span>
+                                                                </button>
+                                                                {openMenuId === project.id && (
+                                                                    <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-[#1d2832] border border-slate-200 dark:border-[#233648] rounded-lg shadow-xl py-1 z-50">
+                                                                        <button
+                                                                            onClick={() => { handleViewProject(project.id); setOpenMenuId(null); }}
+                                                                            className="w-full text-left px-4 py-2 text-sm text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-[#2c3b4a] flex items-center gap-2"
+                                                                        >
+                                                                            <span className="material-symbols-outlined text-[18px]">visibility</span>
+                                                                            Visualizar
+                                                                        </button>
+                                                                        <button
+                                                                            onClick={() => { handleEditProject(project.id); setOpenMenuId(null); }}
+                                                                            className="w-full text-left px-4 py-2 text-sm text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-[#2c3b4a] flex items-center gap-2"
+                                                                        >
+                                                                            <span className="material-symbols-outlined text-[18px]">edit</span>
+                                                                            Editar
+                                                                        </button>
+                                                                        <div className="border-t border-slate-100 dark:border-[#233648] my-1"></div>
+                                                                        <button
+                                                                            onClick={() => { handleDeleteProject(project); setOpenMenuId(null); }}
+                                                                            className="w-full text-left px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 flex items-center gap-2"
+                                                                        >
+                                                                            <span className="material-symbols-outlined text-[18px]">delete</span>
+                                                                            Excluir
+                                                                        </button>
+                                                                    </div>
+                                                                )}
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                );
+                                            })}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            )}
                             {/* Pagination */}
                             {totalPages > 0 && (
                                 <div className="flex items-center justify-between border-t border-gray-200 dark:border-border-dark bg-gray-50 dark:bg-[#192633] px-6 py-3">
