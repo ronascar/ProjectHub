@@ -48,3 +48,5 @@ move-to-root.ps1
 test-build.bat
 MOVE_TO_ROOT.md
 FIX_404.md
+
+/src/generated/prisma

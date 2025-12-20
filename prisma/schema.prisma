@@ -1,0 +1,503 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ==================== USERS & AUTH ====================
+
+model User {
+  id            String    @id @default(uuid())
+  email         String    @unique
+  password      String
+  name          String
+  avatar        String?
+  role          UserRole  @default(MEMBER)
+  phone         String?
+  department    String?
+  isActive      Boolean   @default(true)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  lastLogin     DateTime?
+
+  // Relations
+  ownedProjects    Project[]       @relation("ProjectOwner")
+  projectMembers   ProjectMember[]
+  assignedTasks    Task[]          @relation("TaskAssignee")
+  createdTasks     Task[]          @relation("TaskCreator")
+  comments         Comment[]
+  notifications    Notification[]
+  activities       Activity[]
+  messages         Message[]       @relation("MessageSender")
+  receivedMessages Message[]       @relation("MessageReceiver")
+  sessions         Session[]
+
+  @@map("users")
+}
+
+model Session {
+  id        String   @id @default(uuid())
+  userId    String
+  token     String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+enum UserRole {
+  ADMIN
+  MANAGER
+  MEMBER
+  VIEWER
+}
+
+// ==================== CLIENTS ====================
+
+model Client {
+  id          String   @id @default(uuid())
+  name        String
+  email       String?
+  phone       String?
+  company     String?
+  address     String?
+  city        String?
+  state       String?
+  country     String?
+  logo        String?
+  contactName String?
+  notes       String?
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  projects Project[]
+
+  @@map("clients")
+}
+
+// ==================== PROJECTS ====================
+
+model Project {
+  id              String        @id @default(uuid())
+  name            String
+  description     String?
+  shortDescription String?
+  category        String?
+  status          ProjectStatus @default(PLANNING)
+  priority        Priority      @default(MEDIUM)
+  progress        Int           @default(0) // 0-100
+  startDate       DateTime?
+  estimatedDate   DateTime?
+  dueDate         DateTime?
+  completedAt     DateTime?
+  budget          Decimal?      @db.Decimal(12, 2)
+  color           String?       @default("#4f46e5")
+  isArchived      Boolean       @default(false)
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  // Foreign keys
+  ownerId   String
+  clientId  String?
+
+  // Relations
+  owner        User              @relation("ProjectOwner", fields: [ownerId], references: [id])
+  client       Client?           @relation(fields: [clientId], references: [id])
+  members      ProjectMember[]
+  tasks        Task[]
+  deliverables Deliverable[]
+  technologies ProjectTechnology[]
+  resources    Resource[]
+  versions     ProjectVersion[]
+  activities   Activity[]
+  comments     Comment[]
+
+  @@map("projects")
+}
+
+model ProjectMember {
+  id        String      @id @default(uuid())
+  role      MemberRole  @default(DEVELOPER)
+  joinedAt  DateTime    @default(now())
+
+  // Foreign keys
+  projectId String
+  userId    String
+
+  // Relations
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([projectId, userId])
+  @@map("project_members")
+}
+
+enum ProjectStatus {
+  PLANNING
+  IN_PROGRESS
+  ON_HOLD
+  REVIEW
+  COMPLETED
+  CANCELLED
+}
+
+enum Priority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
+enum MemberRole {
+  LEAD
+  DEVELOPER
+  DESIGNER
+  QA
+  VIEWER
+}
+
+// ==================== TASKS ====================
+
+model Task {
+  id          String      @id @default(uuid())
+  title       String
+  description String?
+  status      TaskStatus  @default(TODO)
+  priority    Priority    @default(MEDIUM)
+  order       Int         @default(0)
+  startDate   DateTime?
+  dueDate     DateTime?
+  completedAt DateTime?
+  estimatedHours Float?
+  actualHours    Float?
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  // Foreign keys
+  projectId   String
+  assigneeId  String?
+  creatorId   String
+  parentId    String?
+
+  // Relations
+  project   Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  assignee  User?     @relation("TaskAssignee", fields: [assigneeId], references: [id])
+  creator   User      @relation("TaskCreator", fields: [creatorId], references: [id])
+  parent    Task?     @relation("TaskSubtasks", fields: [parentId], references: [id])
+  subtasks  Task[]    @relation("TaskSubtasks")
+  comments  Comment[]
+  tags      TaskTag[]
+  attachments Attachment[]
+
+  @@map("tasks")
+}
+
+enum TaskStatus {
+  TODO
+  IN_PROGRESS
+  REVIEW
+  DONE
+  BLOCKED
+}
+
+model TaskTag {
+  id     String @id @default(uuid())
+  taskId String
+  tagId  String
+
+  task Task @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  tag  Tag  @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@unique([taskId, tagId])
+  @@map("task_tags")
+}
+
+model Tag {
+  id        String    @id @default(uuid())
+  name      String    @unique
+  color     String    @default("#6366f1")
+  createdAt DateTime  @default(now())
+
+  tasks TaskTag[]
+
+  @@map("tags")
+}
+
+// ==================== DELIVERABLES ====================
+
+model Deliverable {
+  id          String            @id @default(uuid())
+  title       String
+  description String?
+  status      DeliverableStatus @default(PENDING)
+  order       Int               @default(0)
+  dueDate     DateTime?
+  completedAt DateTime?
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+
+  // Foreign keys
+  projectId String
+
+  // Relations
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@map("deliverables")
+}
+
+enum DeliverableStatus {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+}
+
+// ==================== TECHNOLOGIES ====================
+
+model Technology {
+  id        String   @id @default(uuid())
+  name      String   @unique
+  icon      String?
+  color     String?
+  category  String?
+  createdAt DateTime @default(now())
+
+  projects ProjectTechnology[]
+
+  @@map("technologies")
+}
+
+model ProjectTechnology {
+  id           String @id @default(uuid())
+  projectId    String
+  technologyId String
+
+  project    Project    @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  technology Technology @relation(fields: [technologyId], references: [id], onDelete: Cascade)
+
+  @@unique([projectId, technologyId])
+  @@map("project_technologies")
+}
+
+// ==================== RESOURCES ====================
+
+model Resource {
+  id          String       @id @default(uuid())
+  name        String
+  type        ResourceType @default(LINK)
+  url         String?
+  description String?
+  icon        String?
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  // Foreign keys
+  projectId String
+
+  // Relations
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@map("resources")
+}
+
+enum ResourceType {
+  LINK
+  REPOSITORY
+  DESIGN
+  DOCUMENT
+  STAGING
+  PRODUCTION
+}
+
+// ==================== VERSIONS ====================
+
+model ProjectVersion {
+  id          String   @id @default(uuid())
+  version     String
+  description String?
+  releaseDate DateTime?
+  changes     String?
+  createdAt   DateTime @default(now())
+
+  // Foreign keys
+  projectId String
+
+  // Relations
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@map("project_versions")
+}
+
+// ==================== COMMENTS ====================
+
+model Comment {
+  id        String   @id @default(uuid())
+  content   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Foreign keys
+  userId    String
+  projectId String?
+  taskId    String?
+  parentId  String?
+
+  // Relations
+  user     User      @relation(fields: [userId], references: [id])
+  project  Project?  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  task     Task?     @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  parent   Comment?  @relation("CommentReplies", fields: [parentId], references: [id])
+  replies  Comment[] @relation("CommentReplies")
+
+  @@map("comments")
+}
+
+// ==================== ATTACHMENTS ====================
+
+model Attachment {
+  id        String   @id @default(uuid())
+  filename  String
+  url       String
+  type      String?
+  size      Int?
+  createdAt DateTime @default(now())
+
+  // Foreign keys
+  taskId String
+
+  // Relations
+  task Task @relation(fields: [taskId], references: [id], onDelete: Cascade)
+
+  @@map("attachments")
+}
+
+// ==================== ACTIVITIES ====================
+
+model Activity {
+  id          String       @id @default(uuid())
+  type        ActivityType
+  description String
+  metadata    Json?
+  createdAt   DateTime     @default(now())
+
+  // Foreign keys
+  userId    String
+  projectId String?
+
+  // Relations
+  user    User     @relation(fields: [userId], references: [id])
+  project Project? @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@map("activities")
+}
+
+enum ActivityType {
+  PROJECT_CREATED
+  PROJECT_UPDATED
+  PROJECT_COMPLETED
+  TASK_CREATED
+  TASK_UPDATED
+  TASK_COMPLETED
+  MEMBER_ADDED
+  MEMBER_REMOVED
+  COMMENT_ADDED
+  FILE_UPLOADED
+  VERSION_RELEASED
+}
+
+// ==================== NOTIFICATIONS ====================
+
+model Notification {
+  id        String           @id @default(uuid())
+  type      NotificationType
+  title     String
+  message   String?
+  isRead    Boolean          @default(false)
+  link      String?
+  createdAt DateTime         @default(now())
+
+  // Foreign keys
+  userId String
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("notifications")
+}
+
+enum NotificationType {
+  TASK_ASSIGNED
+  TASK_COMPLETED
+  PROJECT_UPDATE
+  COMMENT_MENTION
+  DEADLINE_REMINDER
+  TEAM_INVITATION
+  SYSTEM
+}
+
+// ==================== MESSAGES ====================
+
+model Message {
+  id        String   @id @default(uuid())
+  content   String
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  // Foreign keys
+  senderId   String
+  receiverId String
+
+  // Relations
+  sender   User @relation("MessageSender", fields: [senderId], references: [id])
+  receiver User @relation("MessageReceiver", fields: [receiverId], references: [id])
+
+  @@map("messages")
+}
+
+// ==================== CALENDAR EVENTS ====================
+
+model CalendarEvent {
+  id          String        @id @default(uuid())
+  title       String
+  description String?
+  startDate   DateTime
+  endDate     DateTime?
+  allDay      Boolean       @default(false)
+  type        EventType     @default(MEETING)
+  color       String?
+  location    String?
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  @@map("calendar_events")
+}
+
+enum EventType {
+  MEETING
+  DEADLINE
+  MILESTONE
+  HOLIDAY
+  REMINDER
+}
+
+// ==================== SETTINGS ====================
+
+model Setting {
+  id        String   @id @default(uuid())
+  key       String   @unique
+  value     Json
+  category  String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("settings")
+}
