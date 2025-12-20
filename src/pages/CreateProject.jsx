@@ -48,7 +48,7 @@ export default function CreateProject() {
                     <div className="flex items-center gap-3">
                         <button
                             onClick={() => navigate('/projects')}
-                            className="px-4 h-10 rounded-lg border border-gray-300 dark:border-border-dark text-slate-700 dark:text-text-secondary text-sm font-bold hover:bg-gray-50 dark:hover:bg-card-dark transition-colors"
+                            className="px-4 h-10 rounded-lg border border-gray-300 dark:border-border-dark text-slate-700 dark:text-text-secondary text-sm font-bold hover:bg-gray-50 dark:hover:bg-surface-dark transition-colors"
                         >
                             Cancelar
                         </button>

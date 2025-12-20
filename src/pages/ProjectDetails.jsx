@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import ProjectOverview from './ProjectOverview';
 import KanbanBoard from './KanbanBoard';
 import ProjectVersioning from './ProjectVersioning';
 
 export default function ProjectDetails() {
+    const { projectId } = useParams();
     const [activeTab, setActiveTab] = useState('overview');
 
     return (
@@ -32,10 +33,13 @@ export default function ProjectDetails() {
                             <span className="material-symbols-outlined text-[20px]">share</span>
                             Share
                         </button>
-                        <button className="flex items-center gap-2 px-4 h-10 rounded-lg bg-primary text-white font-bold text-sm hover:bg-blue-600 transition-colors shadow-lg shadow-primary/25">
+                        <Link
+                            to={`/projects/edit/${projectId || '1'}`}
+                            className="flex items-center gap-2 px-4 h-10 rounded-lg bg-primary text-white font-bold text-sm hover:bg-blue-600 transition-colors shadow-lg shadow-primary/25"
+                        >
                             <span className="material-symbols-outlined text-[20px]">edit</span>
                             Editar Projeto
-                        </button>
+                        </Link>
                     </div>
                 </div>
                 {/* Tabs */}
@@ -114,10 +118,10 @@ export default function ProjectDetails() {
                                         <span className="material-symbols-outlined text-purple-400 text-[20px]">group</span>
                                     </div>
                                     <div className="flex -space-x-2 mt-1">
-                                        <div className="size-8 rounded-full border-2 border-white dark:border-card-dark bg-cover bg-center" data-alt="Team member 1 portrait" style={{ backgroundImage: "url('https://lh3.googleusercontent.com/aida-public/AB6AXuBU_s1Mu3LwoGdj5UtBw2IBZJBN1dWW4c5UDHywyVxDnPzOb-jqNqM2WbIT-S4eFZEEMrHZnjZNZP3RIHMxPYliTomS31aYHIm-z_PVI5_vQglsZLjsh53iK34_WhjjBlLoSpNiNQRPLwFetP8CgcOD1VSCJm9qo2wY3aKNbtxGHuhZATq_7l_2hfQxwCNBUqNtn9bMSEtPaOIe3VyYW_-tnHcQyMqsbGX4h91jqR5tR_536qtbC7lXLe9jF8GfY051-jLjerrakX8')" }}></div>
-                                        <div className="size-8 rounded-full border-2 border-white dark:border-card-dark bg-cover bg-center" data-alt="Team member 2 portrait" style={{ backgroundImage: "url('https://lh3.googleusercontent.com/aida-public/AB6AXuDAJZlGSYR5HTV5l29sDZAsmCizTfYAjy84sGRk-MZzd1WsnRVn5ohD_s6ff6M6qc3Z6SyBRer90MpDOJ9ApjeW71FZZqQpBNvpQTWLIqfM0GWfU3oiv-EKtSUmA7C5I2TaFzGfe_-Qr8TW4j27HC9yp5yj9gqDQ1A0zc6b-u1gyvTfRJRxQYF2WkCz9zxbysqGxE533qzy9v6F2jS200bNu7acoFPmDnuAblrq7scBCFTUbVpil8M2IiSrVUUbFB0MZVFh0ClhFgg')" }}></div>
-                                        <div className="size-8 rounded-full border-2 border-white dark:border-card-dark bg-cover bg-center" data-alt="Team member 3 portrait" style={{ backgroundImage: "url('https://lh3.googleusercontent.com/aida-public/AB6AXuDRxeiW9XtlCwTzSBZYI6DHYTRFDaVtkhZ6r5FWHtG0fSOO16dUx4zoTzOjk5M4hAve0kxA-l4v8MmmB_k2OCZmlybYXSbiTHJeAV0CgDkwY38mVz0QUyCnkEQNDu0VkyEftNuLWV4WT4qSii2NGROFs2HpHYm8cI6TiVm9EXGbInGXqHA7n3puXuddrfXiaKNmHinSydLBoZRlDgJ9bUU1MiBbLYVldInntB2Fyv26WpAZn5615N1K07jHvMZXLUTvisLs6AZbHfc')" }}></div>
-                                        <div className="size-8 rounded-full border-2 border-white dark:border-card-dark bg-slate-200 dark:bg-slate-700 flex items-center justify-center text-xs font-bold text-slate-600 dark:text-slate-300">+2</div>
+                                        <div className="size-8 rounded-full border-2 border-white dark:border-surface-dark bg-cover bg-center" data-alt="Team member 1 portrait" style={{ backgroundImage: "url('https://lh3.googleusercontent.com/aida-public/AB6AXuBU_s1Mu3LwoGdj5UtBw2IBZJBN1dWW4c5UDHywyVxDnPzOb-jqNqM2WbIT-S4eFZEEMrHZnjZNZP3RIHMxPYliTomS31aYHIm-z_PVI5_vQglsZLjsh53iK34_WhjjBlLoSpNiNQRPLwFetP8CgcOD1VSCJm9qo2wY3aKNbtxGHuhZATq_7l_2hfQxwCNBUqNtn9bMSEtPaOIe3VyYW_-tnHcQyMqsbGX4h91jqR5tR_536qtbC7lXLe9jF8GfY051-jLjerrakX8')" }}></div>
+                                        <div className="size-8 rounded-full border-2 border-white dark:border-surface-dark bg-cover bg-center" data-alt="Team member 2 portrait" style={{ backgroundImage: "url('https://lh3.googleusercontent.com/aida-public/AB6AXuDAJZlGSYR5HTV5l29sDZAsmCizTfYAjy84sGRk-MZzd1WsnRVn5ohD_s6ff6M6qc3Z6SyBRer90MpDOJ9ApjeW71FZZqQpBNvpQTWLIqfM0GWfU3oiv-EKtSUmA7C5I2TaFzGfe_-Qr8TW4j27HC9yp5yj9gqDQ1A0zc6b-u1gyvTfRJRxQYF2WkCz9zxbysqGxE533qzy9v6F2jS200bNu7acoFPmDnuAblrq7scBCFTUbVpil8M2IiSrVUUbFB0MZVFh0ClhFgg')" }}></div>
+                                        <div className="size-8 rounded-full border-2 border-white dark:border-surface-dark bg-cover bg-center" data-alt="Team member 3 portrait" style={{ backgroundImage: "url('https://lh3.googleusercontent.com/aida-public/AB6AXuDRxeiW9XtlCwTzSBZYI6DHYTRFDaVtkhZ6r5FWHtG0fSOO16dUx4zoTzOjk5M4hAve0kxA-l4v8MmmB_k2OCZmlybYXSbiTHJeAV0CgDkwY38mVz0QUyCnkEQNDu0VkyEftNuLWV4WT4qSii2NGROFs2HpHYm8cI6TiVm9EXGbInGXqHA7n3puXuddrfXiaKNmHinSydLBoZRlDgJ9bUU1MiBbLYVldInntB2Fyv26WpAZn5615N1K07jHvMZXLUTvisLs6AZbHfc')" }}></div>
+                                        <div className="size-8 rounded-full border-2 border-white dark:border-surface-dark bg-slate-200 dark:bg-slate-700 flex items-center justify-center text-xs font-bold text-slate-600 dark:text-slate-300">+2</div>
                                     </div>
                                 </div>
                             </div>

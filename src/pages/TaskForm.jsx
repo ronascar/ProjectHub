@@ -57,7 +57,7 @@ export default function TaskForm() {
                         {isEditing && <p className="text-sm text-gray-500 dark:text-text-secondary mt-1">Last updated 2 hours ago by Sarah J.</p>}
                     </div>
                     <div className="flex items-center gap-3">
-                        <Link to="/projects/1" className="px-4 py-2 rounded-lg border border-gray-300 dark:border-border-dark text-slate-700 dark:text-text-secondary text-sm font-medium hover:bg-gray-50 dark:hover:bg-card-dark transition-colors">
+                        <Link to="/projects/1" className="px-4 py-2 rounded-lg border border-gray-300 dark:border-border-dark text-slate-700 dark:text-text-secondary text-sm font-medium hover:bg-gray-50 dark:hover:bg-surface-dark transition-colors">
                             Cancel
                         </Link>
                         <button className="flex items-center gap-2 px-4 py-2 rounded-lg bg-primary hover:bg-blue-600 text-white text-sm font-medium transition-colors shadow-lg shadow-blue-500/20">

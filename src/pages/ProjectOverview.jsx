@@ -131,17 +131,17 @@ export default function ProjectOverview({ projectData }) {
                     <h3 className="text-sm font-bold uppercase tracking-wider text-slate-500 dark:text-[#94a3b8] mb-4">Linha do Tempo</h3>
                     <div className="relative pl-4 border-l-2 border-slate-200 dark:border-slate-700 space-y-6">
                         <div className="relative">
-                            <div className="absolute -left-[21px] top-1.5 size-3 bg-green-500 rounded-full border-2 border-white dark:border-card-dark"></div>
+                            <div className="absolute -left-[21px] top-1.5 size-3 bg-green-500 rounded-full border-2 border-white dark:border-surface-dark"></div>
                             <p className="text-xs text-slate-500 dark:text-slate-400">Início</p>
                             <p className="text-sm font-semibold text-slate-900 dark:text-white">10 Jan 2024</p>
                         </div>
                         <div className="relative">
-                            <div className="absolute -left-[21px] top-1.5 size-3 bg-primary rounded-full border-2 border-white dark:border-card-dark ring-4 ring-primary/20"></div>
+                            <div className="absolute -left-[21px] top-1.5 size-3 bg-primary rounded-full border-2 border-white dark:border-surface-dark ring-4 ring-primary/20"></div>
                             <p className="text-xs text-slate-500 dark:text-slate-400">Estimativa</p>
                             <p className="text-sm font-semibold text-slate-900 dark:text-white">15 Mar 2024</p>
                         </div>
                         <div className="relative">
-                            <div className="absolute -left-[21px] top-1.5 size-3 bg-slate-300 dark:bg-slate-600 rounded-full border-2 border-white dark:border-card-dark"></div>
+                            <div className="absolute -left-[21px] top-1.5 size-3 bg-slate-300 dark:bg-slate-600 rounded-full border-2 border-white dark:border-surface-dark"></div>
                             <p className="text-xs text-slate-500 dark:text-slate-400">Entrega Final</p>
                             <p className="text-sm font-semibold text-slate-900 dark:text-white">20 Mar 2024</p>
                         </div>
