@@ -20,6 +20,7 @@ import MemberEdit from './pages/MemberEdit';
 import MemberView from './pages/MemberView';
 import MemberCreate from './pages/MemberCreate';
 import CreateProject from './pages/CreateProject';
+import ClientsList from './pages/ClientsList';
 import Settings from './pages/Settings';
 import './style.css';
 
@@ -59,6 +60,7 @@ function AppRouter() {
                 <Route path="teams/edit/:id" element={<MemberEdit />} />
                 <Route path="reports" element={<Reports />} />
                 <Route path="calendar" element={<Calendar />} />
+                <Route path="clients" element={<ClientsList />} />
                 <Route path="inbox" element={<Inbox />} />
                 <Route path="settings" element={<Settings />} />
             </Route>
