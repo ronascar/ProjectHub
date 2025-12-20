@@ -1,5 +1,6 @@
 require('dotenv').config();
 const { PrismaClient } = require('@prisma/client');
+const bcrypt = require('bcryptjs');
 
 const prisma = new PrismaClient();
 
@@ -30,12 +31,16 @@ async function main() {
 
     console.log('✓ Cleared existing data');
 
+    // Hash the password
+    const hashedPassword = await bcrypt.hash('password123', 12);
+    console.log('✓ Password hashed');
+
     // Create users
     const users = await Promise.all([
         prisma.user.create({
             data: {
                 email: 'admin@nexuspm.com',
-                password: '$2a$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewKyNiAYMyzJ/IiG', // password123
+                password: hashedPassword,
                 name: 'Alex Morgan',
                 role: 'ADMIN',
                 avatar: 'https://i.pravatar.cc/150?img=10',
@@ -45,7 +50,7 @@ async function main() {
         prisma.user.create({
             data: {
                 email: 'sarah@nexuspm.com',
-                password: '$2a$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewKyNiAYMyzJ/IiG',
+                password: hashedPassword,
                 name: 'Sarah Jenkins',
                 role: 'MANAGER',
                 avatar: 'https://i.pravatar.cc/150?img=5',
@@ -55,7 +60,7 @@ async function main() {
         prisma.user.create({
             data: {
                 email: 'michael@nexuspm.com',
-                password: '$2a$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewKyNiAYMyzJ/IiG',
+                password: hashedPassword,
                 name: 'Michael Chen',
                 role: 'MEMBER',
                 avatar: 'https://i.pravatar.cc/150?img=11',
@@ -65,7 +70,7 @@ async function main() {
         prisma.user.create({
             data: {
                 email: 'emma@nexuspm.com',
-                password: '$2a$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewKyNiAYMyzJ/IiG',
+                password: hashedPassword,
                 name: 'Emma Wilson',
                 role: 'MEMBER',
                 avatar: 'https://i.pravatar.cc/150?img=9',
@@ -75,7 +80,7 @@ async function main() {
         prisma.user.create({
             data: {
                 email: 'james@nexuspm.com',
-                password: '$2a$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewKyNiAYMyzJ/IiG',
+                password: hashedPassword,
                 name: 'James Rodriguez',
                 role: 'MEMBER',
                 avatar: 'https://i.pravatar.cc/150?img=12',
