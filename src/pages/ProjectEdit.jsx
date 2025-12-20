@@ -1,0 +1,596 @@
+import React, { useState } from 'react';
+import { Link, useParams, useNavigate } from 'react-router-dom';
+import { mockProjects } from '../data/mockData';
+
+export default function ProjectEdit() {
+    const { projectId } = useParams();
+    const navigate = useNavigate();
+
+    // Find the project from mock data (in real app, would fetch from API)
+    const project = mockProjects.find(p => p.id === projectId) || mockProjects[0];
+
+    // Form state
+    const [formData, setFormData] = useState({
+        name: project?.name || 'Redesign Website 2024',
+        category: 'Web Development',
+        description: project?.description || 'Projeto de modernização da identidade visual e arquitetura da Acme Corp.',
+        longDescription: 'O objetivo principal deste projeto é redesenhar completamente o site corporativo da Acme Corp para alinhar com a nova identidade de marca lançada no Q4 2023. O projeto inclui a migração do legado WordPress para uma arquitetura Headless moderna, focando em performance (Core Web Vitals), acessibilidade e escalabilidade para múltiplos idiomas.\n\nAlém do frontend, será desenvolvido um painel administrativo customizado para a equipe de marketing gerenciar campanhas e landing pages de forma autônoma.',
+        status: 'progress',
+        dueDate: '2024-03-20',
+        completion: 65,
+        startDate: '2024-01-10',
+        estimateDate: '2024-03-15',
+        deliveryDate: '2024-03-20',
+        client: 'acme'
+    });
+
+    const [activeTab, setActiveTab] = useState('edit');
+
+    // Deliverables state
+    const [deliverables, setDeliverables] = useState([
+        { id: 1, status: 'done', title: 'Design System & UI Kit', description: 'Criação de biblioteca de componentes no Figma.' },
+        { id: 2, status: 'pending', title: 'Desenvolvimento Frontend', description: 'Implementação das páginas institucionais e blog.' },
+        { id: 3, status: 'todo', title: 'Integração CMS', description: 'Configuração de content models e webhooks.' }
+    ]);
+
+    // Technologies state
+    const [technologies, setTechnologies] = useState([
+        { name: 'React', icon: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCQAxvaFcGsg8N8dHuodEj0Bu1KUtWW6pk3wr7kqYgy4IQRttrNzcp2t3D1dHiTSWBE7Y_SgHy0Bcw2Cr9i6RIkxcaihSO1_tfgGuNkfswd8esOQhvt4njuMtFkreNGb4w8mJWwhDlUv022w7udBkemotZEy3cJ1IwwwllQvizmKPqLGxrQ6PQ-PnqrAHd3tURBfV-UW0SUQggHaOnKgE3SSuPglNLZUAHdnM4579AXNBnQ3kERNy3ym58_uqS7C_Ccf7S0PrJeB3s' },
+        { name: 'Next.js 14', icon: 'https://lh3.googleusercontent.com/aida-public/AB6AXuC6vnxoAH-BS0jvK7o7psPhU4RrRAS5_zbIAVqsBjQ5h8ePIj7YPNiGQF7NL53Tc4k0ZwAPh3eQtGhRqkG0__1dcZrZjHG3Qy118VeUA0VU9ouShJElJ430eATJsEETC-47NcGMEKJNGpuq-Z39S07cG_DRWLGfw9_hYNpbliCPE6TyAAbEvQkID5WW1amsJcstHD5vcWZGnhncNxB68wznnVIOOmV0vQrhuOOe8iVcbh9tHnl7u_vQk-Ljy1YnSs94AjWsA8tVzeM', invert: true },
+        { name: 'TypeScript', icon: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCiwW1bZ9oe6Gl0ioxMNJUt2joXMo_Pwj7Pg3aAUbN7i4HTqpNPr9z1Of6ZBOySyFoNFmba3qELBr1wvK6UYWXENtlVqinaLtV-5-bKMrB3NqFSUGATnB29-fTbcvtt3UubxdyzB0gDUczZemZutk-Bulrej2V5r0-SD5TGch7BS-GT4F2rXbULfVK3HEOE_TaaoFeatcLbVtk2e3qhumQu4axs_fFHW_KbcnaYHWHAKthB1p8d4xpRM88gKgLwkS7-xvLE1IZk9iQ' },
+        { name: 'Tailwind CSS', icon: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCbXToQAMVdz-BTaDFdOanxUBj_IUXK-rb2nVM0R7gZklMwI9QkpFOWx4kilWOZd1WB6fIb4Yr2i6w5LZOsg_dx-ER8L2G5746c0xFKjifzGBFhZB1Nkhz8Yb1Qy67es4ZpItm6OeU6PAXtD_irvHgfiJ9NRs9RY0G3Er9y4IbSqwIILEVlAAvWYOn98Dlx3yqgzBl8dCXuWpN9l05Yhr_2WjP4M2qD_KfelZJtsxh7b3R6nOKAlVG_DTUUdYDTO8Qyby8fNNHb-fY' }
+    ]);
+    const [newTech, setNewTech] = useState('');
+
+    // Resources state
+    const [resources, setResources] = useState([
+        { id: 1, type: 'github', title: 'Repositório', url: 'github.com/agencia/acme-web' },
+        { id: 2, type: 'staging', title: 'Staging Env', url: 'staging.acme.com' }
+    ]);
+
+    // Team members
+    const teamMembers = [
+        { id: 1, avatar: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBU_s1Mu3LwoGdj5UtBw2IBZJBN1dWW4c5UDHywyVxDnPzOb-jqNqM2WbIT-S4eFZEEMrHZnjZNZP3RIHMxPYliTomS31aYHIm-z_PVI5_vQglsZLjsh53iK34_WhjjBlLoSpNiNQRPLwFetP8CgcOD1VSCJm9qo2wY3aKNbtxGHuhZATq_7l_2hfQxwCNBUqNtn9bMSEtPaOIe3VyYW_-tnHcQyMqsbGX4h91jqR5tR_536qtbC7lXLe9jF8GfY051-jLjerrakX8' },
+        { id: 2, avatar: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDAJZlGSYR5HTV5l29sDZAsmCizTfYAjy84sGRk-MZzd1WsnRVn5ohD_s6ff6M6qc3Z6SyBRer90MpDOJ9ApjeW71FZZqQpBNvpQTWLIqfM0GWfU3oiv-EKtSUmA7C5I2TaFzGfe_-Qr8TW4j27HC9yp5yj9gqDQ1A0zc6b-u1gyvTfRJRxQYF2WkCz9zxbysqGxE533qzy9v6F2jS200bNu7acoFPmDnuAblrq7scBCFTUbVpil8M2IiSrVUUbFB0MZVFh0ClhFgg' },
+        { id: 3, avatar: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDRxeiW9XtlCwTzSBZYI6DHYTRFDaVtkhZ6r5FWHtG0fSOO16dUx4zoTzOjk5M4hAve0kxA-l4v8MmmB_k2OCZmlybYXSbiTHJeAV0CgDkwY38mVz0QUyCnkEQNDu0VkyEftNuLWV4WT4qSii2NGROFs2HpHYm8cI6TiVm9EXGbInGXqHA7n3puXuddrfXiaKNmHinSydLBoZRlDgJ9bUU1MiBbLYVldInntB2Fyv26WpAZn5615N1K07jHvMZXLUTvisLs6AZbHfc' }
+    ];
+
+    // Handlers
+    const handleInputChange = (field, value) => {
+        setFormData(prev => ({ ...prev, [field]: value }));
+    };
+
+    const handleSave = (e) => {
+        e.preventDefault();
+        console.log('Saving project:', formData);
+        // In real app, would save to API
+        navigate('/projects');
+    };
+
+    const handleCancel = () => {
+        navigate('/projects');
+    };
+
+    const handleAddTech = () => {
+        if (newTech.trim()) {
+            setTechnologies([...technologies, { name: newTech.trim(), icon: null }]);
+            setNewTech('');
+        }
+    };
+
+    const handleRemoveTech = (index) => {
+        setTechnologies(technologies.filter((_, i) => i !== index));
+    };
+
+    const handleDeliverableChange = (id, field, value) => {
+        setDeliverables(deliverables.map(d =>
+            d.id === id ? { ...d, [field]: value } : d
+        ));
+    };
+
+    const handleRemoveDeliverable = (id) => {
+        setDeliverables(deliverables.filter(d => d.id !== id));
+    };
+
+    const handleAddDeliverable = () => {
+        const newId = Math.max(...deliverables.map(d => d.id), 0) + 1;
+        setDeliverables([...deliverables, { id: newId, status: 'todo', title: '', description: '' }]);
+    };
+
+    const handleRemoveResource = (id) => {
+        setResources(resources.filter(r => r.id !== id));
+    };
+
+    // Calculate days remaining
+    const daysRemaining = Math.ceil((new Date(formData.dueDate) - new Date()) / (1000 * 60 * 60 * 24));
+
+    return (
+        <div className="layout-container flex h-full grow flex-col px-4 md:px-10 lg:px-40 py-8">
+            <form className="layout-content-container flex flex-col w-full max-w-[1200px] mx-auto flex-1 gap-6" onSubmit={handleSave}>
+                {/* Breadcrumbs */}
+                <nav className="flex items-center gap-2 text-sm text-slate-500 dark:text-[#92adc9]">
+                    <Link className="hover:text-primary transition-colors" to="/">Home</Link>
+                    <span className="material-symbols-outlined text-[16px]">chevron_right</span>
+                    <Link className="hover:text-primary transition-colors" to="/projects">Projetos</Link>
+                    <span className="material-symbols-outlined text-[16px]">chevron_right</span>
+                    <span className="text-slate-900 dark:text-white font-medium">Editar Projeto</span>
+                </nav>
+
+                {/* Header with editable title */}
+                <div className="flex flex-col md:flex-row md:items-start justify-between gap-6">
+                    <div className="flex flex-col gap-3 flex-1">
+                        <div className="flex flex-col sm:flex-row sm:items-center gap-3 w-full">
+                            <input
+                                type="text"
+                                value={formData.name}
+                                onChange={(e) => handleInputChange('name', e.target.value)}
+                                className="flex-1 bg-transparent border border-transparent hover:border-slate-300 focus:border-primary focus:ring-0 rounded-md text-3xl md:text-4xl font-black leading-tight tracking-[-0.033em] text-slate-900 dark:text-white px-2 -ml-2 transition-all"
+                                placeholder="Nome do Projeto"
+                            />
+                            <div className="relative">
+                                <select
+                                    value={formData.category}
+                                    onChange={(e) => handleInputChange('category', e.target.value)}
+                                    className="appearance-none pl-3 pr-8 py-1 rounded-full bg-primary/10 hover:bg-primary/20 border-none text-primary text-xs font-bold uppercase tracking-wider cursor-pointer focus:ring-2 focus:ring-primary focus:bg-white dark:focus:bg-surface-dark transition-all"
+                                >
+                                    <option value="Web Development">Web Development</option>
+                                    <option value="Mobile App">Mobile App</option>
+                                    <option value="Marketing Campaign">Marketing Campaign</option>
+                                    <option value="Design System">Design System</option>
+                                </select>
+                                <span className="material-symbols-outlined absolute right-2 top-1/2 -translate-y-1/2 text-[16px] text-primary pointer-events-none">expand_more</span>
+                            </div>
+                        </div>
+                        <div className="w-full">
+                            <textarea
+                                value={formData.description}
+                                onChange={(e) => handleInputChange('description', e.target.value)}
+                                rows="2"
+                                className="w-full bg-transparent border border-transparent hover:border-slate-300 focus:border-primary focus:ring-0 rounded-md text-slate-500 dark:text-[#94a3b8] text-base resize-none px-2 -ml-2 transition-all"
+                                placeholder="Breve descrição do projeto..."
+                            />
+                        </div>
+                    </div>
+                    <div className="flex items-center gap-3 self-start mt-2">
+                        <button
+                            type="button"
+                            onClick={handleCancel}
+                            className="flex items-center gap-2 px-4 h-10 rounded-lg border border-slate-200 dark:border-[#334155] text-slate-700 dark:text-white font-bold text-sm hover:bg-slate-50 dark:hover:bg-[#233648] transition-colors"
+                        >
+                            Cancelar
+                        </button>
+                        <button
+                            type="submit"
+                            className="flex items-center gap-2 px-4 h-10 rounded-lg bg-green-600 text-white font-bold text-sm hover:bg-green-700 transition-colors shadow-lg shadow-green-600/25"
+                        >
+                            <span className="material-symbols-outlined text-[20px]">save</span>
+                            Salvar Alterações
+                        </button>
+                    </div>
+                </div>
+
+                {/* Tabs */}
+                <div className="border-b border-slate-200 dark:border-[#324d67]">
+                    <div className="flex gap-8 overflow-x-auto">
+                        <button
+                            type="button"
+                            onClick={() => setActiveTab('edit')}
+                            className={`flex items-center gap-2 border-b-[3px] pb-3 pt-2 px-1 transition-colors ${activeTab === 'edit' ? 'border-primary text-primary' : 'border-transparent text-slate-500 dark:text-[#92adc9] hover:text-slate-700 dark:hover:text-white'}`}
+                        >
+                            <span className="material-symbols-outlined text-[20px]">edit_note</span>
+                            <span className="text-sm font-bold">Editar Detalhes</span>
+                        </button>
+                        <button
+                            type="button"
+                            onClick={() => setActiveTab('tasks')}
+                            className={`flex items-center gap-2 border-b-[3px] pb-3 pt-2 px-1 transition-colors ${activeTab === 'tasks' ? 'border-primary text-primary' : 'border-transparent text-slate-500 dark:text-[#92adc9] hover:text-slate-700 dark:hover:text-white'}`}
+                        >
+                            <span className="material-symbols-outlined text-[20px]">check_circle</span>
+                            <span className="text-sm font-bold">Tarefas</span>
+                        </button>
+                        <button
+                            type="button"
+                            onClick={() => setActiveTab('versions')}
+                            className={`flex items-center gap-2 border-b-[3px] pb-3 pt-2 px-1 transition-colors ${activeTab === 'versions' ? 'border-primary text-primary' : 'border-transparent text-slate-500 dark:text-[#92adc9] hover:text-slate-700 dark:hover:text-white'}`}
+                        >
+                            <span className="material-symbols-outlined text-[20px]">history</span>
+                            <span className="text-sm font-bold">Versões</span>
+                        </button>
+                        <button
+                            type="button"
+                            onClick={() => setActiveTab('settings')}
+                            className={`flex items-center gap-2 border-b-[3px] pb-3 pt-2 px-1 transition-colors ${activeTab === 'settings' ? 'border-primary text-primary' : 'border-transparent text-slate-500 dark:text-[#92adc9] hover:text-slate-700 dark:hover:text-white'}`}
+                        >
+                            <span className="material-symbols-outlined text-[20px]">settings</span>
+                            <span className="text-sm font-bold">Configurações</span>
+                        </button>
+                    </div>
+                </div>
+
+                {/* Tab Content - Editar Detalhes */}
+                {activeTab === 'edit' && (
+                    <>
+                        {/* Stats Cards */}
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                            {/* Status */}
+                            <div className="bg-white dark:bg-surface-dark p-5 rounded-lg border border-slate-200 dark:border-border-dark flex flex-col gap-3 group hover:border-primary/50 transition-colors">
+                                <div className="flex items-center justify-between">
+                                    <span className="text-slate-500 dark:text-[#94a3b8] text-sm font-medium">Status</span>
+                                    <span className="material-symbols-outlined text-green-500 text-[20px]">radio_button_checked</span>
+                                </div>
+                                <select
+                                    value={formData.status}
+                                    onChange={(e) => handleInputChange('status', e.target.value)}
+                                    className="w-full bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-600 rounded-md text-slate-900 dark:text-white font-bold focus:ring-primary focus:border-primary"
+                                >
+                                    <option value="planning">Planejamento</option>
+                                    <option value="progress">Em Progresso</option>
+                                    <option value="review">Em Revisão</option>
+                                    <option value="completed">Concluído</option>
+                                </select>
+                                <div className="w-full bg-slate-100 dark:bg-slate-700 rounded-full h-1.5 mt-1">
+                                    <div className="bg-green-500 h-1.5 rounded-full" style={{ width: `${formData.completion}%` }}></div>
+                                </div>
+                            </div>
+
+                            {/* Prazo Estimado */}
+                            <div className="bg-white dark:bg-surface-dark p-5 rounded-lg border border-slate-200 dark:border-border-dark flex flex-col gap-3 group hover:border-primary/50 transition-colors">
+                                <div className="flex items-center justify-between">
+                                    <span className="text-slate-500 dark:text-[#94a3b8] text-sm font-medium">Prazo Estimado</span>
+                                    <span className="material-symbols-outlined text-orange-400 text-[20px]">schedule</span>
+                                </div>
+                                <input
+                                    type="date"
+                                    value={formData.dueDate}
+                                    onChange={(e) => handleInputChange('dueDate', e.target.value)}
+                                    className="w-full bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-600 rounded-md text-slate-900 dark:text-white font-bold focus:ring-primary focus:border-primary h-[42px]"
+                                />
+                                <span className="text-xs text-slate-400">{daysRemaining > 0 ? `${daysRemaining} Dias Restantes` : 'Prazo vencido'}</span>
+                            </div>
+
+                            {/* Conclusão Manual */}
+                            <div className="bg-white dark:bg-surface-dark p-5 rounded-lg border border-slate-200 dark:border-border-dark flex flex-col gap-3">
+                                <div className="flex items-center justify-between">
+                                    <span className="text-slate-500 dark:text-[#94a3b8] text-sm font-medium">Conclusão Manual</span>
+                                    <span className="material-symbols-outlined text-primary text-[20px]">trending_up</span>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    <input
+                                        type="number"
+                                        min="0"
+                                        max="100"
+                                        value={formData.completion}
+                                        onChange={(e) => handleInputChange('completion', parseInt(e.target.value) || 0)}
+                                        className="w-20 bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-600 rounded-md text-slate-900 dark:text-white font-bold focus:ring-primary focus:border-primary"
+                                    />
+                                    <span className="text-lg font-bold text-slate-500">%</span>
+                                </div>
+                                <span className="text-xs text-slate-400">32/45 Tarefas completas (Auto)</span>
+                            </div>
+
+                            {/* Equipe */}
+                            <div className="bg-white dark:bg-surface-dark p-5 rounded-lg border border-slate-200 dark:border-border-dark flex flex-col gap-3">
+                                <div className="flex items-center justify-between">
+                                    <span className="text-slate-500 dark:text-[#94a3b8] text-sm font-medium">Equipe</span>
+                                    <button type="button" className="text-primary hover:text-blue-600 transition-colors">
+                                        <span className="material-symbols-outlined text-[20px]">person_add</span>
+                                    </button>
+                                </div>
+                                <div className="flex items-center justify-between mt-1">
+                                    <div className="flex -space-x-2">
+                                        {teamMembers.map((member, idx) => (
+                                            <div
+                                                key={member.id}
+                                                className="size-8 rounded-full border-2 border-white dark:border-surface-dark bg-cover bg-center cursor-pointer hover:scale-110 transition-transform"
+                                                style={{ backgroundImage: `url('${member.avatar}')` }}
+                                            />
+                                        ))}
+                                        <div className="size-8 rounded-full border-2 border-white dark:border-surface-dark bg-slate-200 dark:bg-slate-700 flex items-center justify-center text-xs font-bold text-slate-600 dark:text-slate-300">+2</div>
+                                    </div>
+                                    <span className="text-xs text-primary font-medium cursor-pointer hover:underline">Gerenciar</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Main Content Grid */}
+                        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                            {/* Left Column */}
+                            <div className="lg:col-span-2 flex flex-col gap-6">
+                                {/* Descrição do Projeto */}
+                                <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-200 dark:border-border-dark overflow-hidden shadow-sm">
+                                    <div className="px-6 py-4 border-b border-slate-200 dark:border-border-dark flex justify-between items-center bg-slate-50/50 dark:bg-[#1e293b]">
+                                        <h3 className="text-lg font-bold text-slate-900 dark:text-white">Descrição do Projeto</h3>
+                                        <div className="flex gap-2">
+                                            <button type="button" className="p-1 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 rounded">
+                                                <span className="material-symbols-outlined text-[18px]">format_bold</span>
+                                            </button>
+                                            <button type="button" className="p-1 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 rounded">
+                                                <span className="material-symbols-outlined text-[18px]">format_list_bulleted</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div className="p-0">
+                                        <textarea
+                                            value={formData.longDescription}
+                                            onChange={(e) => handleInputChange('longDescription', e.target.value)}
+                                            rows="8"
+                                            className="w-full min-h-[200px] p-6 bg-transparent border-none focus:ring-0 text-slate-600 dark:text-[#94a3b8] leading-relaxed resize-y"
+                                            placeholder="Descreva os detalhes do projeto aqui..."
+                                        />
+                                    </div>
+                                </div>
+
+                                {/* Escopo & Entregáveis */}
+                                <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-200 dark:border-border-dark overflow-hidden shadow-sm">
+                                    <div className="px-6 py-4 border-b border-slate-200 dark:border-border-dark flex justify-between items-center bg-slate-50/50 dark:bg-[#1e293b]">
+                                        <h3 className="text-lg font-bold text-slate-900 dark:text-white">Escopo & Entregáveis</h3>
+                                        <button
+                                            type="button"
+                                            onClick={handleAddDeliverable}
+                                            className="text-primary text-sm font-bold flex items-center gap-1 hover:underline"
+                                        >
+                                            <span className="material-symbols-outlined text-[18px]">add</span> Adicionar Item
+                                        </button>
+                                    </div>
+                                    <div className="p-6">
+                                        <ul className="space-y-4">
+                                            {deliverables.map((item) => (
+                                                <li key={item.id} className="flex items-start gap-3 group">
+                                                    <select
+                                                        value={item.status}
+                                                        onChange={(e) => handleDeliverableChange(item.id, 'status', e.target.value)}
+                                                        className={`mt-0.5 bg-transparent border-none focus:ring-0 p-0 w-6 cursor-pointer ${item.status === 'done' ? 'text-green-500' :
+                                                            item.status === 'pending' ? 'text-primary' :
+                                                                'text-slate-400 dark:text-slate-600'
+                                                            }`}
+                                                    >
+                                                        <option value="done">✓</option>
+                                                        <option value="pending">⋯</option>
+                                                        <option value="todo">○</option>
+                                                    </select>
+                                                    <div className="flex-1 space-y-1">
+                                                        <input
+                                                            type="text"
+                                                            value={item.title}
+                                                            onChange={(e) => handleDeliverableChange(item.id, 'title', e.target.value)}
+                                                            className="w-full p-1 -ml-1 text-slate-900 dark:text-white font-medium bg-transparent border border-transparent hover:border-slate-200 dark:hover:border-slate-700 focus:border-primary rounded focus:ring-0 transition-colors"
+                                                            placeholder="Título do entregável"
+                                                        />
+                                                        <input
+                                                            type="text"
+                                                            value={item.description}
+                                                            onChange={(e) => handleDeliverableChange(item.id, 'description', e.target.value)}
+                                                            className="w-full p-1 -ml-1 text-sm text-slate-500 dark:text-slate-400 bg-transparent border border-transparent hover:border-slate-200 dark:hover:border-slate-700 focus:border-primary rounded focus:ring-0 transition-colors"
+                                                            placeholder="Descrição do entregável"
+                                                        />
+                                                    </div>
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => handleRemoveDeliverable(item.id)}
+                                                        className="opacity-0 group-hover:opacity-100 text-slate-400 hover:text-red-500 transition-opacity"
+                                                    >
+                                                        <span className="material-symbols-outlined text-[18px]">delete</span>
+                                                    </button>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                {/* Stack Tecnológica */}
+                                <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-200 dark:border-border-dark overflow-hidden shadow-sm">
+                                    <div className="px-6 py-4 border-b border-slate-200 dark:border-border-dark bg-slate-50/50 dark:bg-[#1e293b]">
+                                        <h3 className="text-lg font-bold text-slate-900 dark:text-white">Stack Tecnológica</h3>
+                                    </div>
+                                    <div className="p-6">
+                                        <div className="flex flex-wrap gap-3 mb-4">
+                                            {technologies.map((tech, index) => (
+                                                <div key={index} className="group relative px-3 py-1.5 rounded-md bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 text-sm font-medium flex items-center gap-2 pr-8 cursor-default">
+                                                    {tech.icon && (
+                                                        <img
+                                                            src={tech.icon}
+                                                            alt={`${tech.name} logo`}
+                                                            className={`size-4 ${tech.invert ? 'invert dark:invert-0' : ''}`}
+                                                        />
+                                                    )}
+                                                    {tech.name}
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => handleRemoveTech(index)}
+                                                        className="absolute right-1 top-1/2 -translate-y-1/2 p-0.5 rounded-full hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-400 hover:text-red-500 transition-colors"
+                                                    >
+                                                        <span className="material-symbols-outlined text-[14px]">close</span>
+                                                    </button>
+                                                </div>
+                                            ))}
+                                        </div>
+                                        <div className="flex gap-2">
+                                            <input
+                                                type="text"
+                                                value={newTech}
+                                                onChange={(e) => setNewTech(e.target.value)}
+                                                onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), handleAddTech())}
+                                                placeholder="Adicionar nova tecnologia..."
+                                                className="flex-1 text-sm rounded-md border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white focus:ring-primary focus:border-primary"
+                                            />
+                                            <button
+                                                type="button"
+                                                onClick={handleAddTech}
+                                                className="px-3 py-2 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-600 dark:text-white rounded-md transition-colors"
+                                            >
+                                                <span className="material-symbols-outlined text-[20px]">add</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Right Sidebar */}
+                            <div className="flex flex-col gap-6">
+                                {/* Cliente */}
+                                <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-200 dark:border-border-dark p-6 shadow-sm">
+                                    <div className="flex justify-between items-center mb-4">
+                                        <h3 className="text-sm font-bold uppercase tracking-wider text-slate-500 dark:text-[#94a3b8]">Cliente</h3>
+                                        <a className="text-xs text-primary font-bold hover:underline cursor-pointer">Editar Cliente</a>
+                                    </div>
+                                    <div className="mb-4">
+                                        <select
+                                            value={formData.client}
+                                            onChange={(e) => handleInputChange('client', e.target.value)}
+                                            className="w-full bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-600 rounded-md text-slate-900 dark:text-white text-sm p-2.5 focus:ring-primary focus:border-primary"
+                                        >
+                                            <option value="acme">Acme Corp</option>
+                                            <option value="globex">Globex Corporation</option>
+                                            <option value="soylent">Soylent Corp</option>
+                                            <option value="umbrella">Umbrella Corp</option>
+                                        </select>
+                                    </div>
+                                    <div className="flex items-center gap-4 mb-4">
+                                        <div className="size-12 rounded-lg bg-white dark:bg-white p-1 flex items-center justify-center border border-slate-200 dark:border-border-dark shrink-0">
+                                            <svg className="size-8 text-slate-900" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                                                <path d="M2 17L12 22L22 17" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                                                <path d="M2 12L12 17L22 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                                            </svg>
+                                        </div>
+                                        <div>
+                                            <p className="text-lg font-bold text-slate-900 dark:text-white leading-none mb-1">Acme Corp</p>
+                                            <p className="text-sm text-slate-500 dark:text-slate-400">San Francisco, CA</p>
+                                        </div>
+                                    </div>
+                                    <div className="pt-4 border-t border-slate-200 dark:border-border-dark">
+                                        <p className="text-xs text-slate-500 dark:text-slate-400 mb-2">Contato Principal</p>
+                                        <div className="flex items-center justify-between p-2 rounded-lg bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700">
+                                            <div className="flex items-center gap-2">
+                                                <div
+                                                    className="size-6 rounded-full bg-cover"
+                                                    style={{ backgroundImage: "url('https://lh3.googleusercontent.com/aida-public/AB6AXuC1laberwXeUqz2AvsQ3Fp0Z7pJueYnSoUIibzARpAIEollpwsLZF7zbSCC6YFoo40cdMk47bSeXbE4oQjnxjRAbpaZL2juh5kJ3hbgZgkcrgSfP7BjDB7TlP9dV6M2PmVZEVghhYEyG1Eqeg0XEMRyBIS1R26bOj4U4WWklz0TukFeq57Rs-ljVtCD5rxCrw47chj3aSCWZLac35FtQtr2dWclq1OkQBhPYmx1GOnHB-uzSPrpTi-mKCO6y-5RL5G7IGr7gabFraE')" }}
+                                                />
+                                                <span className="text-sm font-medium text-slate-900 dark:text-white">Sarah Connor</span>
+                                            </div>
+                                            <button type="button" className="text-slate-400 hover:text-primary">
+                                                <span className="material-symbols-outlined text-[18px]">edit</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Cronograma */}
+                                <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-200 dark:border-border-dark p-6 shadow-sm">
+                                    <h3 className="text-sm font-bold uppercase tracking-wider text-slate-500 dark:text-[#94a3b8] mb-4">Cronograma</h3>
+                                    <div className="relative pl-4 border-l-2 border-slate-200 dark:border-slate-700 space-y-6">
+                                        <div className="relative">
+                                            <div className="absolute -left-[21px] top-4 size-3 bg-green-500 rounded-full border-2 border-white dark:border-surface-dark"></div>
+                                            <label className="text-xs text-slate-500 dark:text-slate-400 block mb-1">Início</label>
+                                            <input
+                                                type="date"
+                                                value={formData.startDate}
+                                                onChange={(e) => handleInputChange('startDate', e.target.value)}
+                                                className="w-full text-sm p-1.5 rounded border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white focus:ring-primary focus:border-primary"
+                                            />
+                                        </div>
+                                        <div className="relative">
+                                            <div className="absolute -left-[21px] top-4 size-3 bg-primary rounded-full border-2 border-white dark:border-surface-dark ring-4 ring-primary/20"></div>
+                                            <label className="text-xs text-slate-500 dark:text-slate-400 block mb-1">Estimativa</label>
+                                            <input
+                                                type="date"
+                                                value={formData.estimateDate}
+                                                onChange={(e) => handleInputChange('estimateDate', e.target.value)}
+                                                className="w-full text-sm p-1.5 rounded border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white focus:ring-primary focus:border-primary"
+                                            />
+                                        </div>
+                                        <div className="relative">
+                                            <div className="absolute -left-[21px] top-4 size-3 bg-slate-300 dark:bg-slate-600 rounded-full border-2 border-white dark:border-surface-dark"></div>
+                                            <label className="text-xs text-slate-500 dark:text-slate-400 block mb-1">Entrega Final</label>
+                                            <input
+                                                type="date"
+                                                value={formData.deliveryDate}
+                                                onChange={(e) => handleInputChange('deliveryDate', e.target.value)}
+                                                className="w-full text-sm p-1.5 rounded border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white focus:ring-primary focus:border-primary"
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Recursos */}
+                                <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-200 dark:border-border-dark p-6 shadow-sm">
+                                    <h3 className="text-sm font-bold uppercase tracking-wider text-slate-500 dark:text-[#94a3b8] mb-4">Recursos</h3>
+                                    <div className="flex flex-col gap-3">
+                                        {resources.map((resource) => (
+                                            <div key={resource.id} className="group flex items-center gap-2">
+                                                <div className="flex-1 flex items-center justify-between p-3 rounded-lg bg-slate-50 dark:bg-[#111a22] border border-slate-200 dark:border-[#334155] hover:border-primary/50 transition-colors cursor-pointer">
+                                                    <div className="flex items-center gap-3 overflow-hidden">
+                                                        <div className="bg-white dark:bg-[#233648] p-1.5 rounded-md shrink-0">
+                                                            {resource.type === 'github' ? (
+                                                                <img
+                                                                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuAsJHnYtllVTWemL3s68JwRvuiN1OO8L5Mak6B0R6tZY9UstuTx7LCGeMEZTJpqy23ToeuYSqsfp_m-cBa5S01UxBH4qMFY6h_TqnBmZr1q9Dn-Nwmar9VX1tdml9US8MojFdmo01E8EMivw3qn69NufEH9fxPCjCgTLa10CHW94N7TRcsHKLiABdZRzSJ1qKXhpLZ3b9CVeXtD9gk1ramhCyDQsuuWZEPZt-thiuGFWsjUhLDESIqrsO3dXb2JjckmnBJjSGx9GcE"
+                                                                    alt="GitHub Logo"
+                                                                    className="size-5 dark:invert"
+                                                                />
+                                                            ) : (
+                                                                <span className="material-symbols-outlined text-purple-500 text-[20px]">rocket_launch</span>
+                                                            )}
+                                                        </div>
+                                                        <div className="flex flex-col min-w-0">
+                                                            <span className="text-sm font-semibold text-slate-900 dark:text-white">{resource.title}</span>
+                                                            <span className="text-xs text-slate-500 truncate">{resource.url}</span>
+                                                        </div>
+                                                    </div>
+                                                    <span className="material-symbols-outlined text-slate-400 text-[18px]">open_in_new</span>
+                                                </div>
+                                                <button
+                                                    type="button"
+                                                    onClick={() => handleRemoveResource(resource.id)}
+                                                    className="p-2 text-slate-400 hover:text-red-500 rounded-md hover:bg-slate-100 dark:hover:bg-slate-800"
+                                                >
+                                                    <span className="material-symbols-outlined text-[20px]">delete</span>
+                                                </button>
+                                            </div>
+                                        ))}
+                                        <button
+                                            type="button"
+                                            className="mt-2 w-full py-2 flex items-center justify-center gap-2 border border-dashed border-slate-300 dark:border-slate-600 rounded-lg text-sm text-slate-500 dark:text-slate-400 hover:text-primary hover:border-primary hover:bg-primary/5 transition-all"
+                                        >
+                                            <span className="material-symbols-outlined text-[18px]">add_link</span>
+                                            Adicionar Recurso
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </>
+                )}
+
+                {/* Tab Content - Tarefas */}
+                {activeTab === 'tasks' && (
+                    <div className="flex flex-col items-center justify-center h-64 border border-dashed border-slate-300 dark:border-slate-700 rounded-xl bg-slate-50 dark:bg-[#111a22]">
+                        <span className="material-symbols-outlined text-4xl text-slate-400 mb-2">check_circle</span>
+                        <h3 className="text-lg font-bold text-slate-700 dark:text-white">Gerenciamento de Tarefas</h3>
+                        <p className="text-slate-500 dark:text-slate-400">Use o Kanban Board para gerenciar as tarefas deste projeto.</p>
+                        <Link to={`/projects/${projectId}`} className="mt-4 px-4 py-2 bg-primary text-white rounded-lg font-medium hover:bg-blue-600 transition-colors">
+                            Ir para Tarefas
+                        </Link>
+                    </div>
+                )}
+
+                {/* Tab Content - Versões */}
+                {activeTab === 'versions' && (
+                    <div className="flex flex-col items-center justify-center h-64 border border-dashed border-slate-300 dark:border-slate-700 rounded-xl bg-slate-50 dark:bg-[#111a22]">
+                        <span className="material-symbols-outlined text-4xl text-slate-400 mb-2">history</span>
+                        <h3 className="text-lg font-bold text-slate-700 dark:text-white">Histórico de Versões</h3>
+                        <p className="text-slate-500 dark:text-slate-400">Visualize o histórico de alterações deste projeto.</p>
+                    </div>
+                )}
+
+                {/* Tab Content - Configurações */}
+                {activeTab === 'settings' && (
+                    <div className="flex flex-col items-center justify-center h-64 border border-dashed border-slate-300 dark:border-slate-700 rounded-xl bg-slate-50 dark:bg-[#111a22]">
+                        <span className="material-symbols-outlined text-4xl text-slate-400 mb-2">settings</span>
+                        <h3 className="text-lg font-bold text-slate-700 dark:text-white">Configurações do Projeto</h3>
+                        <p className="text-slate-500 dark:text-slate-400">Gerencie permissões, notificações e outras configurações.</p>
+                    </div>
+                )}
+            </form>
+        </div>
+    );
+}

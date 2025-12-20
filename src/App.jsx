@@ -8,6 +8,7 @@ import Dashboard from './pages/Dashboard';
 import ProjectsList from './pages/ProjectsList';
 import KanbanBoard from './pages/KanbanBoard';
 import ProjectDetails from './pages/ProjectDetails';
+import ProjectEdit from './pages/ProjectEdit';
 import TaskForm from './pages/TaskForm';
 import MyTasks from './pages/MyTasks';
 import Calendar from './pages/Calendar';
@@ -44,6 +45,8 @@ function AppRouter() {
                 <Route index element={<Dashboard />} />
                 <Route path="projects" element={<ProjectsList />} />
                 <Route path="projects/create" element={<CreateProject />} />
+                <Route path="projects/details/:projectId" element={<ProjectDetails />} />
+                <Route path="projects/edit/:projectId" element={<ProjectEdit />} />
                 <Route path="projects/:projectId" element={<ProjectDetails />} />
                 <Route path="projects/:projectId/timeline" element={<ProjectTimeline />} />
                 <Route path="tasks" element={<MyTasks />} />
