@@ -3,6 +3,127 @@ const { authMiddleware } = require('../middleware/auth.cjs');
 
 const router = express.Router();
 
+// GET /api/dashboard/stats - Get dashboard statistics
+router.get('/stats', authMiddleware, async (req, res) => {
+    try {
+        const userId = req.user.id;
+
+        const [
+            totalProjects,
+            activeProjects,
+            completedProjects,
+            totalTasks,
+            completedTasks,
+            pendingTasks,
+            myTasks,
+            totalMembers
+        ] = await Promise.all([
+            req.prisma.project.count({ where: { isArchived: false } }),
+            req.prisma.project.count({ where: { status: 'IN_PROGRESS', isArchived: false } }),
+            req.prisma.project.count({ where: { status: 'COMPLETED', isArchived: false } }),
+            req.prisma.task.count(),
+            req.prisma.task.count({ where: { status: 'DONE' } }),
+            req.prisma.task.count({ where: { status: { in: ['TODO', 'IN_PROGRESS'] } } }),
+            req.prisma.task.count({ where: { assigneeId: userId, status: { not: 'DONE' } } }),
+            req.prisma.user.count({ where: { isActive: true } })
+        ]);
+
+        res.json({
+            totalProjects,
+            activeProjects,
+            completedProjects,
+            totalTasks,
+            completedTasks,
+            pendingTasks,
+            upcomingTasksCount: myTasks,
+            teamMembers: totalMembers
+        });
+    } catch (error) {
+        console.error('Dashboard stats error:', error);
+        res.status(500).json({ error: 'Failed to load dashboard statistics' });
+    }
+});
+
+// GET /api/dashboard/projects/recent - Get recent projects
+router.get('/projects/recent', authMiddleware, async (req, res) => {
+    try {
+        const recentProjects = await req.prisma.project.findMany({
+            where: { isArchived: false },
+            select: {
+                id: true,
+                name: true,
+                status: true,
+                priority: true,
+                progress: true,
+                dueDate: true,
+                color: true,
+                client: { select: { id: true, name: true } },
+                members: {
+                    select: {
+                        user: { select: { id: true, name: true, avatar: true } }
+                    },
+                    take: 4
+                }
+            },
+            orderBy: { updatedAt: 'desc' },
+            take: 5
+        });
+
+        res.json(recentProjects);
+    } catch (error) {
+        console.error('Recent projects error:', error);
+        res.status(500).json({ error: 'Failed to load recent projects' });
+    }
+});
+
+// GET /api/dashboard/tasks/upcoming - Get upcoming tasks
+router.get('/tasks/upcoming', authMiddleware, async (req, res) => {
+    try {
+        const userId = req.user.id;
+
+        const upcomingTasks = await req.prisma.task.findMany({
+            where: {
+                assigneeId: userId,
+                status: { not: 'DONE' }
+            },
+            select: {
+                id: true,
+                title: true,
+                status: true,
+                priority: true,
+                dueDate: true,
+                project: { select: { id: true, name: true, color: true } }
+            },
+            orderBy: { dueDate: 'asc' },
+            take: 5
+        });
+
+        res.json(upcomingTasks);
+    } catch (error) {
+        console.error('Upcoming tasks error:', error);
+        res.status(500).json({ error: 'Failed to load upcoming tasks' });
+    }
+});
+
+// GET /api/dashboard/activities - Get recent activities
+router.get('/activities', authMiddleware, async (req, res) => {
+    try {
+        const recentActivities = await req.prisma.activity.findMany({
+            include: {
+                user: { select: { id: true, name: true, avatar: true } },
+                project: { select: { id: true, name: true } }
+            },
+            orderBy: { createdAt: 'desc' },
+            take: 10
+        });
+
+        res.json(recentActivities);
+    } catch (error) {
+        console.error('Activities error:', error);
+        res.status(500).json({ error: 'Failed to load activities' });
+    }
+});
+
 // GET /api/dashboard - Get dashboard data
 router.get('/', authMiddleware, async (req, res) => {
     try {

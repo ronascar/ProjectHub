@@ -258,6 +258,12 @@ export const teamAPI = {
         return handleResponse(res);
     },
 
+    getMembers: async (params = {}) => {
+        const query = new URLSearchParams(params).toString();
+        const res = await fetch(`${API_BASE_URL}/team?${query}`, createOptions());
+        return handleResponse(res);
+    },
+
     get: async (id) => {
         const res = await fetch(`${API_BASE_URL}/team/${id}`, createOptions());
         return handleResponse(res);
@@ -271,6 +277,26 @@ export const teamAPI = {
 
 // ==================== DASHBOARD ====================
 export const dashboardAPI = {
+    getStats: async () => {
+        const res = await fetch(`${API_BASE_URL}/dashboard/stats`, createOptions());
+        return handleResponse(res);
+    },
+
+    getRecentProjects: async () => {
+        const res = await fetch(`${API_BASE_URL}/dashboard/projects/recent`, createOptions());
+        return handleResponse(res);
+    },
+
+    getUpcomingTasks: async () => {
+        const res = await fetch(`${API_BASE_URL}/dashboard/tasks/upcoming`, createOptions());
+        return handleResponse(res);
+    },
+
+    getActivities: async () => {
+        const res = await fetch(`${API_BASE_URL}/dashboard/activities`, createOptions());
+        return handleResponse(res);
+    },
+
     getData: async () => {
         const res = await fetch(`${API_BASE_URL}/dashboard`, createOptions());
         return handleResponse(res);
