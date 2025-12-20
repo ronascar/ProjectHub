@@ -1,7 +1,7 @@
 import { NavLink } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
-export default function Sidebar() {
+export default function Sidebar({ isMobile = false, onClose }) {
     const { user, logout } = useAuth();
 
     const navItems = [
@@ -18,10 +18,21 @@ export default function Sidebar() {
         { path: '/inbox', icon: 'inbox', label: 'Caixa de Entrada' },
     ];
 
+    const handleNavClick = () => {
+        if (isMobile && onClose) {
+            onClose();
+        }
+    };
+
+    // Classes para desktop (oculto no mobile) ou mobile (sempre visível)
+    const asideClasses = isMobile
+        ? "flex w-64 flex-col h-full border-r border-gray-200 dark:border-border-dark bg-white dark:bg-surface-dark"
+        : "hidden w-64 flex-col border-r border-gray-200 dark:border-border-dark bg-white dark:bg-surface-dark md:flex";
+
     return (
-        <aside className="hidden w-64 flex-col border-r border-gray-200 dark:border-border-dark bg-white dark:bg-surface-dark md:flex">
+        <aside className={asideClasses}>
             {/* Logo */}
-            <div className="flex h-16 items-center px-6">
+            <div className="flex h-16 items-center justify-between px-6">
                 <div className="flex items-center gap-2">
                     <div className="flex h-8 w-8 items-center justify-center rounded bg-primary text-white">
                         <span className="material-symbols-outlined text-[20px]">grid_view</span>
@@ -30,6 +41,15 @@ export default function Sidebar() {
                         Nexus<span className="text-primary">PM</span>
                     </span>
                 </div>
+                {isMobile && (
+                    <button
+                        onClick={onClose}
+                        className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-white"
+                        aria-label="Fechar menu"
+                    >
+                        <span className="material-symbols-outlined">close</span>
+                    </button>
+                )}
             </div>
 
             {/* Navigation */}
@@ -60,6 +80,7 @@ export default function Sidebar() {
                             <NavLink
                                 key={item.path}
                                 to={item.path}
+                                onClick={handleNavClick}
                                 className={({ isActive }) =>
                                     `flex items-center gap-3 rounded-lg px-3 py-2 transition-colors ${isActive
                                         ? 'bg-primary/10 text-primary'
@@ -88,6 +109,7 @@ export default function Sidebar() {
                             <NavLink
                                 key={item.path}
                                 to={item.path}
+                                onClick={handleNavClick}
                                 className={({ isActive }) =>
                                     `flex items-center gap-3 rounded-lg px-3 py-2 transition-colors ${isActive
                                         ? 'bg-primary/10 text-primary'
@@ -111,6 +133,7 @@ export default function Sidebar() {
                 <div className="mt-auto">
                     <NavLink
                         to="/settings"
+                        onClick={handleNavClick}
                         className="flex items-center gap-3 rounded-lg px-3 py-2 text-gray-600 transition-colors hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-surface-dark-lighter dark:hover:text-white"
                     >
                         <span className="material-symbols-outlined">settings</span>

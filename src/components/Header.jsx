@@ -1,14 +1,18 @@
 import { useTheme } from '../context/ThemeContext';
 import { Link } from 'react-router-dom';
 
-export default function Header() {
+export default function Header({ onMenuToggle }) {
     const { isDark, toggleTheme } = useTheme();
 
     return (
         <header className="flex h-16 w-full items-center justify-between border-b border-gray-200 bg-white px-6 dark:border-border-dark dark:bg-background-dark">
             {/* Mobile Menu Button */}
-            <div className="flex items-center gap-4 lg:hidden">
-                <button className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-white">
+            <div className="flex items-center gap-4 md:hidden">
+                <button
+                    onClick={onMenuToggle}
+                    className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-white"
+                    aria-label="Abrir menu"
+                >
                     <span className="material-symbols-outlined">menu</span>
                 </button>
                 <span className="text-lg font-bold dark:text-white">
