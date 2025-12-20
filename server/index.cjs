@@ -18,8 +18,29 @@ const prisma = new PrismaClient();
 const PORT = process.env.PORT || 3001;
 
 // Middleware
+// Middleware
+const allowedOrigins = [
+    'http://localhost:5173',
+    'http://localhost:5174',
+    'http://localhost:3000',
+    process.env.FRONTEND_URL, // URL do deploy na Vercel
+    process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : null
+].filter(Boolean);
+
 app.use(cors({
-    origin: ['http://localhost:5173', 'http://localhost:5174', 'http://localhost:3000'],
+    origin: function (origin, callback) {
+        // Permitir requests sem 'origin' (como mobile apps, curl ou postman)
+        if (!origin) return callback(null, true);
+
+        if (allowedOrigins.indexOf(origin) !== -1 || process.env.CORS_ALLOW_ALL === 'true') {
+            callback(null, true);
+        } else {
+            console.log('Origin blocked by CORS:', origin);
+            // Em produção você deve bloquear, mas para debug vamos permitir e logar
+            // callback(new Error('Not allowed by CORS')); 
+            callback(null, false);
+        }
+    },
     credentials: true
 }));
 app.use(express.json());
