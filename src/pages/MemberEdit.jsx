@@ -1,30 +1,79 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
+import { usersAPI } from '../services/api';
 
 export default function MemberEdit() {
     const { id } = useParams();
     const navigate = useNavigate();
     const numberInputRef = useRef(null);
+    const [loading, setLoading] = useState(true);
+    const [saving, setSaving] = useState(false);
+    const [error, setError] = useState(null);
 
-    // Mock data - em produção viria do banco de dados
+    // Form data
     const [formData, setFormData] = useState({
-        fullName: 'Ricardo Alves da Silva',
-        email: 'ricardo.silva@techco.com',
-        cpf: '123.456.789-00',
-        phone: '(11) 98765-4321',
-        birthDate: '1990-05-15',
+        fullName: '',
+        email: '',
+        cpf: '',
+        phone: '',
+        birthDate: '',
         role: 'Desenvolvedor Full-stack',
         isActive: true,
-        cep: '01310-100',
-        street: 'Av. Paulista',
-        number: '1578',
-        complement: 'Apto 45 - Bloco B',
-        neighborhood: 'Bela Vista',
-        city: 'São Paulo',
+        cep: '',
+        street: '',
+        number: '',
+        complement: '',
+        neighborhood: '',
+        city: '',
         state: 'SP'
     });
 
     const [loadingCep, setLoadingCep] = useState(false);
+
+    // Load user data
+    useEffect(() => {
+        const loadUser = async () => {
+            try {
+                setLoading(true);
+                const user = await usersAPI.get(id);
+                
+                // Mapear role da API para o formato do formulário
+                const roleMap = {
+                    'ADMIN': 'Administrador',
+                    'MANAGER': 'Gerente de Projetos',
+                    'MEMBER': user.department || 'Desenvolvedor Full-stack'
+                };
+                
+                setFormData({
+                    fullName: user.name || '',
+                    email: user.email || '',
+                    cpf: '',
+                    phone: user.phone || '',
+                    birthDate: '',
+                    role: roleMap[user.role] || 'Desenvolvedor Full-stack',
+                    isActive: user.isActive !== false,
+                    cep: '',
+                    street: '',
+                    number: '',
+                    complement: '',
+                    neighborhood: '',
+                    city: '',
+                    state: 'SP'
+                });
+                
+                setError(null);
+            } catch (err) {
+                console.error('Erro ao carregar usuário:', err);
+                setError('Erro ao carregar dados do usuário');
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        if (id) {
+            loadUser();
+        }
+    }, [id]);
 
     // Máscaras
     const maskCPF = (value) => {
@@ -100,10 +149,43 @@ export default function MemberEdit() {
         }
     };
 
-    const handleSave = () => {
-        console.log('Saving member data:', formData);
-        // Aqui você salvaria no banco de dados
-        navigate('/teams');
+    const handleSave = async () => {
+        if (!formData.fullName || !formData.email) {
+            alert('Nome e e-mail são obrigatórios');
+            return;
+        }
+
+        setSaving(true);
+        setError(null);
+
+        try {
+            // Mapear role para o formato da API
+            const roleMap = {
+                'Administrador': 'ADMIN',
+                'Gerente de Projetos': 'MANAGER',
+                'Desenvolvedor Full-stack': 'MEMBER',
+                'Designer UI/UX': 'MEMBER',
+                'QA Tester': 'MEMBER'
+            };
+
+            const userData = {
+                name: formData.fullName,
+                role: roleMap[formData.role] || 'MEMBER',
+                department: formData.role,
+                phone: formData.phone || null,
+                isActive: formData.isActive
+            };
+
+            await usersAPI.update(id, userData);
+            console.log('Usuário atualizado com sucesso');
+            navigate('/teams');
+        } catch (err) {
+            console.error('Erro ao atualizar usuário:', err);
+            setError(err.message || 'Erro ao atualizar usuário. Verifique suas permissões.');
+            alert(err.message || 'Erro ao atualizar usuário');
+        } finally {
+            setSaving(false);
+        }
     };
 
     const handleCancel = () => {
@@ -112,9 +194,24 @@ export default function MemberEdit() {
 
     return (
         <div className="flex flex-1 justify-center py-8 px-4 md:px-8 lg:px-12 bg-background-light dark:bg-background-dark min-h-full">
-            <div className="flex flex-col max-w-[1200px] flex-1 gap-8">
-                {/* Breadcrumbs */}
-                <div className="flex flex-wrap items-center gap-2 px-1">
+            {loading ? (
+                <div className="flex items-center justify-center h-64">
+                    <div className="flex flex-col items-center gap-3">
+                        <span className="material-symbols-outlined text-4xl text-primary animate-spin">progress_activity</span>
+                        <p className="text-slate-500 dark:text-slate-400">Carregando dados do membro...</p>
+                    </div>
+                </div>
+            ) : (
+                <div className="flex flex-col max-w-[1200px] flex-1 gap-8">
+                    {error && (
+                        <div className="p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg text-red-700 dark:text-red-300 flex items-center gap-2">
+                            <span className="material-symbols-outlined">error</span>
+                            <span>{error}</span>
+                        </div>
+                    )}
+                    
+                    {/* Breadcrumbs */}
+                    <div className="flex flex-wrap items-center gap-2 px-1">
                     <Link to="/" className="text-slate-500 dark:text-text-secondary hover:text-primary transition-colors text-sm font-medium">Área de Trabalho</Link>
                     <span className="text-slate-400 dark:text-slate-600 text-sm font-medium">/</span>
                     <Link to="/teams" className="text-slate-500 dark:text-text-secondary hover:text-primary transition-colors text-sm font-medium">Gerenciamento de Equipe</Link>
@@ -139,10 +236,20 @@ export default function MemberEdit() {
                         </button>
                         <button
                             onClick={handleSave}
-                            className="flex items-center justify-center rounded-lg h-10 px-6 bg-primary hover:bg-blue-600 text-white shadow-lg shadow-blue-500/20 transition-all text-sm font-bold gap-2"
+                            disabled={saving}
+                            className="flex items-center justify-center rounded-lg h-10 px-6 bg-primary hover:bg-blue-600 text-white shadow-lg shadow-blue-500/20 transition-all text-sm font-bold gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                         >
-                            <span className="material-symbols-outlined text-[20px]">save</span>
-                            <span>Salvar Alterações</span>
+                            {saving ? (
+                                <>
+                                    <span className="material-symbols-outlined text-[20px] animate-spin">progress_activity</span>
+                                    <span>Salvando...</span>
+                                </>
+                            ) : (
+                                <>
+                                    <span className="material-symbols-outlined text-[20px]">save</span>
+                                    <span>Salvar Alterações</span>
+                                </>
+                            )}
                         </button>
                     </div>
                 </div>
@@ -420,6 +527,7 @@ export default function MemberEdit() {
                     </div>
                 </div>
             </div>
+            )}
         </div>
     );
 }

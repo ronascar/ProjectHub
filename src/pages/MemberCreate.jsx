@@ -1,12 +1,14 @@
 import React, { useState, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useCustomAlert } from '../components/CustomAlert';
+import { usersAPI } from '../services/api';
 
 export default function MemberCreate() {
     const navigate = useNavigate();
     const numberInputRef = useRef(null);
     const fileInputRef = useRef(null);
     const { showAlert, AlertComponent } = useCustomAlert();
+    const [saving, setSaving] = useState(false);
 
     const [formData, setFormData] = useState({
         fullName: '',
@@ -172,7 +174,7 @@ export default function MemberCreate() {
         }
     };
 
-    const handleSave = () => {
+    const handleSave = async () => {
         if (!formData.fullName || !formData.email) {
             showAlert({
                 title: 'Campos Obrigatórios',
@@ -192,21 +194,52 @@ export default function MemberCreate() {
             return;
         }
 
-        console.log('Creating new member:', formData);
-        console.log('Avatar file:', avatarFile);
+        setSaving(true);
 
-        // Mostrar sucesso
-        showAlert({
-            title: 'Membro Cadastrado!',
-            message: 'O novo membro foi adicionado com sucesso à equipe.',
-            type: 'success',
-            confirmText: 'OK, Entendido'
-        });
+        try {
+            // Mapear role para o formato da API
+            const roleMap = {
+                'Administrador': 'ADMIN',
+                'Gerente de Projetos': 'MANAGER',
+                'Desenvolvedor Full-stack': 'MEMBER',
+                'Designer UI/UX': 'MEMBER',
+                'QA Tester': 'MEMBER'
+            };
 
-        // Navegar após um pequeno delay para mostrar o alert
-        setTimeout(() => {
-            navigate('/teams');
-        }, 1500);
+            const userData = {
+                name: formData.fullName,
+                email: formData.email,
+                password: 'senha123', // Senha temporária - deve ser alterada no primeiro login
+                role: roleMap[formData.role] || 'MEMBER',
+                department: formData.role,
+                phone: formData.phone || null,
+                avatar: avatarPreview || null
+            };
+
+            await usersAPI.create(userData);
+
+            // Mostrar sucesso
+            showAlert({
+                title: 'Membro Cadastrado!',
+                message: 'O novo membro foi adicionado com sucesso à equipe.',
+                type: 'success',
+                confirmText: 'OK, Entendido'
+            });
+
+            // Navegar após um pequeno delay para mostrar o alert
+            setTimeout(() => {
+                navigate('/teams');
+            }, 1500);
+        } catch (err) {
+            console.error('Erro ao criar membro:', err);
+            showAlert({
+                title: 'Erro ao Cadastrar',
+                message: err.message || 'Não foi possível cadastrar o membro. Verifique se você tem permissão de administrador.',
+                type: 'error'
+            });
+        } finally {
+            setSaving(false);
+        }
     };
 
     const handleCancel = () => {
@@ -244,10 +277,20 @@ export default function MemberCreate() {
                             </button>
                             <button
                                 onClick={handleSave}
-                                className="flex items-center justify-center rounded-lg h-10 px-6 bg-primary hover:bg-blue-600 text-white shadow-lg shadow-blue-500/20 transition-all text-sm font-bold gap-2"
+                                disabled={saving}
+                                className="flex items-center justify-center rounded-lg h-10 px-6 bg-primary hover:bg-blue-600 text-white shadow-lg shadow-blue-500/20 transition-all text-sm font-bold gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                             >
-                                <span className="material-symbols-outlined text-[20px]">person_add</span>
-                                <span>Adicionar Membro</span>
+                                {saving ? (
+                                    <>
+                                        <span className="material-symbols-outlined text-[20px] animate-spin">progress_activity</span>
+                                        <span>Salvando...</span>
+                                    </>
+                                ) : (
+                                    <>
+                                        <span className="material-symbols-outlined text-[20px]">person_add</span>
+                                        <span>Adicionar Membro</span>
+                                    </>
+                                )}
                             </button>
                         </div>
                     </div>

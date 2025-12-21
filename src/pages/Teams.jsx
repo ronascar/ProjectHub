@@ -1,18 +1,7 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useCustomConfirm } from '../components/CustomConfirm';
-
-// Mock team members data
-const MOCK_MEMBERS = [
-    { id: 1, name: 'Sarah Miller', email: 'sarah.m@taskmaster.com', avatar: 'https://i.pravatar.cc/100?u=sarah', initials: 'SM', color: 'purple', role: 'Administrator', roleIcon: 'verified_user', department: 'Management', projects: 8, workload: 80, isOnline: true },
-    { id: 2, name: 'James Davidson', email: 'james.d@taskmaster.com', avatar: null, initials: 'JD', color: 'amber', role: 'Project Manager', roleIcon: 'manage_accounts', department: 'Product', projects: 5, workload: 55, isOnline: false },
-    { id: 3, name: 'Ana Silva', email: 'ana.silva@taskmaster.com', avatar: 'https://i.pravatar.cc/100?u=ana', initials: 'AS', color: 'pink', role: 'Developer', roleIcon: 'code', department: 'Engineering', projects: 6, workload: 72, isOnline: true },
-    { id: 4, name: 'Carlos Mendes', email: 'carlos.m@taskmaster.com', avatar: 'https://i.pravatar.cc/100?u=carlos', initials: 'CM', color: 'blue', role: 'Developer', roleIcon: 'code', department: 'Engineering', projects: 4, workload: 45, isOnline: true },
-    { id: 5, name: 'Maria Santos', email: 'maria.s@taskmaster.com', avatar: null, initials: 'MS', color: 'green', role: 'Designer', roleIcon: 'palette', department: 'Product Design', projects: 3, workload: 65, isOnline: false },
-    { id: 6, name: 'Roberto Lima', email: 'roberto.l@taskmaster.com', avatar: 'https://i.pravatar.cc/100?u=roberto', initials: 'RL', color: 'orange', role: 'Marketing Lead', roleIcon: 'campaign', department: 'Marketing', projects: 7, workload: 88, isOnline: true },
-    { id: 7, name: 'Julia Ferreira', email: 'julia.f@taskmaster.com', avatar: null, initials: 'JF', color: 'cyan', role: 'Developer', roleIcon: 'code', department: 'Engineering', projects: 5, workload: 60, isOnline: true },
-    { id: 8, name: 'Pedro Costa', email: 'pedro.c@taskmaster.com', avatar: 'https://i.pravatar.cc/100?u=pedro', initials: 'PC', color: 'indigo', role: 'Support Lead', roleIcon: 'support_agent', department: 'Customer Success', projects: 4, workload: 50, isOnline: false },
-];
+import { usersAPI } from '../services/api';
 
 const DEPARTMENTS = ['Todos os Departamentos', 'Management', 'Engineering', 'Product', 'Product Design', 'Marketing', 'Customer Success'];
 
@@ -36,6 +25,8 @@ const getWorkloadColor = (workload) => {
 
 export default function Teams() {
     const { showConfirm, ConfirmComponent } = useCustomConfirm();
+    const [members, setMembers] = useState([]);
+    const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
     const [departmentFilter, setDepartmentFilter] = useState('All Departments');
     const [roleFilter, setRoleFilter] = useState(null);
@@ -45,9 +36,53 @@ export default function Teams() {
     const [openMenuId, setOpenMenuId] = useState(null);
     const itemsPerPage = 5;
 
+    // Load members from API
+    useEffect(() => {
+        const loadMembers = async () => {
+            try {
+                setLoading(true);
+                const data = await usersAPI.list();
+                
+                // Transform API data to match component format
+                const transformedMembers = data.map(user => {
+                    const initials = user.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+                    const roleMap = {
+                        'ADMIN': { role: 'Administrator', icon: 'verified_user' },
+                        'MANAGER': { role: 'Project Manager', icon: 'manage_accounts' },
+                        'MEMBER': { role: user.department || 'Developer', icon: 'code' }
+                    };
+                    const roleInfo = roleMap[user.role] || { role: 'Member', icon: 'person' };
+                    
+                    return {
+                        id: user.id,
+                        name: user.name,
+                        email: user.email,
+                        avatar: user.avatar,
+                        initials,
+                        color: 'blue',
+                        role: roleInfo.role,
+                        roleIcon: roleInfo.icon,
+                        department: user.department || 'General',
+                        projects: user._count?.ownedProjects || 0,
+                        workload: Math.min((user._count?.assignedTasks || 0) * 10, 100),
+                        isOnline: user.isActive
+                    };
+                });
+                
+                setMembers(transformedMembers);
+            } catch (err) {
+                console.error('Erro ao carregar membros:', err);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        loadMembers();
+    }, []);
+
     // Filter members
     const filteredMembers = useMemo(() => {
-        return MOCK_MEMBERS.filter(member => {
+        return members.filter(member => {
             const matchSearch = member.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                 member.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
                 member.role.toLowerCase().includes(searchTerm.toLowerCase());
@@ -56,7 +91,7 @@ export default function Teams() {
             const matchOnline = !showOnlineOnly || member.isOnline;
             return matchSearch && matchDepartment && matchRole && matchOnline;
         });
-    }, [searchTerm, departmentFilter, roleFilter, showOnlineOnly]);
+    }, [members, searchTerm, departmentFilter, roleFilter, showOnlineOnly]);
 
     // Paginate
     const paginatedMembers = useMemo(() => {
@@ -66,10 +101,10 @@ export default function Teams() {
 
     // Stats
     const stats = useMemo(() => {
-        const activeMembers = MOCK_MEMBERS.filter(m => m.isOnline).length;
-        const departments = [...new Set(MOCK_MEMBERS.map(m => m.department))].length;
-        return { total: MOCK_MEMBERS.length, active: activeMembers, departments };
-    }, []);
+        const activeMembers = members.filter(m => m.isOnline).length;
+        const departments = [...new Set(members.map(m => m.department))].length;
+        return { total: members.length, active: activeMembers, departments };
+    }, [members]);
 
     const totalPages = Math.ceil(filteredMembers.length / itemsPerPage);
 
@@ -106,9 +141,16 @@ export default function Teams() {
             type: 'danger',
             confirmText: 'Sim, Excluir',
             cancelText: 'Cancelar',
-            onConfirm: () => {
-                console.log('Delete member:', id);
-                // Aqui você faria a chamada para deletar do banco
+            onConfirm: async () => {
+                try {
+                    await usersAPI.delete(id);
+                    // Atualizar lista removendo o membro
+                    setMembers(prev => prev.filter(m => m.id !== id));
+                    console.log('Membro excluído com sucesso');
+                } catch (err) {
+                    console.error('Erro ao excluir membro:', err);
+                    alert(err.message || 'Erro ao excluir membro. Verifique se você tem permissão de administrador.');
+                }
             }
         });
     };
@@ -223,7 +265,12 @@ export default function Teams() {
                         </div>
 
                         {/* Member Items */}
-                        {paginatedMembers.map((member) => (
+                        {loading ? (
+                            <div className="px-6 py-12 text-center">
+                                <span className="material-symbols-outlined text-4xl text-primary animate-spin mb-2">progress_activity</span>
+                                <p className="text-slate-500 dark:text-text-secondary">Carregando membros...</p>
+                            </div>
+                        ) : paginatedMembers.map((member) => (
                             <div key={member.id} className="group relative grid grid-cols-1 gap-4 border-b border-gray-200 dark:border-border-dark px-6 py-4 transition-colors hover:bg-gray-50 dark:hover:bg-[#1c2b3a] md:grid-cols-12 md:items-center">
                                 <div className="col-span-1 md:col-span-4 flex items-center gap-4">
                                     <div className="relative flex h-5 w-5 shrink-0 items-center justify-center">
