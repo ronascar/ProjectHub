@@ -9,11 +9,3 @@ cmds = ['npx prisma generate', 'npm run build']
 
 [start]
 cmd = 'node server/index.cjs'
-
-[variables]
-DATABASE_URL = '${DATABASE_URL}'
-JWT_SECRET = '${JWT_SECRET}'
-NODE_ENV = '${NODE_ENV}'
-PORT = '${PORT}'
-FRONTEND_URL = '${FRONTEND_URL}'
-CORS_ALLOW_ALL = '${CORS_ALLOW_ALL}'

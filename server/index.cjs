@@ -1,9 +1,24 @@
-require('dotenv').config();
+// Carregar dotenv apenas se o arquivo .env existir (desenvolvimento local)
+// Em produção (Coolify), as variáveis vêm do sistema
+try {
+    require('dotenv').config();
+} catch (e) {
+    // Ignorar erro se dotenv não estiver disponível
+}
+
 const express = require('express');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const path = require('path');
 const { PrismaClient } = require('@prisma/client');
+
+// Log das variáveis críticas para debug (sem expor valores sensíveis)
+console.log('🔍 Environment check:');
+console.log('  NODE_ENV:', process.env.NODE_ENV);
+console.log('  PORT:', process.env.PORT);
+console.log('  DATABASE_URL:', process.env.DATABASE_URL ? '✅ Configured' : '❌ Missing');
+console.log('  JWT_SECRET:', process.env.JWT_SECRET ? '✅ Configured' : '❌ Missing');
+console.log('  FRONTEND_URL:', process.env.FRONTEND_URL || 'Not set');
 
 // Import routes
 const authRoutes = require('./routes/auth.cjs');
