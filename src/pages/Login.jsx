@@ -154,11 +154,11 @@ export default function Login() {
                                     onChange={(e) => setRememberMe(e.target.checked)}
                                 />
                                 <span className="text-sm font-medium text-slate-600 dark:text-text-secondary group-hover:text-slate-900 dark:group-hover:text-white transition-colors">
-                                    Lembrar pelos próximos 30 dias
+                                    Lembrar por 30 dias
                                 </span>
                             </label>
                             <a className="text-sm font-semibold text-primary hover:text-blue-400 transition-colors" href="#">
-                                Esqueceu sua senha?
+                                Esqueceu a senha?
                             </a>
                         </div>
 
