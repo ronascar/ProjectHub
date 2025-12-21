@@ -1,7 +1,8 @@
 import { useState, useEffect, useMemo } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { projectsAPI } from '../services/api';
+import { projectsAPI, clientsAPI } from '../services/api';
 import { useCustomConfirm } from '../components/CustomConfirm';
+import TeamManagementModal from '../components/TeamManagementModal';
 
 export default function ProjectsList() {
     const navigate = useNavigate();
@@ -9,17 +10,20 @@ export default function ProjectsList() {
 
     // State
     const [projects, setProjects] = useState([]);
+    const [clients, setClients] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [searchTerm, setSearchTerm] = useState('');
     const [statusFilter, setStatusFilter] = useState('Todos');
     const [currentPage, setCurrentPage] = useState(1);
     const [openMenuId, setOpenMenuId] = useState(null);
+    const [teamModalProject, setTeamModalProject] = useState(null);
     const itemsPerPage = 5;
 
     // Load projects from API
     useEffect(() => {
         loadProjects();
+        loadClients();
     }, []);
 
     const loadProjects = async () => {
@@ -33,6 +37,15 @@ export default function ProjectsList() {
             setError('Erro ao carregar projetos. Tente novamente.');
         } finally {
             setLoading(false);
+        }
+    };
+
+    const loadClients = async () => {
+        try {
+            const data = await clientsAPI.list();
+            setClients(data);
+        } catch (err) {
+            console.error('Error loading clients:', err);
         }
     };
 
@@ -160,6 +173,34 @@ export default function ProjectsList() {
         });
     };
 
+    // Quick update handlers
+    const handleStatusChange = async (projectId, newStatus) => {
+        try {
+            const updatedProject = await projectsAPI.quickUpdate(projectId, { status: newStatus });
+            // Update local state
+            setProjects(projects.map(p => p.id === projectId ? { ...p, ...updatedProject } : p));
+        } catch (err) {
+            console.error('Error updating status:', err);
+            setError('Erro ao atualizar status. Tente novamente.');
+        }
+    };
+
+    const handleClientChange = async (projectId, newClientId) => {
+        try {
+            const updatedProject = await projectsAPI.quickUpdate(projectId, { clientId: newClientId });
+            // Update local state
+            setProjects(projects.map(p => p.id === projectId ? { ...p, ...updatedProject } : p));
+        } catch (err) {
+            console.error('Error updating client:', err);
+            setError('Erro ao atualizar cliente. Tente novamente.');
+        }
+    };
+
+    const handleManageTeam = (project) => {
+        setTeamModalProject(project);
+        setOpenMenuId(null);
+    };
+
     // Helper functions
     const getStatusLabel = (status) => {
         const statusMap = {
@@ -189,6 +230,13 @@ export default function ProjectsList() {
     return (
         <>
             <ConfirmComponent />
+            {teamModalProject && (
+                <TeamManagementModal
+                    project={teamModalProject}
+                    onClose={() => setTeamModalProject(null)}
+                    onUpdate={loadProjects}
+                />
+            )}
             <div className="flex-1 flex flex-col overflow-y-auto">
                 <div className="w-full max-w-[1400px] mx-auto p-4 md:p-6 lg:p-8 flex flex-col gap-6">
                     {/* Page Heading & Primary Action */}
@@ -281,19 +329,22 @@ export default function ProjectsList() {
                                     <table className="w-full text-left border-collapse">
                                         <thead>
                                             <tr className="bg-gray-50 dark:bg-[#233648] border-b border-gray-200 dark:border-border-dark">
-                                                <th className="px-6 py-4 text-gray-500 dark:text-text-secondary text-xs font-semibold uppercase tracking-wider w-[25%]">
+                                                <th className="px-6 py-4 text-gray-500 dark:text-text-secondary text-xs font-semibold uppercase tracking-wider w-[20%]">
                                                     Nome do Projeto
                                                 </th>
-                                                <th className="px-6 py-4 text-gray-500 dark:text-text-secondary text-xs font-semibold uppercase tracking-wider w-[15%] hidden sm:table-cell">
+                                                <th className="px-6 py-4 text-gray-500 dark:text-text-secondary text-xs font-semibold uppercase tracking-wider w-[12%] hidden sm:table-cell">
                                                     Cliente
                                                 </th>
-                                                <th className="px-6 py-4 text-gray-500 dark:text-text-secondary text-xs font-semibold uppercase tracking-wider w-[20%]">
-                                                    Progresso
+                                                <th className="px-6 py-4 text-gray-500 dark:text-text-secondary text-xs font-semibold uppercase tracking-wider w-[12%] hidden lg:table-cell">
+                                                    Equipe
                                                 </th>
                                                 <th className="px-6 py-4 text-gray-500 dark:text-text-secondary text-xs font-semibold uppercase tracking-wider w-[15%]">
+                                                    Progresso
+                                                </th>
+                                                <th className="px-6 py-4 text-gray-500 dark:text-text-secondary text-xs font-semibold uppercase tracking-wider w-[13%]">
                                                     Status
                                                 </th>
-                                                <th className="px-6 py-4 text-gray-500 dark:text-text-secondary text-xs font-semibold uppercase tracking-wider w-[15%] hidden md:table-cell">
+                                                <th className="px-6 py-4 text-gray-500 dark:text-text-secondary text-xs font-semibold uppercase tracking-wider w-[13%] hidden md:table-cell">
                                                     Prazo
                                                 </th>
                                                 <th className="px-6 py-4 text-gray-500 dark:text-text-secondary text-xs font-semibold uppercase tracking-wider w-[10%] text-right">
@@ -331,9 +382,59 @@ export default function ProjectsList() {
                                                             </div>
                                                         </td>
                                                         <td className="px-6 py-4 hidden sm:table-cell">
-                                                            <p className="text-sm font-normal text-gray-500 dark:text-text-secondary">
-                                                                {project.client?.name || 'Sem cliente'}
-                                                            </p>
+                                                            <select
+                                                                value={project.clientId || ''}
+                                                                onChange={(e) => handleClientChange(project.id, e.target.value)}
+                                                                className="text-sm bg-transparent border-none text-gray-500 dark:text-text-secondary hover:text-slate-900 dark:hover:text-white focus:ring-0 cursor-pointer p-0 [&>option]:bg-white [&>option]:dark:bg-gray-800 [&>option]:text-slate-900 [&>option]:dark:text-white"
+                                                            >
+                                                                <option value="" className="bg-white dark:bg-gray-800 text-slate-900 dark:text-white">Sem cliente</option>
+                                                                {clients.map(client => (
+                                                                    <option key={client.id} value={client.id} className="bg-white dark:bg-gray-800 text-slate-900 dark:text-white">
+                                                                        {client.name}
+                                                                    </option>
+                                                                ))}
+                                                            </select>
+                                                        </td>
+                                                        <td className="px-6 py-4 hidden lg:table-cell">
+                                                            <div className="flex items-center gap-2">
+                                                                <div className="flex -space-x-2">
+                                                                    {(project.members || []).slice(0, 3).map((member, idx) => (
+                                                                        member.user.avatar ? (
+                                                                            <img
+                                                                                key={idx}
+                                                                                src={member.user.avatar}
+                                                                                alt={member.user.name}
+                                                                                className="w-7 h-7 rounded-full border-2 border-white dark:border-surface-dark object-cover"
+                                                                                title={member.user.name}
+                                                                            />
+                                                                        ) : (
+                                                                            <div
+                                                                                key={idx}
+                                                                                className="w-7 h-7 rounded-full border-2 border-white dark:border-surface-dark bg-primary/20 flex items-center justify-center"
+                                                                                title={member.user.name}
+                                                                            >
+                                                                                <span className="text-primary font-semibold text-xs">
+                                                                                    {member.user.name.charAt(0).toUpperCase()}
+                                                                                </span>
+                                                                            </div>
+                                                                        )
+                                                                    ))}
+                                                                    {(project.members || []).length > 3 && (
+                                                                        <div className="w-7 h-7 rounded-full border-2 border-white dark:border-surface-dark bg-gray-200 dark:bg-gray-700 flex items-center justify-center">
+                                                                            <span className="text-xs font-bold text-gray-600 dark:text-gray-300">
+                                                                                +{(project.members || []).length - 3}
+                                                                            </span>
+                                                                        </div>
+                                                                    )}
+                                                                </div>
+                                                                <button
+                                                                    onClick={() => handleManageTeam(project)}
+                                                                    className="p-1 text-gray-400 hover:text-primary transition-colors"
+                                                                    title="Gerenciar equipe"
+                                                                >
+                                                                    <span className="material-symbols-outlined text-[18px]">group_add</span>
+                                                                </button>
+                                                            </div>
                                                         </td>
                                                         <td className="px-6 py-4">
                                                             <div className="flex flex-col gap-1.5 w-full max-w-[140px]">
@@ -353,13 +454,23 @@ export default function ProjectsList() {
                                                             </div>
                                                         </td>
                                                         <td className="px-6 py-4">
-                                                            <span className={`inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset ${project.status === 'COMPLETED' ? 'bg-green-400/10 text-green-400 ring-green-400/30' :
+                                                            <select
+                                                                value={project.status}
+                                                                onChange={(e) => handleStatusChange(project.id, e.target.value)}
+                                                                className={`inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset border-none cursor-pointer [&>option]:bg-white [&>option]:dark:bg-gray-800 [&>option]:text-slate-900 [&>option]:dark:text-white ${
+                                                                    project.status === 'COMPLETED' ? 'bg-green-400/10 text-green-400 ring-green-400/30' :
                                                                     isOverdue ? 'bg-red-400/10 text-red-400 ring-red-400/30' :
-                                                                        project.status === 'PLANNING' ? 'bg-orange-400/10 text-orange-400 ring-orange-400/30' :
-                                                                            'bg-blue-400/10 text-blue-400 ring-blue-400/30'
-                                                                }`}>
-                                                                {isOverdue && project.status !== 'COMPLETED' ? 'Atrasado' : getStatusLabel(project.status)}
-                                                            </span>
+                                                                    project.status === 'PLANNING' ? 'bg-orange-400/10 text-orange-400 ring-orange-400/30' :
+                                                                    'bg-blue-400/10 text-blue-400 ring-blue-400/30'
+                                                                }`}
+                                                            >
+                                                                <option value="PLANNING" className="bg-white dark:bg-gray-800 text-slate-900 dark:text-white">Planejamento</option>
+                                                                <option value="IN_PROGRESS" className="bg-white dark:bg-gray-800 text-slate-900 dark:text-white">Em Andamento</option>
+                                                                <option value="ON_HOLD" className="bg-white dark:bg-gray-800 text-slate-900 dark:text-white">Pausado</option>
+                                                                <option value="REVIEW" className="bg-white dark:bg-gray-800 text-slate-900 dark:text-white">Em Revisão</option>
+                                                                <option value="COMPLETED" className="bg-white dark:bg-gray-800 text-slate-900 dark:text-white">Concluído</option>
+                                                                <option value="CANCELLED" className="bg-white dark:bg-gray-800 text-slate-900 dark:text-white">Cancelado</option>
+                                                            </select>
                                                         </td>
                                                         <td className="px-6 py-4 hidden md:table-cell">
                                                             <div className="flex items-center gap-2">
@@ -394,6 +505,13 @@ export default function ProjectsList() {
                                                                         >
                                                                             <span className="material-symbols-outlined text-[18px]">edit</span>
                                                                             Editar
+                                                                        </button>
+                                                                        <button
+                                                                            onClick={() => { handleManageTeam(project); }}
+                                                                            className="w-full text-left px-4 py-2 text-sm text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-[#2c3b4a] flex items-center gap-2"
+                                                                        >
+                                                                            <span className="material-symbols-outlined text-[18px]">group</span>
+                                                                            Gerenciar Equipe
                                                                         </button>
                                                                         <div className="border-t border-slate-100 dark:border-[#233648] my-1"></div>
                                                                         <button

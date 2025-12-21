@@ -133,6 +133,11 @@ export const projectsAPI = {
         return handleResponse(res);
     },
 
+    quickUpdate: async (id, updates) => {
+        const res = await fetch(`${API_BASE_URL}/projects/${id}/quick-update`, createOptions('PATCH', updates));
+        return handleResponse(res);
+    },
+
     delete: async (id) => {
         const res = await fetch(`${API_BASE_URL}/projects/${id}`, createOptions('DELETE'));
         return handleResponse(res);

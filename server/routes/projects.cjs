@@ -192,6 +192,67 @@ router.post('/', authMiddleware, managerMiddleware, async (req, res) => {
     }
 });
 
+// PATCH /api/projects/:id/quick-update - Quick update (status, client, progress)
+router.patch('/:id/quick-update', authMiddleware, async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { status, clientId, progress } = req.body;
+
+        // Check if user can update (owner, admin, or manager)
+        const existing = await req.prisma.project.findUnique({
+            where: { id },
+            select: { ownerId: true, name: true }
+        });
+
+        if (!existing) {
+            return res.status(404).json({ error: 'Project not found' });
+        }
+
+        if (existing.ownerId !== req.user.id && !['ADMIN', 'MANAGER'].includes(req.user.role)) {
+            return res.status(403).json({ error: 'Not authorized to update this project' });
+        }
+
+        const updateData = {};
+        
+        if (status !== undefined) {
+            updateData.status = status;
+            if (status === 'COMPLETED') {
+                updateData.completedAt = new Date();
+                updateData.progress = 100;
+            }
+        }
+        
+        if (clientId !== undefined) {
+            updateData.clientId = clientId === '' ? null : clientId;
+        }
+        
+        if (progress !== undefined) {
+            updateData.progress = Math.min(100, Math.max(0, parseInt(progress)));
+        }
+
+        const project = await req.prisma.project.update({
+            where: { id },
+            data: updateData,
+            include: {
+                owner: { select: { id: true, name: true, avatar: true } },
+                client: { select: { id: true, name: true } },
+                members: {
+                    select: {
+                        user: { select: { id: true, name: true, avatar: true } },
+                        role: true
+                    },
+                    take: 5
+                }
+            }
+        });
+
+        res.json(project);
+    } catch (error) {
+        console.error('Quick update project error:', error);
+        res.status(500).json({ error: 'Failed to update project' });
+    }
+});
+
 // PUT /api/projects/:id - Update project
 router.put('/:id', authMiddleware, async (req, res) => {
     try {
