@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { usersAPI } from '../services/api';
+import { uploadAvatar, deleteAvatar } from '../services/upload';
 
 export default function MemberEdit() {
     const { id } = useParams();
@@ -9,6 +10,10 @@ export default function MemberEdit() {
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
     const [error, setError] = useState(null);
+    const [avatarFile, setAvatarFile] = useState(null);
+    const [avatarPreview, setAvatarPreview] = useState(null);
+    const [currentAvatar, setCurrentAvatar] = useState(null);
+    const fileInputRef = useRef(null);
 
     // Form data
     const [formData, setFormData] = useState({
@@ -61,6 +66,8 @@ export default function MemberEdit() {
                     state: 'SP'
                 });
                 
+                setCurrentAvatar(user.avatar);
+                setAvatarPreview(user.avatar);
                 setError(null);
             } catch (err) {
                 console.error('Erro ao carregar usuário:', err);
@@ -168,12 +175,33 @@ export default function MemberEdit() {
                 'QA Tester': 'MEMBER'
             };
 
+            let avatarUrl = currentAvatar;
+
+            // Upload novo avatar se houver arquivo
+            if (avatarFile) {
+                try {
+                    // Deletar avatar antigo se existir
+                    if (currentAvatar) {
+                        await deleteAvatar(currentAvatar).catch(err => 
+                            console.warn('Não foi possível deletar avatar antigo:', err)
+                        );
+                    }
+                    
+                    // Upload novo avatar
+                    avatarUrl = await uploadAvatar(avatarFile, id);
+                } catch (uploadError) {
+                    console.error('Erro ao fazer upload do avatar:', uploadError);
+                    alert('Aviso: Não foi possível fazer upload da nova imagem. As outras alterações serão salvas.');
+                }
+            }
+
             const userData = {
                 name: formData.fullName,
                 role: roleMap[formData.role] || 'MEMBER',
                 department: formData.role,
                 phone: formData.phone || null,
-                isActive: formData.isActive
+                isActive: formData.isActive,
+                avatar: avatarUrl
             };
 
             await usersAPI.update(id, userData);
@@ -185,6 +213,44 @@ export default function MemberEdit() {
             alert(err.message || 'Erro ao atualizar usuário');
         } finally {
             setSaving(false);
+        }
+    };
+
+    const handleAvatarChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            // Validar tipo de arquivo
+            if (!file.type.startsWith('image/')) {
+                alert('Por favor, selecione apenas arquivos de imagem (JPG, PNG, GIF)');
+                return;
+            }
+
+            // Validar tamanho (máx 5MB)
+            if (file.size > 5 * 1024 * 1024) {
+                alert('A imagem deve ter no máximo 5MB');
+                return;
+            }
+
+            setAvatarFile(file);
+
+            // Criar preview
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setAvatarPreview(reader.result);
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+
+    const handleAvatarClick = () => {
+        fileInputRef.current?.click();
+    };
+
+    const removeAvatar = () => {
+        setAvatarFile(null);
+        setAvatarPreview(currentAvatar);
+        if (fileInputRef.current) {
+            fileInputRef.current.value = '';
         }
     };
 
@@ -258,14 +324,35 @@ export default function MemberEdit() {
                     {/* Left Sidebar: Profile Card */}
                     <div className="lg:col-span-4 flex flex-col gap-6">
                         <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-200 dark:border-[#233648] p-6 flex flex-col items-center text-center shadow-sm">
-                            <div className="relative group cursor-pointer">
+                            <div className="relative group cursor-pointer" onClick={handleAvatarClick}>
                                 <div className="size-32 rounded-full p-1 border-2 border-dashed border-slate-300 dark:border-slate-600 group-hover:border-primary transition-colors">
-                                    <div className="w-full h-full rounded-full bg-cover bg-center bg-no-repeat" style={{ backgroundImage: "url('https://i.pravatar.cc/200?u=ricardo')" }}></div>
+                                    {avatarPreview ? (
+                                        <div className="w-full h-full rounded-full bg-cover bg-center bg-no-repeat" style={{ backgroundImage: `url('${avatarPreview}')` }}></div>
+                                    ) : (
+                                        <div className="w-full h-full rounded-full bg-slate-100 dark:bg-slate-700 flex items-center justify-center">
+                                            <span className="material-symbols-outlined text-4xl text-slate-400">person</span>
+                                        </div>
+                                    )}
                                 </div>
                                 <div className="absolute bottom-1 right-1 bg-primary text-white rounded-full p-2 shadow-lg hover:scale-110 transition-transform">
                                     <span className="material-symbols-outlined text-[20px] block">edit</span>
                                 </div>
                             </div>
+                            <input
+                                ref={fileInputRef}
+                                type="file"
+                                accept="image/*"
+                                onChange={handleAvatarChange}
+                                className="hidden"
+                            />
+                            {avatarFile && (
+                                <button
+                                    onClick={(e) => { e.stopPropagation(); removeAvatar(); }}
+                                    className="mt-3 text-xs text-red-600 dark:text-red-400 hover:underline"
+                                >
+                                    Remover nova foto
+                                </button>
+                            )}
                             <div className="mt-4">
                                 <h3 className="text-xl font-bold text-slate-900 dark:text-white">{formData.fullName}</h3>
                                 <span className="inline-flex items-center px-2.5 py-0.5 mt-2 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900/40 dark:text-blue-200 border border-blue-200 dark:border-blue-800/50">

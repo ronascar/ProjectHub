@@ -2,6 +2,7 @@ import React, { useState, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useCustomAlert } from '../components/CustomAlert';
 import { usersAPI } from '../services/api';
+import { uploadAvatar } from '../services/upload';
 
 export default function MemberCreate() {
     const navigate = useNavigate();
@@ -206,6 +207,24 @@ export default function MemberCreate() {
                 'QA Tester': 'MEMBER'
             };
 
+            let avatarUrl = null;
+
+            // Upload avatar se houver arquivo
+            if (avatarFile) {
+                try {
+                    // Gerar ID temporário para o upload (será substituído pelo ID real do usuário)
+                    const tempId = `temp-${Date.now()}`;
+                    avatarUrl = await uploadAvatar(avatarFile, tempId);
+                } catch (uploadError) {
+                    console.error('Erro ao fazer upload do avatar:', uploadError);
+                    showAlert({
+                        title: 'Aviso',
+                        message: 'Não foi possível fazer upload da imagem. O membro será criado sem avatar.',
+                        type: 'warning'
+                    });
+                }
+            }
+
             const userData = {
                 name: formData.fullName,
                 email: formData.email,
@@ -213,7 +232,7 @@ export default function MemberCreate() {
                 role: roleMap[formData.role] || 'MEMBER',
                 department: formData.role,
                 phone: formData.phone || null,
-                avatar: avatarPreview || null
+                avatar: avatarUrl
             };
 
             await usersAPI.create(userData);
