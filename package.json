@@ -14,7 +14,9 @@
     "db:generate": "prisma generate",
     "db:push": "prisma db push",
     "db:seed": "node prisma/seed.cjs",
-    "db:studio": "prisma studio"
+    "db:studio": "prisma studio",
+    "test:connection": "node test-connection.js",
+    "deploy:check": "node test-connection.js && npm run build"
   },
   "prisma": {
     "seed": "node prisma/seed.cjs"

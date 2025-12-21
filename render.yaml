@@ -1,0 +1,23 @@
+services:
+  # Backend API Service
+  - type: web
+    name: nexuspm-backend
+    env: node
+    region: oregon
+    plan: free
+    buildCommand: npm install && npx prisma generate && npx prisma db push
+    startCommand: node server/index.cjs
+    healthCheckPath: /api/health
+    envVars:
+      - key: DATABASE_URL
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 3001
+      - key: FRONTEND_URL
+        sync: false
+      - key: CORS_ALLOW_ALL
+        value: false
