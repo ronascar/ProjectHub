@@ -15,8 +15,9 @@
     "db:push": "prisma db push",
     "db:seed": "node prisma/seed.cjs",
     "db:studio": "prisma studio",
-    "test:connection": "node test-connection.js",
-    "deploy:check": "node test-connection.js && npm run build"
+    "test:connection": "node test-connection.cjs",
+    "deploy:check": "node test-connection.cjs && npm run build",
+    "verify:deploy": "node verify-deploy.cjs"
   },
   "prisma": {
     "seed": "node prisma/seed.cjs"
