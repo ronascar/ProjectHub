@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
+const path = require('path');
 const { PrismaClient } = require('@prisma/client');
 
 // Import routes
@@ -52,7 +53,7 @@ app.use((req, res, next) => {
     next();
 });
 
-// Routes
+// API Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/projects', projectRoutes);
@@ -64,6 +65,15 @@ app.use('/api/dashboard', dashboardRoutes);
 // Health check
 app.get('/api/health', (req, res) => {
     res.json({ status: 'ok', timestamp: new Date().toISOString() });
+});
+
+// Servir arquivos estáticos do frontend (depois das rotas da API)
+const distPath = path.join(__dirname, '../dist');
+app.use(express.static(distPath));
+
+// Redirecionar todas as rotas não-API para o index.html (SPA)
+app.get('*', (req, res) => {
+    res.sendFile(path.join(distPath, 'index.html'));
 });
 
 // Error handling middleware
