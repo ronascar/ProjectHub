@@ -152,11 +152,11 @@ export default function UserForm() {
                                     name="role"
                                     value={formData.role}
                                     onChange={handleChange}
-                                    className="h-10 px-3 rounded-lg border border-gray-300 dark:border-border-dark bg-transparent text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/50"
+                                    className="h-10 px-3 rounded-lg border border-gray-300 dark:border-border-dark bg-white dark:bg-gray-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/50 [&>option]:bg-white [&>option]:dark:bg-gray-800 [&>option]:text-slate-900 [&>option]:dark:text-white"
                                 >
-                                    <option value="MEMBER">Membro (Acesso Padrão)</option>
-                                    <option value="MANAGER">Gerente (Gestão de Projetos)</option>
-                                    <option value="ADMIN">Administrador (Acesso Total)</option>
+                                    <option value="MEMBER" className="bg-white dark:bg-gray-800 text-slate-900 dark:text-white">Membro (Acesso Padrão)</option>
+                                    <option value="MANAGER" className="bg-white dark:bg-gray-800 text-slate-900 dark:text-white">Gerente (Gestão de Projetos)</option>
+                                    <option value="ADMIN" className="bg-white dark:bg-gray-800 text-slate-900 dark:text-white">Administrador (Acesso Total)</option>
                                 </select>
                                 <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
                                     Define as permissões de acesso do usuário.

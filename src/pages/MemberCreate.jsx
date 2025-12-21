@@ -364,13 +364,13 @@ export default function MemberCreate() {
                                             name="role"
                                             value={formData.role}
                                             onChange={handleChange}
-                                            className="w-full bg-slate-50 dark:bg-[#111a22] border border-slate-300 dark:border-slate-600 text-slate-900 dark:text-white text-sm rounded-lg focus:ring-primary focus:border-primary block p-2.5"
+                                            className="w-full bg-white dark:bg-gray-800 border border-slate-300 dark:border-slate-600 text-slate-900 dark:text-white text-sm rounded-lg focus:ring-primary focus:border-primary block p-2.5 [&>option]:bg-white [&>option]:dark:bg-gray-800 [&>option]:text-slate-900 [&>option]:dark:text-white"
                                         >
-                                            <option>Administrador</option>
-                                            <option>Gerente de Projetos</option>
-                                            <option>Desenvolvedor Full-stack</option>
-                                            <option>Designer UI/UX</option>
-                                            <option>QA Tester</option>
+                                            <option className="bg-white dark:bg-gray-800 text-slate-900 dark:text-white">Administrador</option>
+                                            <option className="bg-white dark:bg-gray-800 text-slate-900 dark:text-white">Gerente de Projetos</option>
+                                            <option className="bg-white dark:bg-gray-800 text-slate-900 dark:text-white">Desenvolvedor Full-stack</option>
+                                            <option className="bg-white dark:bg-gray-800 text-slate-900 dark:text-white">Designer UI/UX</option>
+                                            <option className="bg-white dark:bg-gray-800 text-slate-900 dark:text-white">QA Tester</option>
                                         </select>
                                     </div>
                                     <div className="flex items-center justify-between py-2">
@@ -590,35 +590,35 @@ export default function MemberCreate() {
                                             name="state"
                                             value={formData.state}
                                             onChange={handleChange}
-                                            className="w-full bg-slate-50 dark:bg-[#111a22] border border-slate-300 dark:border-slate-600 text-slate-900 dark:text-white text-sm rounded-lg focus:ring-primary focus:border-primary block p-3"
+                                            className="w-full bg-white dark:bg-gray-800 border border-slate-300 dark:border-slate-600 text-slate-900 dark:text-white text-sm rounded-lg focus:ring-primary focus:border-primary block p-3 [&>option]:bg-white [&>option]:dark:bg-gray-800 [&>option]:text-slate-900 [&>option]:dark:text-white"
                                         >
-                                            <option>AC</option>
-                                            <option>AL</option>
-                                            <option>AP</option>
-                                            <option>AM</option>
-                                            <option>BA</option>
-                                            <option>CE</option>
-                                            <option>DF</option>
-                                            <option>ES</option>
-                                            <option>GO</option>
-                                            <option>MA</option>
-                                            <option>MT</option>
-                                            <option>MS</option>
-                                            <option>MG</option>
-                                            <option>PA</option>
-                                            <option>PB</option>
-                                            <option>PR</option>
-                                            <option>PE</option>
-                                            <option>PI</option>
-                                            <option>RJ</option>
-                                            <option>RN</option>
-                                            <option>RS</option>
-                                            <option>RO</option>
-                                            <option>RR</option>
-                                            <option>SC</option>
-                                            <option>SP</option>
-                                            <option>SE</option>
-                                            <option>TO</option>
+                                            <option className="bg-white dark:bg-gray-800 text-slate-900 dark:text-white">AC</option>
+                                            <option className="bg-white dark:bg-gray-800 text-slate-900 dark:text-white">AL</option>
+                                            <option className="bg-white dark:bg-gray-800 text-slate-900 dark:text-white">AP</option>
+                                            <option className="bg-white dark:bg-gray-800 text-slate-900 dark:text-white">AM</option>
+                                            <option className="bg-white dark:bg-gray-800 text-slate-900 dark:text-white">BA</option>
+                                            <option className="bg-white dark:bg-gray-800 text-slate-900 dark:text-white">CE</option>
+                                            <option className="bg-white dark:bg-gray-800 text-slate-900 dark:text-white">DF</option>
+                                            <option className="bg-white dark:bg-gray-800 text-slate-900 dark:text-white">ES</option>
+                                            <option className="bg-white dark:bg-gray-800 text-slate-900 dark:text-white">GO</option>
+                                            <option className="bg-white dark:bg-gray-800 text-slate-900 dark:text-white">MA</option>
+                                            <option className="bg-white dark:bg-gray-800 text-slate-900 dark:text-white">MT</option>
+                                            <option className="bg-white dark:bg-gray-800 text-slate-900 dark:text-white">MS</option>
+                                            <option className="bg-white dark:bg-gray-800 text-slate-900 dark:text-white">MG</option>
+                                            <option className="bg-white dark:bg-gray-800 text-slate-900 dark:text-white">PA</option>
+                                            <option className="bg-white dark:bg-gray-800 text-slate-900 dark:text-white">PB</option>
+                                            <option className="bg-white dark:bg-gray-800 text-slate-900 dark:text-white">PR</option>
+                                            <option className="bg-white dark:bg-gray-800 text-slate-900 dark:text-white">PE</option>
+                                            <option className="bg-white dark:bg-gray-800 text-slate-900 dark:text-white">PI</option>
+                                            <option className="bg-white dark:bg-gray-800 text-slate-900 dark:text-white">RJ</option>
+                                            <option className="bg-white dark:bg-gray-800 text-slate-900 dark:text-white">RN</option>
+                                            <option className="bg-white dark:bg-gray-800 text-slate-900 dark:text-white">RS</option>
+                                            <option className="bg-white dark:bg-gray-800 text-slate-900 dark:text-white">RO</option>
+                                            <option className="bg-white dark:bg-gray-800 text-slate-900 dark:text-white">RR</option>
+                                            <option className="bg-white dark:bg-gray-800 text-slate-900 dark:text-white">SC</option>
+                                            <option className="bg-white dark:bg-gray-800 text-slate-900 dark:text-white">SP</option>
+                                            <option className="bg-white dark:bg-gray-800 text-slate-900 dark:text-white">SE</option>
+                                            <option className="bg-white dark:bg-gray-800 text-slate-900 dark:text-white">TO</option>
                                         </select>
                                     </div>
                                 </div>
