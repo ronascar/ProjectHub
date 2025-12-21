@@ -166,7 +166,7 @@ router.post('/', authMiddleware, adminMiddleware, async (req, res) => {
 router.put('/:id', authMiddleware, async (req, res) => {
     try {
         const { id } = req.params;
-        const { name, department, phone, avatar, role, isActive } = req.body;
+        const { name, department, phone, avatar, role, isActive, password } = req.body;
 
         // Only admin can update role and isActive, or update other users
         if (req.user.id !== id && req.user.role !== 'ADMIN') {
@@ -179,6 +179,11 @@ router.put('/:id', authMiddleware, async (req, res) => {
         if (req.user.role === 'ADMIN') {
             if (role !== undefined) updateData.role = role;
             if (isActive !== undefined) updateData.isActive = isActive;
+        }
+
+        // Hash password if provided
+        if (password && password.trim() !== '') {
+            updateData.password = await bcrypt.hash(password, 12);
         }
 
         // Remove undefined values
