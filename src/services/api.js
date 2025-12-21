@@ -118,6 +118,11 @@ export const projectsAPI = {
         return handleResponse(res);
     },
 
+    getById: async (id) => {
+        const res = await fetch(`${API_BASE_URL}/projects/${id}`, createOptions());
+        return handleResponse(res);
+    },
+
     create: async (projectData) => {
         const res = await fetch(`${API_BASE_URL}/projects`, createOptions('POST', projectData));
         return handleResponse(res);

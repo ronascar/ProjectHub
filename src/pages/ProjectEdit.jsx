@@ -1,30 +1,66 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
-import { mockProjects } from '../data/mockData';
+import { projectsAPI } from '../services/api';
 
 export default function ProjectEdit() {
     const { projectId } = useParams();
     const navigate = useNavigate();
-
-    // Find the project from mock data (in real app, would fetch from API)
-    const project = mockProjects.find(p => p.id === projectId) || mockProjects[0];
+    const [loading, setLoading] = useState(true);
+    const [saving, setSaving] = useState(false);
+    const [error, setError] = useState(null);
 
     // Form state
     const [formData, setFormData] = useState({
-        name: project?.name || 'Redesign Website 2024',
+        name: '',
         category: 'Web Development',
-        description: project?.description || 'Projeto de modernização da identidade visual e arquitetura da Acme Corp.',
-        longDescription: 'O objetivo principal deste projeto é redesenhar completamente o site corporativo da Acme Corp para alinhar com a nova identidade de marca lançada no Q4 2023. O projeto inclui a migração do legado WordPress para uma arquitetura Headless moderna, focando em performance (Core Web Vitals), acessibilidade e escalabilidade para múltiplos idiomas.\n\nAlém do frontend, será desenvolvido um painel administrativo customizado para a equipe de marketing gerenciar campanhas e landing pages de forma autônoma.',
+        description: '',
+        longDescription: '',
         status: 'progress',
-        dueDate: '2024-03-20',
-        completion: 65,
-        startDate: '2024-01-10',
-        estimateDate: '2024-03-15',
-        deliveryDate: '2024-03-20',
+        dueDate: '',
+        completion: 0,
+        startDate: '',
+        estimateDate: '',
+        deliveryDate: '',
         client: 'acme'
     });
 
     const [activeTab, setActiveTab] = useState('edit');
+
+    // Load project data
+    useEffect(() => {
+        const loadProject = async () => {
+            try {
+                setLoading(true);
+                const project = await projectsAPI.getById(projectId);
+                
+                // Map API data to form format
+                setFormData({
+                    name: project.name || '',
+                    category: project.category || 'Web Development',
+                    description: project.shortDescription || project.description || '',
+                    longDescription: project.description || '',
+                    status: project.status?.toLowerCase() || 'progress',
+                    dueDate: project.dueDate ? project.dueDate.split('T')[0] : '',
+                    completion: project.progress || 0,
+                    startDate: project.startDate ? project.startDate.split('T')[0] : '',
+                    estimateDate: project.estimatedDate ? project.estimatedDate.split('T')[0] : '',
+                    deliveryDate: project.dueDate ? project.dueDate.split('T')[0] : '',
+                    client: project.clientId || 'acme'
+                });
+                
+                setError(null);
+            } catch (err) {
+                console.error('Erro ao carregar projeto:', err);
+                setError('Erro ao carregar projeto');
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        if (projectId) {
+            loadProject();
+        }
+    }, [projectId]);
 
     // Deliverables state
     const [deliverables, setDeliverables] = useState([
@@ -60,11 +96,45 @@ export default function ProjectEdit() {
         setFormData(prev => ({ ...prev, [field]: value }));
     };
 
-    const handleSave = (e) => {
+    const handleSave = async (e) => {
         e.preventDefault();
-        console.log('Saving project:', formData);
-        // In real app, would save to API
-        navigate('/projects');
+        
+        if (!formData.name.trim()) {
+            setError('Nome do projeto é obrigatório');
+            return;
+        }
+
+        setSaving(true);
+        setError(null);
+
+        try {
+            // Map form data to API format
+            const updateData = {
+                name: formData.name,
+                description: formData.longDescription || formData.description,
+                shortDescription: formData.description,
+                category: formData.category,
+                status: formData.status === 'planning' ? 'PLANNING' :
+                        formData.status === 'progress' ? 'IN_PROGRESS' :
+                        formData.status === 'review' ? 'REVIEW' :
+                        formData.status === 'completed' ? 'COMPLETED' : 'IN_PROGRESS',
+                priority: 'MEDIUM',
+                progress: parseInt(formData.completion) || 0,
+                startDate: formData.startDate || null,
+                estimatedDate: formData.estimateDate || null,
+                dueDate: formData.deliveryDate || formData.dueDate || null,
+                clientId: formData.client || null
+            };
+
+            await projectsAPI.update(projectId, updateData);
+            console.log('Projeto atualizado com sucesso');
+            navigate('/projects');
+        } catch (err) {
+            console.error('Erro ao atualizar projeto:', err);
+            setError(err.message || 'Erro ao atualizar projeto. Verifique se você tem permissão.');
+        } finally {
+            setSaving(false);
+        }
     };
 
     const handleCancel = () => {
@@ -106,7 +176,21 @@ export default function ProjectEdit() {
 
     return (
         <div className="layout-container flex h-full grow flex-col px-4 md:px-10 lg:px-40 py-8">
-            <form className="layout-content-container flex flex-col w-full max-w-[1200px] mx-auto flex-1 gap-6" onSubmit={handleSave}>
+            {loading ? (
+                <div className="flex items-center justify-center h-64">
+                    <div className="flex flex-col items-center gap-3">
+                        <span className="material-symbols-outlined text-4xl text-primary animate-spin">progress_activity</span>
+                        <p className="text-slate-500 dark:text-slate-400">Carregando projeto...</p>
+                    </div>
+                </div>
+            ) : (
+                <form className="layout-content-container flex flex-col w-full max-w-[1200px] mx-auto flex-1 gap-6" onSubmit={handleSave}>
+                    {error && (
+                        <div className="p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg text-red-700 dark:text-red-300 flex items-center gap-2">
+                            <span className="material-symbols-outlined">error</span>
+                            <span>{error}</span>
+                        </div>
+                    )}
                 {/* Breadcrumbs */}
                 <nav className="flex items-center gap-2 text-sm text-slate-500 dark:text-[#92adc9]">
                     <Link className="hover:text-primary transition-colors" to="/">Home</Link>
@@ -161,10 +245,20 @@ export default function ProjectEdit() {
                         </button>
                         <button
                             type="submit"
-                            className="flex items-center gap-2 px-4 h-10 rounded-lg bg-green-600 text-white font-bold text-sm hover:bg-green-700 transition-colors shadow-lg shadow-green-600/25"
+                            disabled={saving}
+                            className="flex items-center gap-2 px-4 h-10 rounded-lg bg-green-600 text-white font-bold text-sm hover:bg-green-700 transition-colors shadow-lg shadow-green-600/25 disabled:opacity-50 disabled:cursor-not-allowed"
                         >
-                            <span className="material-symbols-outlined text-[20px]">save</span>
-                            Salvar Alterações
+                            {saving ? (
+                                <>
+                                    <span className="material-symbols-outlined text-[20px] animate-spin">progress_activity</span>
+                                    Salvando...
+                                </>
+                            ) : (
+                                <>
+                                    <span className="material-symbols-outlined text-[20px]">save</span>
+                                    Salvar Alterações
+                                </>
+                            )}
                         </button>
                     </div>
                 </div>
@@ -591,6 +685,7 @@ export default function ProjectEdit() {
                     </div>
                 )}
             </form>
+            )}
         </div>
     );
 }

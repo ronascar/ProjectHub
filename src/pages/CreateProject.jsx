@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { projectsAPI } from '../services/api';
 
 export default function CreateProject() {
     const navigate = useNavigate();
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
     const [formData, setFormData] = useState({
         name: '',
         client: '',
@@ -23,10 +26,43 @@ export default function CreateProject() {
         setFormData(prev => ({ ...prev, [name]: value }));
     };
 
-    const handleSave = () => {
-        // Here we would typically save to an API
-        console.log('Saving project:', formData);
-        navigate('/projects');
+    const handleSave = async () => {
+        if (!formData.name.trim()) {
+            setError('Nome do projeto é obrigatório');
+            return;
+        }
+
+        setLoading(true);
+        setError(null);
+
+        try {
+            // Map form data to API format
+            const projectData = {
+                name: formData.name,
+                description: formData.description,
+                shortDescription: formData.description?.substring(0, 200),
+                category: formData.category,
+                status: formData.status === 'Planejamento' ? 'PLANNING' : 
+                        formData.status === 'Em Andamento' ? 'IN_PROGRESS' : 'PLANNING',
+                priority: formData.priority === 'Baixa' ? 'LOW' :
+                         formData.priority === 'Média' ? 'MEDIUM' :
+                         formData.priority === 'Alta' ? 'HIGH' :
+                         formData.priority === 'Urgente' ? 'URGENT' : 'MEDIUM',
+                startDate: formData.startDate || null,
+                estimatedDate: formData.estimatedDate || null,
+                dueDate: formData.finalDate || null,
+                clientId: formData.client || null
+            };
+
+            const newProject = await projectsAPI.create(projectData);
+            console.log('Projeto criado com sucesso:', newProject);
+            navigate('/projects');
+        } catch (err) {
+            console.error('Erro ao criar projeto:', err);
+            setError(err.message || 'Erro ao criar projeto. Verifique se você tem permissão de gerente.');
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
@@ -54,10 +90,20 @@ export default function CreateProject() {
                         </button>
                         <button
                             onClick={handleSave}
-                            className="flex items-center gap-2 px-5 h-10 rounded-lg bg-primary hover:bg-blue-600 text-white text-sm font-bold transition-colors shadow-lg shadow-primary/25"
+                            disabled={loading}
+                            className="flex items-center gap-2 px-5 h-10 rounded-lg bg-primary hover:bg-blue-600 text-white text-sm font-bold transition-colors shadow-lg shadow-primary/25 disabled:opacity-50 disabled:cursor-not-allowed"
                         >
-                            <span className="material-symbols-outlined text-[20px]">rocket_launch</span>
-                            Lançar Projeto
+                            {loading ? (
+                                <>
+                                    <span className="material-symbols-outlined text-[20px] animate-spin">progress_activity</span>
+                                    Salvando...
+                                </>
+                            ) : (
+                                <>
+                                    <span className="material-symbols-outlined text-[20px]">rocket_launch</span>
+                                    Lançar Projeto
+                                </>
+                            )}
                         </button>
                     </div>
                 </div>
@@ -65,6 +111,12 @@ export default function CreateProject() {
 
             {/* Scrollable Content */}
             <main className="flex-1 overflow-y-auto p-4 md:p-8 scroll-smooth bg-background-light dark:bg-background-dark">
+                {error && (
+                    <div className="max-w-[1200px] mx-auto mb-4 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg text-red-700 dark:text-red-300 flex items-center gap-2">
+                        <span className="material-symbols-outlined">error</span>
+                        <span>{error}</span>
+                    </div>
+                )}
                 <div className="max-w-[1200px] mx-auto grid grid-cols-1 lg:grid-cols-3 gap-8">
                     {/* LEFT COLUMN: Project Details */}
                     <div className="lg:col-span-2 flex flex-col gap-8">
