@@ -95,13 +95,6 @@ export default function Login() {
                             </div>
                         )}
 
-                        {/* Demo Credentials Info */}
-                        <div className="p-3 rounded-lg bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 text-blue-700 dark:text-blue-400 text-sm">
-                            <p className="font-medium mb-1">Credenciais de teste:</p>
-                            <p className="text-xs opacity-80">Email: admin@nexuspm.com</p>
-                            <p className="text-xs opacity-80">Senha: password123</p>
-                        </div>
-
                         {/* Email Field */}
                         <label className="flex flex-col gap-2">
                             <span className="text-slate-700 dark:text-white text-sm font-medium leading-normal">
