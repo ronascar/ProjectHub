@@ -22,3 +22,7 @@ networks:
     external: true
   bgcwg4k8ckk0skss4w0kgcso:
     external: true
+
+## Ajuste para que o sistema rode na rede correta.
+## docker network connect bgcwg4k8ckk0skss4w0kgcso noow000ogg08koo80wock0s0-203841983997
+## docker restart noow000ogg08koo80wock0s0-203841983997
