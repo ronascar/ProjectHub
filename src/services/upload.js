@@ -8,7 +8,14 @@ let supabase = null;
 
 // Initialize Supabase client only if credentials are available
 if (supabaseUrl && supabaseAnonKey) {
-    supabase = createClient(supabaseUrl, supabaseAnonKey);
+    supabase = createClient(supabaseUrl, supabaseAnonKey, {
+        auth: {
+            persistSession: false // Não precisamos de sessão para upload público
+        }
+    });
+    console.log('✅ Supabase Storage configurado:', supabaseUrl);
+} else {
+    console.warn('⚠️ Supabase Storage não configurado. Configure VITE_SUPABASE_URL e VITE_SUPABASE_ANON_KEY no .env');
 }
 
 const BUCKET_NAME = 'avatars';
@@ -21,30 +28,33 @@ const BUCKET_NAME = 'avatars';
  */
 export const uploadAvatar = async (file, userId) => {
     if (!supabase) {
-        throw new Error('Supabase not configured. Please set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY');
+        console.error('❌ Supabase não configurado');
+        throw new Error('Supabase Storage não está configurado. Configure as variáveis VITE_SUPABASE_URL e VITE_SUPABASE_ANON_KEY no arquivo .env');
     }
 
     try {
         // Validate file
         if (!file) {
-            throw new Error('No file provided');
+            throw new Error('Nenhum arquivo fornecido');
         }
 
         // Validate file type
         if (!file.type.startsWith('image/')) {
-            throw new Error('File must be an image');
+            throw new Error('O arquivo deve ser uma imagem');
         }
 
         // Validate file size (max 5MB)
         const maxSize = 5 * 1024 * 1024;
         if (file.size > maxSize) {
-            throw new Error('File size must be less than 5MB');
+            throw new Error('O tamanho do arquivo deve ser menor que 5MB');
         }
 
         // Generate unique filename
         const fileExt = file.name.split('.').pop();
         const fileName = `${userId}-${Date.now()}.${fileExt}`;
         const filePath = `${fileName}`;
+
+        console.log('📤 Fazendo upload:', filePath);
 
         // Upload file to Supabase Storage
         const { data, error } = await supabase.storage
@@ -55,18 +65,23 @@ export const uploadAvatar = async (file, userId) => {
             });
 
         if (error) {
+            console.error('❌ Erro no upload:', error);
             throw error;
         }
+
+        console.log('✅ Upload concluído:', data);
 
         // Get public URL
         const { data: { publicUrl } } = supabase.storage
             .from(BUCKET_NAME)
             .getPublicUrl(filePath);
 
+        console.log('🔗 URL pública:', publicUrl);
+
         return publicUrl;
     } catch (error) {
-        console.error('Upload error:', error);
-        throw new Error(error.message || 'Failed to upload image');
+        console.error('❌ Erro no upload:', error);
+        throw new Error(error.message || 'Falha ao fazer upload da imagem');
     }
 };
 
@@ -77,7 +92,8 @@ export const uploadAvatar = async (file, userId) => {
  */
 export const deleteAvatar = async (avatarUrl) => {
     if (!supabase) {
-        throw new Error('Supabase not configured');
+        console.warn('⚠️ Supabase não configurado, pulando exclusão');
+        return;
     }
 
     try {
@@ -85,9 +101,14 @@ export const deleteAvatar = async (avatarUrl) => {
 
         // Extract file path from URL
         const urlParts = avatarUrl.split(`${BUCKET_NAME}/`);
-        if (urlParts.length < 2) return;
+        if (urlParts.length < 2) {
+            console.warn('⚠️ URL inválida, não foi possível extrair o caminho do arquivo');
+            return;
+        }
 
         const filePath = urlParts[1];
+
+        console.log('🗑️ Deletando arquivo:', filePath);
 
         // Delete file from Supabase Storage
         const { error } = await supabase.storage
@@ -95,11 +116,15 @@ export const deleteAvatar = async (avatarUrl) => {
             .remove([filePath]);
 
         if (error) {
+            console.error('❌ Erro ao deletar:', error);
             throw error;
         }
+
+        console.log('✅ Arquivo deletado com sucesso');
     } catch (error) {
-        console.error('Delete error:', error);
-        throw new Error(error.message || 'Failed to delete image');
+        console.error('❌ Erro ao deletar:', error);
+        // Não lançar erro, apenas avisar
+        console.warn('⚠️ Não foi possível deletar o arquivo antigo, mas isso não impede o upload do novo');
     }
 };
 
