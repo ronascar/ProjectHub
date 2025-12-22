@@ -1,9 +1,9 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { DndContext, closestCorners, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
 import { SortableContext, verticalListSortingStrategy, useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { mockTasks } from '../data/mockData';
+import { tasksAPI } from '../services/api';
 
 // Sortable Task Card Component
 function TaskCard({ task }) {
@@ -121,9 +121,86 @@ function KanbanColumn({ title, tasks, count, color = 'gray' }) {
     );
 }
 
-export default function KanbanBoard({ showHeader = true }) {
-    const [tasks, setTasks] = useState(mockTasks);
+export default function KanbanBoard({ showHeader = true, projectId, project }) {
+    const [tasks, setTasks] = useState({ backlog: [], inProgress: [], testing: [], done: [] });
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
     const sensors = useSensors(useSensor(PointerSensor));
+
+    useEffect(() => {
+        if (projectId) {
+            loadTasks();
+        }
+    }, [projectId]);
+
+    const loadTasks = async () => {
+        try {
+            setLoading(true);
+            const response = await tasksAPI.list({ projectId });
+            
+            // Organizar tarefas por status
+            const organized = {
+                backlog: [],
+                inProgress: [],
+                testing: [],
+                done: []
+            };
+
+            response.forEach(task => {
+                const taskData = {
+                    id: task.id,
+                    title: task.title,
+                    tag: task.priority?.toUpperCase() || 'NORMAL',
+                    tagColor: getTagColor(task.priority),
+                    assignee: task.assignee ? {
+                        name: task.assignee.name,
+                        avatar: task.assignee.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(task.assignee.name)}&background=random`
+                    } : null,
+                    dueDate: task.dueDate ? new Date(task.dueDate).toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' }) : null,
+                    comments: 0, // TODO: implementar contagem de comentários
+                    attachments: 0, // TODO: implementar contagem de anexos
+                    completed: task.status === 'DONE'
+                };
+
+                // Mapear status para colunas do Kanban
+                switch (task.status) {
+                    case 'TODO':
+                    case 'BACKLOG':
+                        organized.backlog.push(taskData);
+                        break;
+                    case 'IN_PROGRESS':
+                        organized.inProgress.push(taskData);
+                        break;
+                    case 'IN_REVIEW':
+                    case 'TESTING':
+                        organized.testing.push(taskData);
+                        break;
+                    case 'DONE':
+                        organized.done.push(taskData);
+                        break;
+                    default:
+                        organized.backlog.push(taskData);
+                }
+            });
+
+            setTasks(organized);
+        } catch (err) {
+            console.error('Erro ao carregar tarefas:', err);
+            setError('Erro ao carregar tarefas');
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const getTagColor = (priority) => {
+        const colorMap = {
+            HIGH: 'red',
+            MEDIUM: 'orange',
+            LOW: 'blue',
+            URGENT: 'red'
+        };
+        return colorMap[priority] || 'gray';
+    };
 
     const handleDragEnd = (event) => {
         const { active, over } = event;
@@ -151,6 +228,32 @@ export default function KanbanBoard({ showHeader = true }) {
         setTasks(newTasks);
     };
 
+    if (loading) {
+        return (
+            <div className="flex items-center justify-center h-full">
+                <div className="text-center">
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+                    <p className="text-slate-500 dark:text-slate-400">Carregando tarefas...</p>
+                </div>
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div className="flex items-center justify-center h-full">
+                <div className="text-center">
+                    <span className="material-symbols-outlined text-red-500 text-5xl mb-4">error</span>
+                    <p className="text-slate-900 dark:text-white font-semibold mb-2">Erro ao carregar tarefas</p>
+                    <p className="text-slate-500 dark:text-slate-400 mb-4">{error}</p>
+                    <button onClick={loadTasks} className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-blue-600 transition-colors">
+                        Tentar novamente
+                    </button>
+                </div>
+            </div>
+        );
+    }
+
     return (
         <div className="flex flex-col h-full overflow-hidden">
             {/* Header Section */}
@@ -166,9 +269,11 @@ export default function KanbanBoard({ showHeader = true }) {
                     {/* Page Heading & Actions */}
                     <div className="flex flex-wrap justify-between items-end gap-4">
                         <div className="flex flex-col gap-1">
-                            <h2 className="text-3xl font-black tracking-tight text-slate-900 dark:text-white">Quadro Sprint 24</h2>
+                            <h2 className="text-3xl font-black tracking-tight text-slate-900 dark:text-white">
+                                {project?.name || 'Quadro de Tarefas'}
+                            </h2>
                             <p className="text-slate-500 dark:text-[#92adc9] text-base">
-                                Gerencie tarefas e acompanhe o progresso para o próximo lançamento.
+                                Gerencie tarefas e acompanhe o progresso do projeto.
                             </p>
                         </div>
                         <div className="flex gap-3">

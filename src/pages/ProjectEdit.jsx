@@ -167,6 +167,31 @@ export default function ProjectEdit() {
         setDeliverables([...deliverables, { id: newId, status: 'todo', title: '', description: '' }]);
     };
 
+    const handleAddTeamMember = () => {
+        // TODO: Implementar modal de adicionar membro
+        alert('Funcionalidade de adicionar membro será implementada em breve');
+    };
+
+    const handleManageTeam = () => {
+        // TODO: Implementar modal de gerenciar equipe
+        alert('Funcionalidade de gerenciar equipe será implementada em breve');
+    };
+
+    const handleEditClient = () => {
+        // TODO: Implementar modal de editar cliente
+        alert('Funcionalidade de editar cliente será implementada em breve');
+    };
+
+    const handleEditContact = () => {
+        // TODO: Implementar modal de editar contato
+        alert('Funcionalidade de editar contato será implementada em breve');
+    };
+
+    const handleAddResource = () => {
+        // TODO: Implementar modal de adicionar recurso
+        alert('Funcionalidade de adicionar recurso será implementada em breve');
+    };
+
     const handleRemoveResource = (id) => {
         setResources(resources.filter(r => r.id !== id));
     };
@@ -315,7 +340,7 @@ export default function ProjectEdit() {
                                 <select
                                     value={formData.status}
                                     onChange={(e) => handleInputChange('status', e.target.value)}
-                                    className="w-full bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-600 rounded-md text-slate-900 dark:text-white font-bold focus:ring-primary focus:border-primary"
+                                    className="w-full bg-white dark:bg-gray-800 border border-slate-200 dark:border-slate-600 rounded-md text-slate-900 dark:text-white font-bold focus:ring-primary focus:border-primary"
                                 >
                                     <option value="planning">Planejamento</option>
                                     <option value="progress">Em Progresso</option>
@@ -337,7 +362,7 @@ export default function ProjectEdit() {
                                     type="date"
                                     value={formData.dueDate}
                                     onChange={(e) => handleInputChange('dueDate', e.target.value)}
-                                    className="w-full bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-600 rounded-md text-slate-900 dark:text-white font-bold focus:ring-primary focus:border-primary h-[42px]"
+                                    className="w-full bg-white dark:bg-gray-800 border border-slate-200 dark:border-slate-600 rounded-md text-slate-900 dark:text-white font-bold focus:ring-primary focus:border-primary h-[42px]"
                                 />
                                 <span className="text-xs text-slate-400">{daysRemaining > 0 ? `${daysRemaining} Dias Restantes` : 'Prazo vencido'}</span>
                             </div>
@@ -355,7 +380,7 @@ export default function ProjectEdit() {
                                         max="100"
                                         value={formData.completion}
                                         onChange={(e) => handleInputChange('completion', parseInt(e.target.value) || 0)}
-                                        className="w-20 bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-600 rounded-md text-slate-900 dark:text-white font-bold focus:ring-primary focus:border-primary"
+                                        className="w-20 bg-white dark:bg-gray-800 border border-slate-200 dark:border-slate-600 rounded-md text-slate-900 dark:text-white font-bold focus:ring-primary focus:border-primary"
                                     />
                                     <span className="text-lg font-bold text-slate-500">%</span>
                                 </div>
@@ -366,7 +391,7 @@ export default function ProjectEdit() {
                             <div className="bg-white dark:bg-surface-dark p-5 rounded-lg border border-slate-200 dark:border-border-dark flex flex-col gap-3">
                                 <div className="flex items-center justify-between">
                                     <span className="text-slate-500 dark:text-[#94a3b8] text-sm font-medium">Equipe</span>
-                                    <button type="button" className="text-primary hover:text-blue-600 transition-colors">
+                                    <button type="button" onClick={handleAddTeamMember} className="text-primary hover:text-blue-600 transition-colors">
                                         <span className="material-symbols-outlined text-[20px]">person_add</span>
                                     </button>
                                 </div>
@@ -381,7 +406,7 @@ export default function ProjectEdit() {
                                         ))}
                                         <div className="size-8 rounded-full border-2 border-white dark:border-surface-dark bg-slate-200 dark:bg-slate-700 flex items-center justify-center text-xs font-bold text-slate-600 dark:text-slate-300">+2</div>
                                     </div>
-                                    <span className="text-xs text-primary font-medium cursor-pointer hover:underline">Gerenciar</span>
+                                    <span onClick={handleManageTeam} className="text-xs text-primary font-medium cursor-pointer hover:underline">Gerenciar</span>
                                 </div>
                             </div>
                         </div>
@@ -505,7 +530,7 @@ export default function ProjectEdit() {
                                                 onChange={(e) => setNewTech(e.target.value)}
                                                 onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), handleAddTech())}
                                                 placeholder="Adicionar nova tecnologia..."
-                                                className="flex-1 text-sm rounded-md border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white focus:ring-primary focus:border-primary"
+                                                className="flex-1 text-sm rounded-md border border-slate-200 dark:border-slate-600 bg-white dark:bg-gray-800 text-slate-900 dark:text-white focus:ring-primary focus:border-primary"
                                             />
                                             <button
                                                 type="button"
@@ -525,13 +550,13 @@ export default function ProjectEdit() {
                                 <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-200 dark:border-border-dark p-6 shadow-sm">
                                     <div className="flex justify-between items-center mb-4">
                                         <h3 className="text-sm font-bold uppercase tracking-wider text-slate-500 dark:text-[#94a3b8]">Cliente</h3>
-                                        <a className="text-xs text-primary font-bold hover:underline cursor-pointer">Editar Cliente</a>
+                                        <a onClick={handleEditClient} className="text-xs text-primary font-bold hover:underline cursor-pointer">Editar Cliente</a>
                                     </div>
                                     <div className="mb-4">
                                         <select
                                             value={formData.client}
                                             onChange={(e) => handleInputChange('client', e.target.value)}
-                                            className="w-full bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-600 rounded-md text-slate-900 dark:text-white text-sm p-2.5 focus:ring-primary focus:border-primary"
+                                            className="w-full bg-white dark:bg-gray-800 border border-slate-200 dark:border-slate-600 rounded-md text-slate-900 dark:text-white text-sm p-2.5 focus:ring-primary focus:border-primary"
                                         >
                                             <option value="acme">Acme Corp</option>
                                             <option value="globex">Globex Corporation</option>
@@ -562,7 +587,7 @@ export default function ProjectEdit() {
                                                 />
                                                 <span className="text-sm font-medium text-slate-900 dark:text-white">Sarah Connor</span>
                                             </div>
-                                            <button type="button" className="text-slate-400 hover:text-primary">
+                                            <button type="button" onClick={handleEditContact} className="text-slate-400 hover:text-primary">
                                                 <span className="material-symbols-outlined text-[18px]">edit</span>
                                             </button>
                                         </div>
@@ -580,7 +605,7 @@ export default function ProjectEdit() {
                                                 type="date"
                                                 value={formData.startDate}
                                                 onChange={(e) => handleInputChange('startDate', e.target.value)}
-                                                className="w-full text-sm p-1.5 rounded border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white focus:ring-primary focus:border-primary"
+                                                className="w-full text-sm p-1.5 rounded border border-slate-200 dark:border-slate-600 bg-white dark:bg-gray-800 text-slate-900 dark:text-white focus:ring-primary focus:border-primary"
                                             />
                                         </div>
                                         <div className="relative">
@@ -590,7 +615,7 @@ export default function ProjectEdit() {
                                                 type="date"
                                                 value={formData.estimateDate}
                                                 onChange={(e) => handleInputChange('estimateDate', e.target.value)}
-                                                className="w-full text-sm p-1.5 rounded border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white focus:ring-primary focus:border-primary"
+                                                className="w-full text-sm p-1.5 rounded border border-slate-200 dark:border-slate-600 bg-white dark:bg-gray-800 text-slate-900 dark:text-white focus:ring-primary focus:border-primary"
                                             />
                                         </div>
                                         <div className="relative">
@@ -600,7 +625,7 @@ export default function ProjectEdit() {
                                                 type="date"
                                                 value={formData.deliveryDate}
                                                 onChange={(e) => handleInputChange('deliveryDate', e.target.value)}
-                                                className="w-full text-sm p-1.5 rounded border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white focus:ring-primary focus:border-primary"
+                                                className="w-full text-sm p-1.5 rounded border border-slate-200 dark:border-slate-600 bg-white dark:bg-gray-800 text-slate-900 dark:text-white focus:ring-primary focus:border-primary"
                                             />
                                         </div>
                                     </div>
@@ -643,6 +668,7 @@ export default function ProjectEdit() {
                                         ))}
                                         <button
                                             type="button"
+                                            onClick={handleAddResource}
                                             className="mt-2 w-full py-2 flex items-center justify-center gap-2 border border-dashed border-slate-300 dark:border-slate-600 rounded-lg text-sm text-slate-500 dark:text-slate-400 hover:text-primary hover:border-primary hover:bg-primary/5 transition-all"
                                         >
                                             <span className="material-symbols-outlined text-[18px]">add_link</span>

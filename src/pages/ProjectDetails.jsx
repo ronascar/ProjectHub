@@ -263,8 +263,8 @@ export default function ProjectDetails() {
                             <ProjectOverview projectId={projectId} project={project} />
                         </>
                     )}
-                    {activeTab === 'tasks' && <KanbanBoard showHeader={false} projectId={projectId} />}
-                    {activeTab === 'versions' && <ProjectVersioning projectId={projectId} />}
+                    {activeTab === 'tasks' && <KanbanBoard showHeader={false} projectId={projectId} project={project} />}
+                    {activeTab === 'versions' && <ProjectVersioning projectId={projectId} project={project} />}
                     {activeTab === 'communication' && (
                         <div className="flex flex-col items-center justify-center h-64 border border-dashed border-slate-300 dark:border-slate-700 rounded-xl bg-slate-50 dark:bg-[#111a22]">
                             <span className="material-symbols-outlined text-4xl text-slate-400 mb-2">chat</span>

@@ -1,14 +1,10 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
+import { activitiesAPI } from '../services/api';
 
-// Mock data para atividades
-const MOCK_ACTIVITIES = [
-    { id: 1, user: 'Ricardo Silva', avatar: 'https://i.pravatar.cc/100?u=ricardo', action: 'moveu', task: 'TASK-1024', status: 'Concluído', message: 'Implementação do fluxo de autenticação via OAuth2 finalizada.', time: '2m atrás', tags: ['backend', 'security'], type: 'status', date: new Date() },
-    { id: 2, user: 'Ana Costa', avatar: 'https://i.pravatar.cc/100?u=ana2', action: 'atualizou o design de', task: 'TASK-1010', message: 'Dashboard_v2_Dark.fig', time: '45m atrás', type: 'file', date: new Date(Date.now() - 45 * 60000) },
-    { id: 3, user: 'System', avatar: null, action: 'registrou novo commit na branch', branch: 'feat/user-profile', commit: '8a2b3c', commitMsg: 'Fix: avatar rendering issue on mobile devices', time: '2h atrás', type: 'commit', date: new Date(Date.now() - 2 * 3600000) },
-    { id: 4, user: 'Carlos Mendes', avatar: 'https://i.pravatar.cc/100?u=carlos2', action: 'publicou release', version: 'v1.2.0', message: 'Release candidate aprovado. Deploy automático iniciado para produção.', time: '14:30', type: 'release', date: new Date(Date.now() - 86400000) }
-];
-
-export default function ProjectVersioning() {
+export default function ProjectVersioning({ projectId, project }) {
+    const [activities, setActivities] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
     const [filters, setFilters] = useState({
         period: '',
         user: '',
@@ -17,9 +13,29 @@ export default function ProjectVersioning() {
     });
     const [quickFilter, setQuickFilter] = useState(null);
 
+    useEffect(() => {
+        if (projectId) {
+            loadActivities();
+        }
+    }, [projectId]);
+
+    const loadActivities = async () => {
+        try {
+            setLoading(true);
+            // TODO: Implementar endpoint de atividades no backend
+            // Por enquanto, mostra mensagem informativa
+            setActivities([]);
+        } catch (err) {
+            console.error('Erro ao carregar atividades:', err);
+            setError('Erro ao carregar atividades');
+        } finally {
+            setLoading(false);
+        }
+    };
+
     // Filtrar atividades
     const filteredActivities = useMemo(() => {
-        return MOCK_ACTIVITIES.filter(activity => {
+        return activities.filter(activity => {
             if (filters.user && activity.user !== filters.user) return false;
             if (filters.type && activity.type !== filters.type) return false;
             if (filters.search && !activity.message?.toLowerCase().includes(filters.search.toLowerCase())) return false;
@@ -34,7 +50,67 @@ export default function ProjectVersioning() {
 
             return true;
         });
-    }, [filters, quickFilter]);
+    }, [activities, filters, quickFilter]);
+
+    if (loading) {
+        return (
+            <div className="flex items-center justify-center h-full py-20">
+                <div className="text-center">
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+                    <p className="text-slate-500 dark:text-slate-400">Carregando histórico...</p>
+                </div>
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div className="flex items-center justify-center h-full py-20">
+                <div className="text-center">
+                    <span className="material-symbols-outlined text-red-500 text-5xl mb-4">error</span>
+                    <p className="text-slate-900 dark:text-white font-semibold mb-2">Erro ao carregar histórico</p>
+                    <p className="text-slate-500 dark:text-slate-400 mb-4">{error}</p>
+                    <button onClick={loadActivities} className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-blue-600 transition-colors">
+                        Tentar novamente
+                    </button>
+                </div>
+            </div>
+        );
+    }
+
+    if (activities.length === 0) {
+        return (
+            <div className="flex flex-col gap-6">
+                <div className="flex flex-col md:flex-row justify-between gap-4 items-start md:items-end pb-2 border-b border-border-dark">
+                    <div className="flex flex-col gap-2">
+                        <h1 className="text-slate-900 dark:text-white text-3xl md:text-4xl font-black leading-tight tracking-[-0.033em]">Versionamento e Histórico</h1>
+                        <p className="text-slate-500 dark:text-[#92adc9] text-base font-normal leading-normal max-w-2xl">Acompanhe o ciclo de vida do projeto, releases e auditoria completa de todas as alterações.</p>
+                    </div>
+                </div>
+
+                {/* Mensagem informativa */}
+                <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl p-6">
+                    <div className="flex items-start gap-4">
+                        <span className="material-symbols-outlined text-blue-500 text-3xl">info</span>
+                        <div>
+                            <h3 className="text-lg font-bold text-blue-900 dark:text-blue-100 mb-2">
+                                Funcionalidade em Desenvolvimento
+                            </h3>
+                            <p className="text-blue-800 dark:text-blue-200 mb-3">
+                                O sistema de versionamento e histórico de atividades está sendo implementado. Em breve você poderá:
+                            </p>
+                            <ul className="list-disc list-inside space-y-1 text-blue-700 dark:text-blue-300">
+                                <li>Visualizar todas as alterações do projeto</li>
+                                <li>Acompanhar commits e releases</li>
+                                <li>Filtrar atividades por usuário e tipo</li>
+                                <li>Gerar release notes automaticamente</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        );
+    }
 
     const handleFilterChange = (key, value) => {
         setFilters(prev => ({ ...prev, [key]: value }));
