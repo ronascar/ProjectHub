@@ -129,10 +129,10 @@ export default function ProjectEdit() {
                 startDate: formData.startDate || null,
                 estimatedDate: formData.estimateDate || null,
                 dueDate: formData.deliveryDate || formData.dueDate || null,
-                dueDate: formData.deliveryDate || formData.dueDate || null,
                 clientId: formData.client || null,
                 deliverables: deliverables,
                 resources: resources
+                // Note: technologies not sent yet - need proper ID mapping from backend
             };
 
             await projectsAPI.update(projectId, updateData);
@@ -217,7 +217,6 @@ export default function ProjectEdit() {
 
     // Helper to safely get the selected client object for display
     const selectedClient = clients.find(c => c.id === formData.client);
-    console.log('ProjectEdit Render Debug:', { formDataClient: formData.client, selectedClient });
 
     return (
         <div className="layout-container flex h-full grow flex-col px-4 md:px-10 lg:px-40 py-8">
