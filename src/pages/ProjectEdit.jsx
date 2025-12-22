@@ -554,11 +554,14 @@ export default function ProjectEdit() {
                                     <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-200 dark:border-border-dark overflow-hidden shadow-sm">
                                         <div className="px-6 py-4 border-b border-slate-200 dark:border-border-dark bg-slate-50/50 dark:bg-[#1e293b]">
                                             <h3 className="text-lg font-bold text-slate-900 dark:text-white">Stack Tecnológica</h3>
+                                            <p className="text-xs text-orange-600 dark:text-orange-400 mt-1">
+                                                ⚠️ A edição de tecnologias será implementada em breve. As tecnologias existentes são apenas para visualização.
+                                            </p>
                                         </div>
                                         <div className="p-6">
                                             <div className="flex flex-wrap gap-3 mb-4">
                                                 {technologies.map((tech, index) => (
-                                                    <div key={index} className="group relative px-3 py-1.5 rounded-md bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 text-sm font-medium flex items-center gap-2 pr-8 cursor-default">
+                                                    <div key={index} className="group relative px-3 py-1.5 rounded-md bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 text-sm font-medium flex items-center gap-2 cursor-default">
                                                         {tech.icon && (
                                                             <img
                                                                 src={tech.icon}
@@ -567,29 +570,21 @@ export default function ProjectEdit() {
                                                             />
                                                         )}
                                                         {tech.name}
-                                                        <button
-                                                            type="button"
-                                                            onClick={() => handleRemoveTech(index)}
-                                                            className="absolute right-1 top-1/2 -translate-y-1/2 p-0.5 rounded-full hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-400 hover:text-red-500 transition-colors"
-                                                        >
-                                                            <span className="material-symbols-outlined text-[14px]">close</span>
-                                                        </button>
                                                     </div>
                                                 ))}
                                             </div>
-                                            <div className="flex gap-2">
+                                            <div className="flex gap-2 opacity-50 pointer-events-none">
                                                 <input
                                                     type="text"
                                                     value={newTech}
-                                                    onChange={(e) => setNewTech(e.target.value)}
-                                                    onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), handleAddTech())}
-                                                    placeholder="Adicionar nova tecnologia..."
+                                                    disabled
+                                                    placeholder="Funcionalidade desabilitada temporariamente..."
                                                     className="flex-1 text-sm rounded-md border border-slate-200 dark:border-slate-600 bg-white dark:bg-gray-800 text-slate-900 dark:text-white focus:ring-primary focus:border-primary"
                                                 />
                                                 <button
                                                     type="button"
-                                                    onClick={handleAddTech}
-                                                    className="px-3 py-2 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-600 dark:text-white rounded-md transition-colors"
+                                                    disabled
+                                                    className="px-3 py-2 bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-white rounded-md"
                                                 >
                                                     <span className="material-symbols-outlined text-[20px]">add</span>
                                                 </button>
