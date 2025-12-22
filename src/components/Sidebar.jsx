@@ -1,8 +1,18 @@
 import { NavLink } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useTasks } from '../context/TasksContext';
+import { useMemo } from 'react';
 
 export default function Sidebar({ isMobile = false, onClose }) {
     const { user, logout } = useAuth();
+    const { tasks } = useTasks();
+
+    // Calculate active tasks count (not done and not cancelled)
+    const activeTasksCount = useMemo(() => {
+        return tasks.filter(task =>
+            task.status !== 'DONE' && task.status !== 'CANCELLED'
+        ).length;
+    }, [tasks]);
 
     const navItems = [
         { path: '/', icon: 'dashboard', label: 'Painel', filled: true },
@@ -16,7 +26,7 @@ export default function Sidebar({ isMobile = false, onClose }) {
     ];
 
     const workspaceItems = [
-        { path: '/tasks', icon: 'assignment', label: 'Minhas Tarefas', badge: 3 },
+        { path: '/tasks', icon: 'assignment', label: 'Minhas Tarefas', badge: activeTasksCount },
         { path: '/inbox', icon: 'inbox', label: 'Caixa de Entrada' },
     ];
 
@@ -121,7 +131,7 @@ export default function Sidebar({ isMobile = false, onClose }) {
                             >
                                 <span className="material-symbols-outlined">{item.icon}</span>
                                 <span className="font-medium">{item.label}</span>
-                                {item.badge && (
+                                {item.badge > 0 && (
                                     <span className="ml-auto rounded bg-red-500/10 px-1.5 py-0.5 text-xs font-medium text-red-500">
                                         {item.badge}
                                     </span>
