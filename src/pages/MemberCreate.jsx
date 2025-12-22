@@ -232,7 +232,16 @@ export default function MemberCreate() {
                 role: roleMap[formData.role] || 'MEMBER',
                 department: formData.role,
                 phone: formData.phone || null,
-                avatar: avatarUrl
+                avatar: avatarUrl,
+                cpf: formData.cpf || null,
+                birthDate: formData.birthDate || null,
+                cep: formData.cep || null,
+                street: formData.street || null,
+                number: formData.number || null,
+                complement: formData.complement || null,
+                neighborhood: formData.neighborhood || null,
+                city: formData.city || null,
+                state: formData.state || null
             };
 
             await usersAPI.create(userData);

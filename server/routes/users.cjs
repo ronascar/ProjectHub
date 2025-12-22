@@ -66,6 +66,15 @@ router.get('/:id', authMiddleware, async (req, res) => {
                 department: true,
                 phone: true,
                 isActive: true,
+                cpf: true,
+                birthDate: true,
+                cep: true,
+                street: true,
+                number: true,
+                complement: true,
+                neighborhood: true,
+                city: true,
+                state: true,
                 createdAt: true,
                 lastLogin: true,
                 ownedProjects: {
@@ -114,7 +123,10 @@ router.get('/:id', authMiddleware, async (req, res) => {
 // POST /api/users - Create user (Admin only)
 router.post('/', authMiddleware, adminMiddleware, async (req, res) => {
     try {
-        const { email, password, name, role, department, phone, avatar } = req.body;
+        const { 
+            email, password, name, role, department, phone, avatar,
+            cpf, birthDate, cep, street, number, complement, neighborhood, city, state
+        } = req.body;
 
         if (!email || !password || !name) {
             return res.status(400).json({ error: 'Email, password and name are required' });
@@ -140,7 +152,16 @@ router.post('/', authMiddleware, adminMiddleware, async (req, res) => {
                 role: role || 'MEMBER',
                 department,
                 phone,
-                avatar
+                avatar,
+                cpf,
+                birthDate: birthDate ? new Date(birthDate) : null,
+                cep,
+                street,
+                number,
+                complement,
+                neighborhood,
+                city,
+                state
             },
             select: {
                 id: true,
@@ -151,6 +172,15 @@ router.post('/', authMiddleware, adminMiddleware, async (req, res) => {
                 department: true,
                 phone: true,
                 isActive: true,
+                cpf: true,
+                birthDate: true,
+                cep: true,
+                street: true,
+                number: true,
+                complement: true,
+                neighborhood: true,
+                city: true,
+                state: true,
                 createdAt: true
             }
         });
@@ -166,14 +196,21 @@ router.post('/', authMiddleware, adminMiddleware, async (req, res) => {
 router.put('/:id', authMiddleware, async (req, res) => {
     try {
         const { id } = req.params;
-        const { name, department, phone, avatar, role, isActive, password } = req.body;
+        const { 
+            name, department, phone, avatar, role, isActive, password,
+            cpf, birthDate, cep, street, number, complement, neighborhood, city, state
+        } = req.body;
 
         // Only admin can update role and isActive, or update other users
         if (req.user.id !== id && req.user.role !== 'ADMIN') {
             return res.status(403).json({ error: 'Not authorized to update this user' });
         }
 
-        const updateData = { name, department, phone, avatar };
+        const updateData = { 
+            name, department, phone, avatar,
+            cpf, birthDate: birthDate ? new Date(birthDate) : undefined,
+            cep, street, number, complement, neighborhood, city, state
+        };
 
         // Only admin can update these fields
         if (req.user.role === 'ADMIN') {
@@ -203,6 +240,15 @@ router.put('/:id', authMiddleware, async (req, res) => {
                 department: true,
                 phone: true,
                 isActive: true,
+                cpf: true,
+                birthDate: true,
+                cep: true,
+                street: true,
+                number: true,
+                complement: true,
+                neighborhood: true,
+                city: true,
+                state: true,
                 updatedAt: true
             }
         });

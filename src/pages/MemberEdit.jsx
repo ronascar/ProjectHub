@@ -51,21 +51,28 @@ export default function MemberEdit() {
                     'MEMBER': user.department || 'Desenvolvedor Full-stack'
                 };
                 
+                // Formatar data de nascimento se existir
+                const formatBirthDate = (date) => {
+                    if (!date) return '';
+                    const d = new Date(date);
+                    return d.toISOString().split('T')[0];
+                };
+                
                 setFormData({
                     fullName: user.name || '',
                     email: user.email || '',
-                    cpf: '',
+                    cpf: user.cpf || '',
                     phone: user.phone || '',
-                    birthDate: '',
+                    birthDate: formatBirthDate(user.birthDate),
                     role: roleMap[user.role] || 'Desenvolvedor Full-stack',
                     isActive: user.isActive !== false,
-                    cep: '',
-                    street: '',
-                    number: '',
-                    complement: '',
-                    neighborhood: '',
-                    city: '',
-                    state: 'SP'
+                    cep: user.cep || '',
+                    street: user.street || '',
+                    number: user.number || '',
+                    complement: user.complement || '',
+                    neighborhood: user.neighborhood || '',
+                    city: user.city || '',
+                    state: user.state || 'SP'
                 });
                 
                 setCurrentAvatar(user.avatar);
@@ -204,7 +211,16 @@ export default function MemberEdit() {
                 department: formData.role,
                 phone: formData.phone || null,
                 isActive: formData.isActive,
-                avatar: avatarUrl
+                avatar: avatarUrl,
+                cpf: formData.cpf || null,
+                birthDate: formData.birthDate || null,
+                cep: formData.cep || null,
+                street: formData.street || null,
+                number: formData.number || null,
+                complement: formData.complement || null,
+                neighborhood: formData.neighborhood || null,
+                city: formData.city || null,
+                state: formData.state || null
             };
 
             await usersAPI.update(id, userData);
