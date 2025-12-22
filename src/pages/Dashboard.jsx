@@ -325,7 +325,7 @@ export default function Dashboard() {
                                             Nenhum membro da equipe encontrado
                                         </p>
                                     ) : (
-                                        teamMembers.slice(0, 5).map((member) => {
+                                        teamMembers.slice(0, 6).map((member) => {
                                             const workload = member.tasksCount ? Math.min((member.tasksCount / 10) * 100, 100) : 0;
                                             const status = workload > 80 ? 'Sobrecarregado' : workload > 50 ? 'Ótimo' : 'Disponível';
                                             const statusColor = workload > 80 ? 'text-red-500' : workload > 50 ? 'text-green-500' : 'text-gray-500 dark:text-gray-400';
