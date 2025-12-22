@@ -1,13 +1,13 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { tasksAPI, projectsAPI } from '../services/api';
+import { projectsAPI } from '../services/api';
 import { useAuth } from '../context/AuthContext';
+import { useTasks } from '../context/TasksContext';
 
 export default function MyTasks() {
     const { user } = useAuth();
-    const [tasks, setTasks] = useState([]);
+    const { tasks, loading, error: tasksError, updateTask } = useTasks();
     const [projects, setProjects] = useState([]);
-    const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedProject, setSelectedProject] = useState('');
@@ -16,23 +16,14 @@ export default function MyTasks() {
     const itemsPerPage = 10;
 
     useEffect(() => {
-        loadTasks();
         loadProjects();
     }, []);
 
-    const loadTasks = async () => {
-        try {
-            setLoading(true);
-            setError(null);
-            const data = await tasksAPI.list();
-            setTasks(data);
-        } catch (err) {
-            console.error('Error loading tasks:', err);
-            setError('Erro ao carregar tarefas. Tente novamente.');
-        } finally {
-            setLoading(false);
+    useEffect(() => {
+        if (tasksError) {
+            setError(tasksError);
         }
-    };
+    }, [tasksError]);
 
     const loadProjects = async () => {
         try {
@@ -62,8 +53,7 @@ export default function MyTasks() {
     const handleToggleComplete = async (task) => {
         try {
             const newStatus = task.status === 'DONE' ? 'TODO' : 'DONE';
-            await tasksAPI.update(task.id, { status: newStatus });
-            await loadTasks();
+            await updateTask(task.id, { status: newStatus });
         } catch (err) {
             console.error('Error updating task:', err);
             setError('Erro ao atualizar tarefa.');

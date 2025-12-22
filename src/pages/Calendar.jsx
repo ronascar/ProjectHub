@@ -1,55 +1,47 @@
 import { useState, useMemo } from 'react';
-
-// Mock events data - can be replaced with API data
-const MOCK_EVENTS = [
-    { id: 1, date: '2024-12-02', time: '09:00', title: 'Sprint Planning', color: 'primary', project: 'Website Redesign' },
-    { id: 2, date: '2024-12-04', time: '14:00', title: 'Design Review', color: 'purple', project: 'Mobile App' },
-    { id: 3, date: '2024-12-04', time: '16:00', title: 'Client Call', color: 'green', project: 'Marketing Q4' },
-    { id: 4, date: '2024-12-05', time: '11:30', title: 'Team Lunch', color: 'orange', project: 'Internal Ops' },
-    { id: 5, date: '2024-12-09', time: '10:00', title: 'Daily Standup', color: 'primary', project: 'Website Redesign' },
-    { id: 6, date: '2024-12-10', time: 'EOD', title: 'Project Delivery', color: 'red', project: 'Mobile App' },
-    { id: 7, date: '2024-12-12', time: '15:00', title: 'UX Workshop', color: 'purple', project: 'Mobile App' },
-    { id: 8, date: '2024-12-16', time: '09:00', title: 'Sprint Planning', color: 'primary', project: 'Website Redesign' },
-    { id: 9, date: '2024-12-19', time: '10:00', title: 'Q4 Strategy', color: 'green', project: 'Marketing Q4' },
-    { id: 10, date: '2024-12-22', time: '13:00', title: 'Design Huddle', color: 'purple', project: 'Mobile App' },
-    { id: 11, date: '2024-12-25', time: '14:00', title: 'Holiday Break', color: 'orange', project: 'Internal Ops' },
-    { id: 12, date: '2024-12-30', time: '09:00', title: 'Sprint Planning', color: 'primary', project: 'Website Redesign' },
-];
-
-const PROJECTS = [
-    { name: 'Website Redesign', color: 'bg-primary', checked: true },
-    { name: 'Mobile App', color: 'bg-purple-500', checked: true },
-    { name: 'Marketing Q4', color: 'bg-green-500', checked: true },
-    { name: 'Internal Ops', color: 'bg-orange-500', checked: false }
-];
-
-const TEAM_MEMBERS = [
-    { name: 'Sarah Connor', img: 'https://i.pravatar.cc/100?u=sarah' },
-    { name: 'Michael Chen', img: 'https://i.pravatar.cc/100?u=michael' },
-    { name: 'Jessica Jones', img: 'https://i.pravatar.cc/100?u=jessica' }
-];
+import { Link, useNavigate } from 'react-router-dom';
+import { useTasks } from '../context/TasksContext';
+import { projectsAPI } from '../services/api';
+import { useEffect } from 'react';
 
 const DAYS_OF_WEEK = ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'];
 const MONTHS = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
 
-const getColorClasses = (color) => {
+const getColorClasses = (priority) => {
     const colors = {
-        primary: 'bg-primary/10 dark:bg-primary/20 border-primary',
-        purple: 'bg-purple-500/10 dark:bg-purple-500/20 border-purple-500',
-        green: 'bg-green-500/10 dark:bg-green-500/20 border-green-500',
-        orange: 'bg-orange-500/10 dark:bg-orange-500/20 border-orange-500',
-        red: 'bg-red-500/10 dark:bg-red-500/20 border-red-500',
+        URGENT: 'bg-red-500/10 dark:bg-red-500/20 border-red-500',
+        HIGH: 'bg-orange-500/10 dark:bg-orange-500/20 border-orange-500',
+        MEDIUM: 'bg-yellow-500/10 dark:bg-yellow-500/20 border-yellow-500',
+        LOW: 'bg-green-500/10 dark:bg-green-500/20 border-green-500',
     };
-    return colors[color] || colors.primary;
+    return colors[priority] || colors.MEDIUM;
 };
 
 export default function Calendar() {
+    const navigate = useNavigate();
     const today = new Date();
     const [currentDate, setCurrentDate] = useState(new Date(today.getFullYear(), today.getMonth(), 1));
-    const [selectedProjects, setSelectedProjects] = useState(
-        PROJECTS.filter(p => p.checked).map(p => p.name)
-    );
-    const [viewMode, setViewMode] = useState('Month');
+    const [selectedProjects, setSelectedProjects] = useState([]);
+    const [viewMode, setViewMode] = useState('Mês');
+    const [projects, setProjects] = useState([]);
+
+    const { tasks, loading } = useTasks();
+
+    // Load projects
+    useEffect(() => {
+        loadProjects();
+    }, []);
+
+    const loadProjects = async () => {
+        try {
+            const data = await projectsAPI.list();
+            setProjects(data);
+            // Select all projects by default
+            setSelectedProjects(data.map(p => p.id));
+        } catch (err) {
+            console.error('Error loading projects:', err);
+        }
+    };
 
     // Generate calendar data
     const calendarData = useMemo(() => {
@@ -100,15 +92,26 @@ export default function Calendar() {
         return days;
     }, [currentDate]);
 
-    // Filter events by selected projects
-    const filteredEvents = useMemo(() => {
-        return MOCK_EVENTS.filter(event => selectedProjects.includes(event.project));
-    }, [selectedProjects]);
+    // Convert tasks to calendar events
+    const events = useMemo(() => {
+        return tasks
+            .filter(task => task.dueDate) // Only tasks with due dates
+            .filter(task => !task.projectId || selectedProjects.includes(task.projectId)) // Filter by selected projects
+            .map(task => ({
+                id: task.id,
+                date: task.dueDate.split('T')[0], // Get date part only
+                time: task.dueDate ? new Date(task.dueDate).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }) : 'Todo o dia',
+                title: task.title,
+                priority: task.priority || 'MEDIUM',
+                projectId: task.projectId,
+                projectName: task.project?.name || 'Sem Projeto'
+            }));
+    }, [tasks, selectedProjects]);
 
     // Get events for a specific date
     const getEventsForDate = (date) => {
         const dateStr = date.toISOString().split('T')[0];
-        return filteredEvents.filter(event => event.date === dateStr);
+        return events.filter(event => event.date === dateStr);
     };
 
     // Check if a date is today
@@ -130,13 +133,29 @@ export default function Calendar() {
     };
 
     // Toggle project filter
-    const toggleProject = (projectName) => {
+    const toggleProject = (projectId) => {
         setSelectedProjects(prev =>
-            prev.includes(projectName)
-                ? prev.filter(p => p !== projectName)
-                : [...prev, projectName]
+            prev.includes(projectId)
+                ? prev.filter(p => p !== projectId)
+                : [...prev, projectId]
         );
     };
+
+    // Handle event click
+    const handleEventClick = (eventId) => {
+        navigate(`/tasks/${eventId}/edit`);
+    };
+
+    if (loading) {
+        return (
+            <div className="flex flex-1 items-center justify-center">
+                <div className="text-center">
+                    <div className="inline-block h-12 w-12 animate-spin rounded-full border-4 border-solid border-primary border-r-transparent"></div>
+                    <p className="mt-4 text-gray-500 dark:text-gray-400">Carregando calendário...</p>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="flex flex-1 h-full overflow-hidden relative">
@@ -188,31 +207,21 @@ export default function Calendar() {
                 <div className="mb-8">
                     <h3 className="text-slate-500 dark:text-[#92adc9] text-xs font-bold uppercase tracking-wider mb-3 px-2">Projetos</h3>
                     <div className="space-y-1">
-                        {PROJECTS.map((project, idx) => (
-                            <label key={idx} className="flex items-center gap-3 px-2 py-1.5 hover:bg-gray-100 dark:hover:bg-border-dark rounded-md cursor-pointer group transition-colors">
+                        {projects.map((project) => (
+                            <label key={project.id} className="flex items-center gap-3 px-2 py-1.5 hover:bg-gray-100 dark:hover:bg-border-dark rounded-md cursor-pointer group transition-colors">
                                 <input
                                     type="checkbox"
-                                    checked={selectedProjects.includes(project.name)}
-                                    onChange={() => toggleProject(project.name)}
+                                    checked={selectedProjects.includes(project.id)}
+                                    onChange={() => toggleProject(project.id)}
                                     className="rounded border-gray-300 dark:border-border-dark bg-white dark:bg-background-dark text-primary focus:ring-0 focus:ring-offset-0 size-4"
                                 />
-                                <span className={`size-2.5 rounded-full ${project.color}`}></span>
+                                <span className="size-2.5 rounded-full" style={{ backgroundColor: project.color || '#3b82f6' }}></span>
                                 <span className="text-sm text-slate-700 dark:text-white flex-1 group-hover:text-primary transition-colors">{project.name}</span>
                             </label>
                         ))}
-                    </div>
-                </div>
-
-                {/* Team Filter */}
-                <div>
-                    <h3 className="text-slate-500 dark:text-[#92adc9] text-xs font-bold uppercase tracking-wider mb-3 px-2">Equipe</h3>
-                    <div className="space-y-2">
-                        {TEAM_MEMBERS.map((person, idx) => (
-                            <div key={idx} className="flex items-center gap-3 px-2 py-1.5 hover:bg-gray-100 dark:hover:bg-border-dark rounded-md cursor-pointer transition-colors">
-                                <div className="size-8 rounded-full bg-cover bg-gray-200" style={{ backgroundImage: `url('${person.img}')` }}></div>
-                                <span className="text-sm text-slate-700 dark:text-white">{person.name}</span>
-                            </div>
-                        ))}
+                        {projects.length === 0 && (
+                            <p className="text-sm text-gray-500 dark:text-gray-400 px-2">Nenhum projeto encontrado</p>
+                        )}
                     </div>
                 </div>
             </div>
@@ -222,10 +231,10 @@ export default function Calendar() {
                 {/* Calendar Toolbar */}
                 <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-6 gap-4 border-b border-gray-200 dark:border-border-dark bg-white dark:bg-surface-dark z-10 shadow-sm relative">
                     <div className="flex items-center gap-4">
-                        <button className="hidden md:flex items-center justify-center rounded-lg bg-primary px-4 h-9 text-sm font-bold text-white shadow-lg shadow-primary/30 transition-transform hover:scale-105 hover:bg-blue-600 mr-2">
+                        <Link to="/tasks/create" className="hidden md:flex items-center justify-center rounded-lg bg-primary px-4 h-9 text-sm font-bold text-white shadow-lg shadow-primary/30 transition-transform hover:scale-105 hover:bg-blue-600 mr-2">
                             <span className="material-symbols-outlined text-[20px] mr-2">add</span>
-                            Novo Evento
-                        </button>
+                            Nova Tarefa
+                        </Link>
                         <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white tracking-tight">
                             {MONTHS[currentDate.getMonth()]} {currentDate.getFullYear()}
                         </h2>
@@ -285,7 +294,7 @@ export default function Calendar() {
                         {/* Days Grid */}
                         <div className="grid grid-cols-7 flex-1 auto-rows-fr bg-gray-200 dark:bg-border-dark gap-px">
                             {calendarData.map((dayData, index) => {
-                                const events = getEventsForDate(dayData.date);
+                                const dayEvents = getEventsForDate(dayData.date);
                                 return (
                                     <div
                                         key={index}
@@ -302,17 +311,18 @@ export default function Calendar() {
                                         </span>
 
                                         {/* Events */}
-                                        {events.slice(0, 3).map((event) => (
+                                        {dayEvents.slice(0, 3).map((event) => (
                                             <div
                                                 key={event.id}
-                                                className={`${getColorClasses(event.color)} border-l-2 rounded-r px-2 py-1 text-xs text-slate-700 dark:text-white truncate cursor-pointer hover:opacity-80 transition-all`}
-                                                title={`${event.time} - ${event.title}`}
+                                                onClick={() => handleEventClick(event.id)}
+                                                className={`${getColorClasses(event.priority)} border-l-2 rounded-r px-2 py-1 text-xs text-slate-700 dark:text-white truncate cursor-pointer hover:opacity-80 transition-all`}
+                                                title={`${event.time} - ${event.title} (${event.projectName})`}
                                             >
                                                 <span className="font-bold">{event.time}</span> {event.title}
                                             </div>
                                         ))}
-                                        {events.length > 3 && (
-                                            <span className="text-xs text-primary font-medium px-2">+{events.length - 3} mais</span>
+                                        {dayEvents.length > 3 && (
+                                            <span className="text-xs text-primary font-medium px-2">+{dayEvents.length - 3} mais</span>
                                         )}
                                     </div>
                                 );

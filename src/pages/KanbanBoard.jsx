@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { DndContext, closestCorners, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
 import { SortableContext, verticalListSortingStrategy, useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { tasksAPI } from '../services/api';
+import { useTasks } from '../context/TasksContext';
 
 // Sortable Task Card Component
 function TaskCard({ task }) {
@@ -42,9 +42,9 @@ function TaskCard({ task }) {
                 <span className={`${getTagColorClasses(task.tagColor)} text-[10px] font-bold px-2.5 py-1 rounded uppercase tracking-wide`}>
                     {task.tag}
                 </span>
-                <button className="text-slate-400 hover:text-primary opacity-0 group-hover:opacity-100 transition-opacity">
+                <Link to={`/tasks/${task.id}/edit`} className="text-slate-400 hover:text-primary opacity-0 group-hover:opacity-100 transition-opacity">
                     <span className="material-symbols-outlined text-[18px]">edit</span>
-                </button>
+                </Link>
             </div>
             <h4 className={`text-sm font-semibold mb-3 leading-snug ${task.completed ? 'text-slate-500 dark:text-slate-400 line-through' : 'text-slate-800 dark:text-slate-100'}`}>
                 {task.title}
@@ -122,74 +122,66 @@ function KanbanColumn({ title, tasks, count, color = 'gray' }) {
 }
 
 export default function KanbanBoard({ showHeader = true, projectId, project }) {
-    const [tasks, setTasks] = useState({ backlog: [], inProgress: [], testing: [], done: [] });
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
+    const [organizedTasks, setOrganizedTasks] = useState({ backlog: [], inProgress: [], testing: [], done: [] });
+    const { tasks, loading, error, updateTask } = useTasks();
     const sensors = useSensors(useSensor(PointerSensor));
 
+    // Organize tasks by status whenever tasks change
     useEffect(() => {
-        if (projectId) {
-            loadTasks();
-        }
-    }, [projectId]);
+        organizeTasks();
+    }, [tasks, projectId]);
 
-    const loadTasks = async () => {
-        try {
-            setLoading(true);
-            const response = await tasksAPI.list({ projectId });
-            
-            // Organizar tarefas por status
-            const organized = {
-                backlog: [],
-                inProgress: [],
-                testing: [],
-                done: []
+    const organizeTasks = () => {
+        const organized = {
+            backlog: [],
+            inProgress: [],
+            testing: [],
+            done: []
+        };
+
+        // Filter tasks by projectId if provided
+        const filteredTasks = projectId
+            ? tasks.filter(task => task.projectId === projectId)
+            : tasks;
+
+        filteredTasks.forEach(task => {
+            const taskData = {
+                id: task.id,
+                title: task.title,
+                tag: task.priority?.toUpperCase() || 'NORMAL',
+                tagColor: getTagColor(task.priority),
+                assignee: task.assignee ? {
+                    name: task.assignee.name,
+                    avatar: task.assignee.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(task.assignee.name)}&background=random`
+                } : null,
+                dueDate: task.dueDate ? new Date(task.dueDate).toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' }) : null,
+                comments: 0, // TODO: implementar contagem de comentários
+                attachments: 0, // TODO: implementar contagem de anexos
+                completed: task.status === 'DONE'
             };
 
-            response.forEach(task => {
-                const taskData = {
-                    id: task.id,
-                    title: task.title,
-                    tag: task.priority?.toUpperCase() || 'NORMAL',
-                    tagColor: getTagColor(task.priority),
-                    assignee: task.assignee ? {
-                        name: task.assignee.name,
-                        avatar: task.assignee.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(task.assignee.name)}&background=random`
-                    } : null,
-                    dueDate: task.dueDate ? new Date(task.dueDate).toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' }) : null,
-                    comments: 0, // TODO: implementar contagem de comentários
-                    attachments: 0, // TODO: implementar contagem de anexos
-                    completed: task.status === 'DONE'
-                };
+            // Mapear status para colunas do Kanban
+            switch (task.status) {
+                case 'TODO':
+                case 'BACKLOG':
+                    organized.backlog.push(taskData);
+                    break;
+                case 'IN_PROGRESS':
+                    organized.inProgress.push(taskData);
+                    break;
+                case 'IN_REVIEW':
+                case 'TESTING':
+                    organized.testing.push(taskData);
+                    break;
+                case 'DONE':
+                    organized.done.push(taskData);
+                    break;
+                default:
+                    organized.backlog.push(taskData);
+            }
+        });
 
-                // Mapear status para colunas do Kanban
-                switch (task.status) {
-                    case 'TODO':
-                    case 'BACKLOG':
-                        organized.backlog.push(taskData);
-                        break;
-                    case 'IN_PROGRESS':
-                        organized.inProgress.push(taskData);
-                        break;
-                    case 'IN_REVIEW':
-                    case 'TESTING':
-                        organized.testing.push(taskData);
-                        break;
-                    case 'DONE':
-                        organized.done.push(taskData);
-                        break;
-                    default:
-                        organized.backlog.push(taskData);
-                }
-            });
-
-            setTasks(organized);
-        } catch (err) {
-            console.error('Erro ao carregar tarefas:', err);
-            setError('Erro ao carregar tarefas');
-        } finally {
-            setLoading(false);
-        }
+        setOrganizedTasks(organized);
     };
 
     const getTagColor = (priority) => {
@@ -202,7 +194,7 @@ export default function KanbanBoard({ showHeader = true, projectId, project }) {
         return colorMap[priority] || 'gray';
     };
 
-    const handleDragEnd = (event) => {
+    const handleDragEnd = async (event) => {
         const { active, over } = event;
         if (!over || active.id === over.id) return;
 
@@ -210,22 +202,40 @@ export default function KanbanBoard({ showHeader = true, projectId, project }) {
         let sourceColumn = null;
         let destColumn = null;
 
-        Object.keys(tasks).forEach(column => {
-            if (tasks[column].find(t => t.id === active.id)) sourceColumn = column;
-            if (tasks[column].find(t => t.id === over.id)) destColumn = column;
+        Object.keys(organizedTasks).forEach(column => {
+            if (organizedTasks[column].find(t => t.id === active.id)) sourceColumn = column;
+            if (organizedTasks[column].find(t => t.id === over.id)) destColumn = column;
         });
 
         if (!sourceColumn || !destColumn) return;
 
         // Move task between columns
-        const newTasks = { ...tasks };
+        const newTasks = { ...organizedTasks };
         const sourceIndex = newTasks[sourceColumn].findIndex(t => t.id === active.id);
         const destIndex = newTasks[destColumn].findIndex(t => t.id === over.id);
 
         const [movedTask] = newTasks[sourceColumn].splice(sourceIndex, 1);
         newTasks[destColumn].splice(destIndex, 0, movedTask);
 
-        setTasks(newTasks);
+        // Update local state immediately for better UX
+        setOrganizedTasks(newTasks);
+
+        // Map column to status
+        const statusMap = {
+            backlog: 'TODO',
+            inProgress: 'IN_PROGRESS',
+            testing: 'IN_REVIEW',
+            done: 'DONE'
+        };
+
+        // Update task status in the backend
+        try {
+            await updateTask(active.id, { status: statusMap[destColumn] });
+        } catch (err) {
+            console.error('Error updating task status:', err);
+            // Revert on error
+            organizeTasks();
+        }
     };
 
     if (loading) {
@@ -246,9 +256,6 @@ export default function KanbanBoard({ showHeader = true, projectId, project }) {
                     <span className="material-symbols-outlined text-red-500 text-5xl mb-4">error</span>
                     <p className="text-slate-900 dark:text-white font-semibold mb-2">Erro ao carregar tarefas</p>
                     <p className="text-slate-500 dark:text-slate-400 mb-4">{error}</p>
-                    <button onClick={loadTasks} className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-blue-600 transition-colors">
-                        Tentar novamente
-                    </button>
                 </div>
             </div>
         );
@@ -263,7 +270,7 @@ export default function KanbanBoard({ showHeader = true, projectId, project }) {
                     <div className="flex items-center gap-2">
                         <span className="text-slate-500 dark:text-[#92adc9] text-sm font-medium">Projetos</span>
                         <span className="text-slate-400 dark:text-[#586e85] text-sm">/</span>
-                        <span className="text-slate-900 dark:text-white text-sm font-medium">Projeto Alpha</span>
+                        <span className="text-slate-900 dark:text-white text-sm font-medium">{project?.name || 'Kanban'}</span>
                     </div>
 
                     {/* Page Heading & Actions */}
@@ -319,10 +326,10 @@ export default function KanbanBoard({ showHeader = true, projectId, project }) {
                 <div className="h-full p-6">
                     <DndContext sensors={sensors} collisionDetection={closestCorners} onDragEnd={handleDragEnd}>
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 h-full">
-                            <KanbanColumn title="Backlog" tasks={tasks.backlog} count={tasks.backlog.length} color="gray" />
-                            <KanbanColumn title="Em andamento" tasks={tasks.inProgress} count={tasks.inProgress.length} color="primary" />
-                            <KanbanColumn title="Em teste" tasks={tasks.testing} count={tasks.testing.length} color="amber" />
-                            <KanbanColumn title="Concluída" tasks={tasks.done} count={tasks.done.length} color="emerald" />
+                            <KanbanColumn title="Backlog" tasks={organizedTasks.backlog} count={organizedTasks.backlog.length} color="gray" />
+                            <KanbanColumn title="Em andamento" tasks={organizedTasks.inProgress} count={organizedTasks.inProgress.length} color="primary" />
+                            <KanbanColumn title="Em teste" tasks={organizedTasks.testing} count={organizedTasks.testing.length} color="amber" />
+                            <KanbanColumn title="Concluída" tasks={organizedTasks.done} count={organizedTasks.done.length} color="emerald" />
                         </div>
                     </DndContext>
                 </div>
