@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { projectsAPI } from '../services/api';
+import { projectsAPI, clientsAPI } from '../services/api';
 
 export default function CreateProject() {
     const navigate = useNavigate();
@@ -20,6 +20,19 @@ export default function CreateProject() {
         tags: [],
         techStack: []
     });
+    const [clients, setClients] = useState([]);
+
+    React.useEffect(() => {
+        const loadClients = async () => {
+            try {
+                const data = await clientsAPI.list();
+                setClients(data);
+            } catch (err) {
+                console.error('Error loading clients:', err);
+            }
+        };
+        loadClients();
+    }, []);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -43,13 +56,13 @@ export default function CreateProject() {
                 description: formData.description?.trim() || null,
                 shortDescription: formData.description?.trim()?.substring(0, 200) || null,
                 category: formData.category || 'Web Development',
-                status: formData.status === 'Planejamento' ? 'PLANNING' : 
-                        formData.status === 'Em Andamento' ? 'IN_PROGRESS' : 
+                status: formData.status === 'Planejamento' ? 'PLANNING' :
+                    formData.status === 'Em Andamento' ? 'IN_PROGRESS' :
                         formData.status === 'Em Pausa' ? 'ON_HOLD' : 'PLANNING',
                 priority: formData.priority === 'Baixa' ? 'LOW' :
-                         formData.priority === 'Média' ? 'MEDIUM' :
-                         formData.priority === 'Alta' ? 'HIGH' :
-                         formData.priority === 'Urgente' ? 'URGENT' : 'MEDIUM',
+                    formData.priority === 'Média' ? 'MEDIUM' :
+                        formData.priority === 'Alta' ? 'HIGH' :
+                            formData.priority === 'Urgente' ? 'URGENT' : 'MEDIUM',
                 startDate: formData.startDate || null,
                 estimatedDate: formData.estimatedDate || null,
                 dueDate: formData.finalDate || null,
@@ -61,12 +74,12 @@ export default function CreateProject() {
             console.log('📤 Enviando dados do projeto:', projectData);
             const newProject = await projectsAPI.create(projectData);
             console.log('✅ Projeto criado com sucesso:', newProject);
-            
+
             // Redirecionar para a lista de projetos
             navigate('/projects');
         } catch (err) {
             console.error('❌ Erro completo ao criar projeto:', err);
-            
+
             // Tratamento de erros específicos baseado no status code
             if (err.status === 403) {
                 setError('Você não tem permissão para criar projetos. Apenas gerentes e administradores podem criar projetos.');
@@ -160,14 +173,19 @@ export default function CreateProject() {
                                 </div>
                                 <div className="flex flex-col gap-2">
                                     <label className="text-xs font-bold text-slate-500 dark:text-text-secondary uppercase tracking-wider">Cliente</label>
-                                    <input
+                                    <select
                                         name="client"
                                         value={formData.client}
                                         onChange={handleChange}
-                                        className="w-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-slate-600 rounded-lg px-4 py-2.5 text-slate-900 dark:text-white placeholder-gray-400 focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
-                                        placeholder="Ex: Acme Corp"
-                                        type="text"
-                                    />
+                                        className="w-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-slate-600 rounded-lg px-4 py-2.5 text-slate-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+                                    >
+                                        <option value="">Selecione um cliente...</option>
+                                        {clients.map(client => (
+                                            <option key={client.id} value={client.id}>
+                                                {client.name}
+                                            </option>
+                                        ))}
+                                    </select>
                                 </div>
                                 <div className="flex flex-col gap-2">
                                     <label className="text-xs font-bold text-slate-500 dark:text-text-secondary uppercase tracking-wider">Categoria</label>
