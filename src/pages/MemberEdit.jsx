@@ -40,7 +40,9 @@ export default function MemberEdit() {
         const loadUser = async () => {
             try {
                 setLoading(true);
+                console.log('🔍 Carregando usuário com ID:', id);
                 const user = await usersAPI.get(id);
+                console.log('✅ Usuário carregado:', user);
                 
                 // Mapear role da API para o formato do formulário
                 const roleMap = {
@@ -70,7 +72,7 @@ export default function MemberEdit() {
                 setAvatarPreview(user.avatar);
                 setError(null);
             } catch (err) {
-                console.error('Erro ao carregar usuário:', err);
+                console.error('❌ Erro ao carregar usuário:', err);
                 setError('Erro ao carregar dados do usuário');
             } finally {
                 setLoading(false);
@@ -78,6 +80,7 @@ export default function MemberEdit() {
         };
 
         if (id) {
+            console.log('📍 ID da URL:', id);
             loadUser();
         }
     }, [id]);

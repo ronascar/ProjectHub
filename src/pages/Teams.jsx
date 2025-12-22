@@ -129,7 +129,8 @@ export default function Teams() {
     };
 
     const handleEditMember = (id) => {
-        console.log('Edit member:', id);
+        console.log('🔧 Edit member ID:', id);
+        console.log('🔧 Tipo do ID:', typeof id);
         // Navigate to edit page
         window.location.href = `/teams/edit/${id}`;
     };
