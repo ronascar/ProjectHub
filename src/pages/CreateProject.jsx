@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { projectsAPI, clientsAPI, usersAPI } from '../services/api';
+import { projectsAPI, clientsAPI, usersAPI, technologiesAPI } from '../services/api';
 
 export default function CreateProject() {
     const navigate = useNavigate();
@@ -24,21 +24,23 @@ export default function CreateProject() {
     const [users, setUsers] = useState([]);
     const [newDeliverable, setNewDeliverable] = useState('');
     const [deliverables, setDeliverables] = useState([]);
-    const [techStack, setTechStack] = useState([]);
+    const [technologies, setTechnologies] = useState([]);
+    const [availableTechnologies, setAvailableTechnologies] = useState([]);
+    const [selectedTech, setSelectedTech] = useState('');
     const [selectedTeam, setSelectedTeam] = useState([]);
     const [managerId, setManagerId] = useState('');
-
-    const availableTechs = ['React', 'Next.js', 'TypeScript', 'Tailwind', 'PostgreSQL', 'Node.js', 'Figma', 'Docker'];
 
     React.useEffect(() => {
         const loadData = async () => {
             try {
-                const [clientsData, usersData] = await Promise.all([
+                const [clientsData, usersData, technologiesData] = await Promise.all([
                     clientsAPI.list(),
-                    usersAPI.list()
+                    usersAPI.list(),
+                    technologiesAPI.list()
                 ]);
                 setClients(clientsData);
                 setUsers(usersData);
+                setAvailableTechnologies(technologiesData);
             } catch (err) {
                 console.error('Error loading data:', err);
             }
@@ -61,12 +63,18 @@ export default function CreateProject() {
         setDeliverables(deliverables.filter((_, i) => i !== index));
     };
 
-    const toggleTech = (tech) => {
-        if (techStack.includes(tech)) {
-            setTechStack(techStack.filter(t => t !== tech));
-        } else {
-            setTechStack([...techStack, tech]);
+    const handleAddTechnology = () => {
+        if (selectedTech) {
+            const tech = availableTechnologies.find(t => t.id === selectedTech);
+            if (tech && !technologies.find(t => t.id === tech.id)) {
+                setTechnologies([...technologies, tech]);
+                setSelectedTech('');
+            }
         }
+    };
+
+    const handleRemoveTechnology = (techId) => {
+        setTechnologies(technologies.filter(t => t.id !== techId));
     };
 
     const toggleTeamMember = (userId) => {
@@ -115,13 +123,8 @@ export default function CreateProject() {
                 ].filter((v, i, a) => a.findIndex(t => (t.userId === v.userId)) === i),
                 // Add deliverables
                 deliverables: deliverables,
-                // Add tech stack (sending as simple array if backend supported it, but for now just as metadata or tags if supported, 
-                // OR assuming we might send it later. Since backend expects IDs for 'technologies', we would need valid IDs. 
-                // For this quick fix, we won't send 'technologies' to avoid ID errors unless we map them. 
-                // We will skip sending technologies to backend for now to prevent errors, as we only have names in UI)
-                // If we really wanted to persist tech stack without IDs, we'd need to modify backend to FindOrCreate.
-                // Keeping it visual-only in UI for this specific request or mapped if possible.
-                // Let's NOT send 'techStack' to 'technologies' to avoid composite key errors.
+                // Add technologies with proper IDs
+                technologies: technologies.map(t => ({ id: t.id }))
             };
 
             console.log('📤 Enviando dados do projeto:', projectData);
@@ -320,22 +323,49 @@ export default function CreateProject() {
                                 <span className="material-symbols-outlined text-primary">terminal</span>
                                 Stack Tecnológica
                             </h3>
-                            <div className="flex flex-wrap gap-4">
-                                {availableTechs.map(tech => (
-                                    <button
-                                        key={tech}
-                                        onClick={() => toggleTech(tech)}
-                                        className={`px-4 py-2 rounded-full border text-sm font-medium transition-all ${techStack.includes(tech)
-                                            ? 'bg-primary border-primary text-white'
-                                            : 'border-gray-200 dark:border-border-dark bg-slate-50 dark:bg-background-dark text-slate-600 dark:text-slate-400 hover:border-primary hover:text-primary'
-                                            }`}
-                                    >
-                                        {tech}
-                                    </button>
+                            <div className="flex flex-wrap gap-3 mb-4">
+                                {technologies.map((tech) => (
+                                    <div key={tech.id} className="group relative px-3 py-1.5 rounded-md bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 text-sm font-medium flex items-center gap-2 pr-8 cursor-default">
+                                        {tech.icon && (
+                                            <img
+                                                src={tech.icon}
+                                                alt={`${tech.name} logo`}
+                                                className="size-4"
+                                            />
+                                        )}
+                                        {tech.name}
+                                        <button
+                                            type="button"
+                                            onClick={() => handleRemoveTechnology(tech.id)}
+                                            className="absolute right-1 top-1/2 -translate-y-1/2 p-0.5 rounded-full hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-400 hover:text-red-500 transition-colors"
+                                        >
+                                            <span className="material-symbols-outlined text-[14px]">close</span>
+                                        </button>
+                                    </div>
                                 ))}
-                                <button className="px-4 py-2 rounded-full border border-dashed border-gray-300 dark:border-gray-600 text-slate-400 text-sm font-medium hover:border-primary hover:text-primary transition-all flex items-center gap-1">
-                                    <span className="material-symbols-outlined text-[16px]">add</span>
-                                    Custom
+                            </div>
+                            <div className="flex gap-2">
+                                <select
+                                    value={selectedTech}
+                                    onChange={(e) => setSelectedTech(e.target.value)}
+                                    className="flex-1 text-sm rounded-md border border-slate-200 dark:border-slate-600 bg-white dark:bg-gray-800 text-slate-900 dark:text-white focus:ring-primary focus:border-primary"
+                                >
+                                    <option value="">Selecione uma tecnologia...</option>
+                                    {availableTechnologies
+                                        .filter(tech => !technologies.find(t => t.id === tech.id))
+                                        .map(tech => (
+                                            <option key={tech.id} value={tech.id}>
+                                                {tech.name}
+                                            </option>
+                                        ))}
+                                </select>
+                                <button
+                                    type="button"
+                                    onClick={handleAddTechnology}
+                                    disabled={!selectedTech}
+                                    className="px-3 py-2 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-600 dark:text-white rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                >
+                                    <span className="material-symbols-outlined text-[20px]">add</span>
                                 </button>
                             </div>
                         </div>
