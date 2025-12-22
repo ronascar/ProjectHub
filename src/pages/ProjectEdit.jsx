@@ -40,6 +40,13 @@ export default function ProjectEdit() {
                 setClients(clientsData);
                 setAllUsers(usersData);
 
+                // Debug: log full project data
+                console.log('📦 Projeto carregado completo:', {
+                    deliverables: project.deliverables,
+                    resources: project.resources,
+                    technologies: project.technologies
+                });
+
                 // Map API data to form format
                 setFormData({
                     name: project.name || '',
@@ -59,7 +66,14 @@ export default function ProjectEdit() {
                 });
 
                 // Map relations
-                if (project.deliverables) setDeliverables(project.deliverables);
+                if (project.deliverables) {
+                    setDeliverables(project.deliverables.map(d => ({
+                        ...d,
+                        status: d.status === 'COMPLETED' ? 'done' :
+                            d.status === 'IN_PROGRESS' ? 'pending' :
+                                'todo'
+                    })));
+                }
                 if (project.resources) setResources(project.resources);
                 if (project.members) setTeamMembers(project.members.map(m => m.user));
                 // Technologies (visual only for now as we don't have full ID mapping)
