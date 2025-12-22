@@ -599,8 +599,17 @@ export default function ProjectEdit() {
                                                 </svg>
                                             </div>
                                             <div>
-                                                <p className="text-lg font-bold text-slate-900 dark:text-white leading-none mb-1">Acme Corp</p>
-                                                <p className="text-sm text-slate-500 dark:text-slate-400">San Francisco, CA</p>
+                                                <p className="text-lg font-bold text-slate-900 dark:text-white leading-none mb-1">
+                                                    {clients.find(c => c.id === formData.client)?.name || 'Selecione um cliente'}
+                                                </p>
+                                                <p className="text-sm text-slate-500 dark:text-slate-400">
+                                                    {(() => {
+                                                        const client = clients.find(c => c.id === formData.client);
+                                                        if (!client) return 'Endereço não disponível';
+                                                        const parts = [client.city, client.state || client.country].filter(Boolean);
+                                                        return parts.length > 0 ? parts.join(', ') : 'Endereço não disponível';
+                                                    })()}
+                                                </p>
                                             </div>
                                         </div>
                                         <div className="pt-4 border-t border-slate-200 dark:border-border-dark">
