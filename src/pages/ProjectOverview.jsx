@@ -139,15 +139,15 @@ export default function ProjectOverview({ projectData, project }) {
                 <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-200 dark:border-border-dark p-6">
                     <h3 className="text-sm font-bold uppercase tracking-wider text-slate-500 dark:text-[#94a3b8] mb-4">Recursos</h3>
                     <div className="flex flex-col gap-3">
-                        {resources.length > 0 ? (
-                            resources.map(resource => (
+                        {project?.resources && project.resources.length > 0 ? (
+                            project.resources.map(resource => (
                                 <a key={resource.id} className="group flex items-center justify-between p-3 rounded-lg bg-slate-50 dark:bg-[#111a22] border border-slate-200 dark:border-[#334155] hover:border-primary/50 transition-colors" href={resource.url} target="_blank" rel="noopener noreferrer">
                                     <div className="flex items-center gap-3">
                                         <div className="bg-white dark:bg-[#233648] p-1.5 rounded-md">
-                                            <span className="material-symbols-outlined text-primary text-[20px]">{resource.icon || 'link'}</span>
+                                            <span className="material-symbols-outlined text-primary text-[20px]">{resource.type === 'GITHUB' ? 'code' : 'link'}</span>
                                         </div>
                                         <div className="flex flex-col">
-                                            <span className="text-sm font-semibold text-slate-900 dark:text-white group-hover:text-primary transition-colors">{resource.name}</span>
+                                            <span className="text-sm font-semibold text-slate-900 dark:text-white group-hover:text-primary transition-colors">{resource.title || resource.name}</span>
                                             <span className="text-xs text-slate-500">{resource.url}</span>
                                         </div>
                                     </div>
@@ -159,10 +159,6 @@ export default function ProjectOverview({ projectData, project }) {
                                 Nenhum recurso adicionado ainda.
                             </p>
                         )}
-                        <button onClick={handleAddResource} className="mt-2 w-full py-2 flex items-center justify-center gap-2 border border-dashed border-slate-300 dark:border-slate-600 rounded-lg text-sm text-slate-500 dark:text-slate-400 hover:text-primary hover:border-primary transition-colors">
-                            <span className="material-symbols-outlined text-[18px]">add</span>
-                            Adicionar Recurso
-                        </button>
                     </div>
                 </div>
             </div>
