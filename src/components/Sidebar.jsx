@@ -69,10 +69,10 @@ export default function Sidebar({ isMobile = false, onClose }) {
                             </div>
                             <div>
                                 <h3 className="text-sm font-semibold text-gray-900 dark:text-white">
-                                    {user?.name || 'Alex Morgan'}
+                                    {user?.name?.split(' ')[0] || 'Alex'}
                                 </h3>
                                 <p className="text-xs text-gray-500 dark:text-gray-400">
-                                    {user?.role || 'Senior PM'}
+                                    {user?.role?.toUpperCase() || 'ADMIN'}
                                 </p>
                             </div>
                         </div>
