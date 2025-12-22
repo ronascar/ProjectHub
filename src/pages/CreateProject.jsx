@@ -27,6 +27,7 @@ export default function CreateProject() {
     };
 
     const handleSave = async () => {
+        // Validação
         if (!formData.name.trim()) {
             setError('Nome do projeto é obrigatório');
             return;
@@ -38,12 +39,13 @@ export default function CreateProject() {
         try {
             // Map form data to API format
             const projectData = {
-                name: formData.name,
-                description: formData.description,
-                shortDescription: formData.description?.substring(0, 200),
-                category: formData.category,
+                name: formData.name.trim(),
+                description: formData.description?.trim() || null,
+                shortDescription: formData.description?.trim()?.substring(0, 200) || null,
+                category: formData.category || 'Web Development',
                 status: formData.status === 'Planejamento' ? 'PLANNING' : 
-                        formData.status === 'Em Andamento' ? 'IN_PROGRESS' : 'PLANNING',
+                        formData.status === 'Em Andamento' ? 'IN_PROGRESS' : 
+                        formData.status === 'Em Pausa' ? 'ON_HOLD' : 'PLANNING',
                 priority: formData.priority === 'Baixa' ? 'LOW' :
                          formData.priority === 'Média' ? 'MEDIUM' :
                          formData.priority === 'Alta' ? 'HIGH' :
@@ -51,15 +53,33 @@ export default function CreateProject() {
                 startDate: formData.startDate || null,
                 estimatedDate: formData.estimatedDate || null,
                 dueDate: formData.finalDate || null,
-                clientId: formData.client || null
+                clientId: formData.client?.trim() || null,
+                progress: 0,
+                color: '#4f46e5'
             };
 
+            console.log('📤 Enviando dados do projeto:', projectData);
             const newProject = await projectsAPI.create(projectData);
-            console.log('Projeto criado com sucesso:', newProject);
+            console.log('✅ Projeto criado com sucesso:', newProject);
+            
+            // Redirecionar para a lista de projetos
             navigate('/projects');
         } catch (err) {
-            console.error('Erro ao criar projeto:', err);
-            setError(err.message || 'Erro ao criar projeto. Verifique se você tem permissão de gerente.');
+            console.error('❌ Erro completo ao criar projeto:', err);
+            
+            // Tratamento de erros específicos baseado no status code
+            if (err.status === 403) {
+                setError('Você não tem permissão para criar projetos. Apenas gerentes e administradores podem criar projetos.');
+            } else if (err.status === 401) {
+                setError('Sua sessão expirou. Por favor, faça login novamente.');
+                setTimeout(() => navigate('/login'), 2000);
+            } else if (err.status === 400) {
+                setError(`Dados inválidos: ${err.message}`);
+            } else if (err.status === 500) {
+                setError('Erro no servidor. Por favor, tente novamente mais tarde.');
+            } else {
+                setError(err.message || 'Erro ao criar projeto. Verifique sua conexão e tente novamente.');
+            }
         } finally {
             setLoading(false);
         }
@@ -133,7 +153,7 @@ export default function CreateProject() {
                                         name="name"
                                         value={formData.name}
                                         onChange={handleChange}
-                                        className="w-full bg-white dark:bg-background-dark border border-gray-200 dark:border-border-dark rounded-lg px-4 py-2.5 text-slate-900 dark:text-white placeholder-gray-400 focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+                                        className="w-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-slate-600 rounded-lg px-4 py-2.5 text-slate-900 dark:text-white placeholder-gray-400 focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
                                         placeholder="Ex: Redesign Website 2024"
                                         type="text"
                                     />
@@ -144,7 +164,7 @@ export default function CreateProject() {
                                         name="client"
                                         value={formData.client}
                                         onChange={handleChange}
-                                        className="w-full bg-white dark:bg-background-dark border border-gray-200 dark:border-border-dark rounded-lg px-4 py-2.5 text-slate-900 dark:text-white placeholder-gray-400 focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+                                        className="w-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-slate-600 rounded-lg px-4 py-2.5 text-slate-900 dark:text-white placeholder-gray-400 focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
                                         placeholder="Ex: Acme Corp"
                                         type="text"
                                     />
@@ -155,7 +175,7 @@ export default function CreateProject() {
                                         name="category"
                                         value={formData.category}
                                         onChange={handleChange}
-                                        className="w-full bg-white dark:bg-background-dark border border-gray-200 dark:border-border-dark rounded-lg px-4 py-2.5 text-slate-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+                                        className="w-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-slate-600 rounded-lg px-4 py-2.5 text-slate-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
                                     >
                                         <option>Web Development</option>
                                         <option>Mobile App</option>
@@ -171,7 +191,7 @@ export default function CreateProject() {
                                         value={formData.description}
                                         onChange={handleChange}
                                         rows="4"
-                                        className="w-full bg-white dark:bg-background-dark border border-gray-200 dark:border-border-dark rounded-lg px-4 py-2.5 text-slate-900 dark:text-white placeholder-gray-400 focus:ring-2 focus:ring-primary focus:border-transparent transition-all resize-none"
+                                        className="w-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-slate-600 rounded-lg px-4 py-2.5 text-slate-900 dark:text-white placeholder-gray-400 focus:ring-2 focus:ring-primary focus:border-transparent transition-all resize-none"
                                         placeholder="Descreva os objetivos principais e o contexto do projeto..."
                                     ></textarea>
                                 </div>
@@ -241,7 +261,7 @@ export default function CreateProject() {
                                         name="startDate"
                                         value={formData.startDate}
                                         onChange={handleChange}
-                                        className="w-full bg-white dark:bg-background-dark border border-gray-200 dark:border-border-dark rounded-lg px-4 py-2 text-sm text-slate-900 dark:text-white focus:ring-2 focus:ring-primary"
+                                        className="w-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-slate-600 rounded-lg px-4 py-2 text-sm text-slate-900 dark:text-white focus:ring-2 focus:ring-primary"
                                         type="date"
                                     />
                                 </div>
@@ -251,7 +271,7 @@ export default function CreateProject() {
                                         name="estimatedDate"
                                         value={formData.estimatedDate}
                                         onChange={handleChange}
-                                        className="w-full bg-white dark:bg-background-dark border border-gray-200 dark:border-border-dark rounded-lg px-4 py-2 text-sm text-slate-900 dark:text-white focus:ring-2 focus:ring-primary"
+                                        className="w-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-slate-600 rounded-lg px-4 py-2 text-sm text-slate-900 dark:text-white focus:ring-2 focus:ring-primary"
                                         type="date"
                                     />
                                 </div>
@@ -261,7 +281,7 @@ export default function CreateProject() {
                                         name="finalDate"
                                         value={formData.finalDate}
                                         onChange={handleChange}
-                                        className="w-full bg-white dark:bg-background-dark border border-gray-200 dark:border-border-dark rounded-lg px-4 py-2 text-sm text-slate-900 dark:text-white focus:ring-2 focus:ring-primary"
+                                        className="w-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-slate-600 rounded-lg px-4 py-2 text-sm text-slate-900 dark:text-white focus:ring-2 focus:ring-primary"
                                         type="date"
                                     />
                                 </div>
@@ -281,7 +301,7 @@ export default function CreateProject() {
                                         name="status"
                                         value={formData.status}
                                         onChange={handleChange}
-                                        className="w-full bg-blue-50 dark:bg-background-dark border border-transparent dark:border-border-dark rounded-lg px-4 py-2.5 text-blue-700 dark:text-blue-100 text-sm font-medium focus:ring-2 focus:ring-primary"
+                                        className="w-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-slate-600 rounded-lg px-4 py-2.5 text-slate-900 dark:text-white text-sm font-medium focus:ring-2 focus:ring-primary"
                                     >
                                         <option>Planejamento</option>
                                         <option>Em Andamento</option>
@@ -294,7 +314,7 @@ export default function CreateProject() {
                                         name="priority"
                                         value={formData.priority}
                                         onChange={handleChange}
-                                        className="w-full bg-orange-50 dark:bg-background-dark border border-transparent dark:border-border-dark rounded-lg px-4 py-2.5 text-orange-700 dark:text-orange-100 text-sm font-medium focus:ring-2 focus:ring-orange-500"
+                                        className="w-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-slate-600 rounded-lg px-4 py-2.5 text-slate-900 dark:text-white text-sm font-medium focus:ring-2 focus:ring-primary"
                                     >
                                         <option>Baixa</option>
                                         <option>Média</option>

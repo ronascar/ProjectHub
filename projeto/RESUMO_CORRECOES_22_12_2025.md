@@ -182,3 +182,32 @@ Se quiser adicionar mais funcionalidades:
     - Todos os botões agora têm handlers conectados
   * **Observação**: Funcionalidades mostram alertas temporários indicando que serão implementadas em breve
 - **FILEPATHS**: `src/pages/ProjectEdit.jsx`
+
+
+---
+
+## TASK 12: Corrigir formulário de criação de projetos
+- **STATUS**: done
+- **USER QUERIES**: 29-30 ("Criação de projetos nada funciona verifique", "Preciso que verifique todo firmulário, não grava dno banco tem erros e precisa ser reanalizado")
+- **DETAILS**:
+  * **Problema identificado**: 
+    - Campos de seleção com baixo contraste no modo dark
+    - Tratamento de erros inadequado
+    - Falta de logs detalhados para debug
+  * **Correções aplicadas**:
+    - Todos os inputs, selects e textareas agora usam `bg-white dark:bg-gray-800` com `border` explícita
+    - Campos corrigidos: Nome, Cliente, Categoria, Descrição, Status, Prioridade, Datas (Início, Estimada, Final)
+    - Melhorado mapeamento de dados para API (trim, validações, valores padrão)
+    - Adicionado `progress: 0` e `color: '#4f46e5'` aos dados enviados
+  * **Melhorias no tratamento de erros**:
+    - `handleResponse` agora inclui `status` no erro
+    - Mensagens específicas para cada código de erro (400, 401, 403, 500)
+    - Logs detalhados com emojis para facilitar debug
+    - Redirecionamento automático para login em caso de sessão expirada
+  * **Validações implementadas**:
+    - Nome do projeto obrigatório
+    - Trim em todos os campos de texto
+    - Conversão correta de status e prioridade para formato da API
+    - Tratamento de campos opcionais (null quando vazio)
+  * **Observação**: Backend requer permissão de MANAGER ou ADMIN para criar projetos
+- **FILEPATHS**: `src/pages/CreateProject.jsx`, `src/services/api.js`

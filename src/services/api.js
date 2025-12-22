@@ -8,7 +8,10 @@ const getToken = () => localStorage.getItem('token');
 const handleResponse = async (response) => {
     if (!response.ok) {
         const error = await response.json().catch(() => ({ error: 'Network error' }));
-        throw new Error(error.error || 'Request failed');
+        const errorMessage = error.error || `Request failed with status ${response.status}`;
+        const err = new Error(errorMessage);
+        err.status = response.status;
+        throw err;
     }
     return response.json();
 };
