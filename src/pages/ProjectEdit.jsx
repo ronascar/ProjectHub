@@ -91,6 +91,11 @@ export default function ProjectEdit() {
     const [newResource, setNewResource] = useState({ title: '', url: '', type: 'LINK' });
     const [showAddResource, setShowAddResource] = useState(false);
 
+    // Missing state definitions restored
+    const [deliverables, setDeliverables] = useState([]);
+    const [technologies, setTechnologies] = useState([]);
+    const [newTech, setNewTech] = useState('');
+
     // Handlers
     const handleInputChange = (field, value) => {
         setFormData(prev => ({ ...prev, [field]: value }));
