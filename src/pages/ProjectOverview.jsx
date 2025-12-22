@@ -77,7 +77,7 @@ export default function ProjectOverview({ projectData, project }) {
                         </div>
                         <div>
                             <p className="text-lg font-bold text-slate-900 dark:text-white">
-                                {project?.client || 'Sem cliente'}
+                                {project?.client?.name || 'Sem cliente'}
                             </p>
                         </div>
                     </div>
