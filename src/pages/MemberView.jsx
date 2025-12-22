@@ -1,46 +1,123 @@
-import React from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
+import { usersAPI } from '../services/api';
 
 export default function MemberView() {
     const { id } = useParams();
     const navigate = useNavigate();
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const [memberData, setMemberData] = useState(null);
 
-    // Mock data - em produção viria do banco de dados
-    const memberData = {
-        fullName: 'Ricardo Alves da Silva',
-        email: 'ricardo.silva@techco.com',
-        cpf: '123.456.789-00',
-        phone: '(11) 98765-4321',
-        birthDate: '15/05/1990',
-        role: 'Desenvolvedor Full-stack',
-        isActive: true,
-        department: 'Engineering',
-        projects: 12,
-        tasks: 34,
-        cep: '01310-100',
-        street: 'Av. Paulista',
-        number: '1578',
-        complement: 'Apto 45 - Bloco B',
-        neighborhood: 'Bela Vista',
-        city: 'São Paulo',
-        state: 'SP',
-        avatar: 'https://i.pravatar.cc/200?u=ricardo'
-    };
+    // Carregar dados do usuário
+    useEffect(() => {
+        const loadMember = async () => {
+            try {
+                setLoading(true);
+                console.log('🔍 Carregando membro com ID:', id);
+                const user = await usersAPI.get(id);
+                console.log('✅ Membro carregado:', user);
+                
+                // Formatar data de nascimento
+                const formatBirthDate = (date) => {
+                    if (!date) return 'Não informado';
+                    const d = new Date(date);
+                    return d.toLocaleDateString('pt-BR');
+                };
+                
+                // Mapear role
+                const roleMap = {
+                    'ADMIN': 'Administrador',
+                    'MANAGER': 'Gerente de Projetos',
+                    'MEMBER': user.department || 'Membro'
+                };
+                
+                setMemberData({
+                    fullName: user.name || 'Não informado',
+                    email: user.email || 'Não informado',
+                    cpf: user.cpf || 'Não informado',
+                    phone: user.phone || 'Não informado',
+                    birthDate: formatBirthDate(user.birthDate),
+                    role: roleMap[user.role] || 'Membro',
+                    isActive: user.isActive !== false,
+                    department: user.department || 'Não informado',
+                    projects: user.ownedProjects?.length || 0,
+                    tasks: user.assignedTasks?.length || 0,
+                    cep: user.cep || 'Não informado',
+                    street: user.street || 'Não informado',
+                    number: user.number || '',
+                    complement: user.complement || 'Não informado',
+                    neighborhood: user.neighborhood || 'Não informado',
+                    city: user.city || 'Não informado',
+                    state: user.state || '',
+                    avatar: user.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=4f46e5&color=fff&size=200`
+                });
+                
+                setError(null);
+            } catch (err) {
+                console.error('❌ Erro ao carregar membro:', err);
+                setError('Erro ao carregar dados do membro');
+            } finally {
+                setLoading(false);
+            }
+        };
 
-    const recentTasks = [
-        { id: 1, name: 'Implementar autenticação OAuth2', project: 'API Core V2', status: 'Em Progresso', dueDate: '25 Out, 2023' },
-        { id: 2, name: 'Refatorar componente de Dashboard', project: 'Frontend Web', status: 'Concluído', dueDate: '20 Out, 2023' },
-        { id: 3, name: 'Revisar PR #402 - Database Schema', project: 'Database Migration', status: 'Revisão', dueDate: 'Hoje' }
-    ];
+        if (id) {
+            loadMember();
+        }
+    }, [id]);
+
+    const recentTasks = memberData?.assignedTasks || [];
 
     const getStatusBadge = (status) => {
         const styles = {
-            'Em Progresso': 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300 border-yellow-200 dark:border-yellow-800',
-            'Concluído': 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300 border-green-200 dark:border-green-800',
-            'Revisão': 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300 border-blue-200 dark:border-blue-800'
+            'TODO': 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300 border-gray-200 dark:border-gray-800',
+            'IN_PROGRESS': 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300 border-yellow-200 dark:border-yellow-800',
+            'DONE': 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300 border-green-200 dark:border-green-800',
+            'REVIEW': 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300 border-blue-200 dark:border-blue-800',
+            'BLOCKED': 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300 border-red-200 dark:border-red-800'
         };
-        return styles[status] || styles['Em Progresso'];
+        return styles[status] || styles['TODO'];
     };
+    
+    const getStatusLabel = (status) => {
+        const labels = {
+            'TODO': 'A Fazer',
+            'IN_PROGRESS': 'Em Progresso',
+            'DONE': 'Concluído',
+            'REVIEW': 'Revisão',
+            'BLOCKED': 'Bloqueado'
+        };
+        return labels[status] || status;
+    };
+
+    if (loading) {
+        return (
+            <div className="flex flex-1 items-center justify-center min-h-screen">
+                <div className="text-center">
+                    <div className="inline-block h-12 w-12 animate-spin rounded-full border-4 border-solid border-primary border-r-transparent"></div>
+                    <p className="mt-4 text-gray-500 dark:text-gray-400">Carregando dados do membro...</p>
+                </div>
+            </div>
+        );
+    }
+
+    if (error || !memberData) {
+        return (
+            <div className="flex flex-1 items-center justify-center min-h-screen">
+                <div className="text-center">
+                    <span className="material-symbols-outlined text-red-400 text-6xl">error</span>
+                    <p className="mt-4 text-lg font-medium text-gray-900 dark:text-white">{error || 'Membro não encontrado'}</p>
+                    <button
+                        onClick={() => navigate('/teams')}
+                        className="mt-4 px-4 py-2 bg-primary text-white rounded-lg hover:bg-blue-600 transition-colors"
+                    >
+                        Voltar para Equipes
+                    </button>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="flex flex-1 justify-center py-8 px-4 md:px-8 lg:px-12 bg-background-light dark:bg-background-dark min-h-full">
@@ -227,24 +304,36 @@ export default function MemberView() {
                                             <th className="px-6 py-3 rounded-l-lg">Tarefa</th>
                                             <th className="px-6 py-3">Projeto</th>
                                             <th className="px-6 py-3">Status</th>
-                                            <th className="px-6 py-3 rounded-r-lg">Prazo</th>
+                                            <th className="px-6 py-3 rounded-r-lg">Prioridade</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {recentTasks.map(task => (
-                                            <tr key={task.id} className="bg-white dark:bg-transparent border-b dark:border-slate-700/50 hover:bg-slate-50 dark:hover:bg-slate-800/30">
-                                                <th className="px-6 py-4 font-medium text-slate-900 dark:text-white whitespace-nowrap">
-                                                    {task.name}
-                                                </th>
-                                                <td className="px-6 py-4">{task.project}</td>
-                                                <td className="px-6 py-4">
-                                                    <span className={`text-xs font-medium px-2.5 py-0.5 rounded border ${getStatusBadge(task.status)}`}>
-                                                        {task.status}
-                                                    </span>
+                                        {recentTasks.length === 0 ? (
+                                            <tr>
+                                                <td colSpan="4" className="px-6 py-8 text-center text-gray-500 dark:text-gray-400">
+                                                    Nenhuma tarefa atribuída
                                                 </td>
-                                                <td className="px-6 py-4">{task.dueDate}</td>
                                             </tr>
-                                        ))}
+                                        ) : (
+                                            recentTasks.map(task => (
+                                                <tr key={task.id} className="bg-white dark:bg-transparent border-b dark:border-slate-700/50 hover:bg-slate-50 dark:hover:bg-slate-800/30">
+                                                    <th className="px-6 py-4 font-medium text-slate-900 dark:text-white whitespace-nowrap">
+                                                        {task.title}
+                                                    </th>
+                                                    <td className="px-6 py-4">-</td>
+                                                    <td className="px-6 py-4">
+                                                        <span className={`text-xs font-medium px-2.5 py-0.5 rounded border ${getStatusBadge(task.status)}`}>
+                                                            {getStatusLabel(task.status)}
+                                                        </span>
+                                                    </td>
+                                                    <td className="px-6 py-4">
+                                                        {task.priority === 'URGENT' ? '🔴 Urgente' : 
+                                                         task.priority === 'HIGH' ? '🟠 Alta' :
+                                                         task.priority === 'MEDIUM' ? '🟡 Média' : '🟢 Baixa'}
+                                                    </td>
+                                                </tr>
+                                            ))
+                                        )}
                                     </tbody>
                                 </table>
                             </div>
