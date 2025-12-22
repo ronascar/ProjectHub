@@ -130,8 +130,18 @@ export default function ProjectEdit() {
                 estimatedDate: formData.estimateDate || null,
                 dueDate: formData.deliveryDate || formData.dueDate || null,
                 clientId: formData.client || null,
-                deliverables: deliverables,
-                resources: resources
+                deliverables: deliverables.map(d => ({
+                    title: d.title,
+                    description: d.description || null,
+                    status: d.status === 'done' ? 'COMPLETED' :
+                        d.status === 'pending' ? 'IN_PROGRESS' :
+                            'PENDING'
+                })),
+                resources: resources.map(r => ({
+                    title: r.title || r.name,
+                    url: r.url,
+                    type: r.type || 'LINK'
+                }))
                 // Note: technologies not sent yet - need proper ID mapping from backend
             };
 
@@ -488,8 +498,8 @@ export default function ProjectEdit() {
                                                         <select
                                                             value={item.status}
                                                             onChange={(e) => handleDeliverableChange(item.id, 'status', e.target.value)}
-                                                            className={`mt-0.5 bg-transparent border-none focus:ring-0 p-0 w-6 cursor-pointer ${item.status === 'done' ? 'text-green-500' :
-                                                                item.status === 'pending' ? 'text-primary' :
+                                                            className={`mt-0.5 bg-transparent border-none focus:ring-0 p-0 w-6 cursor-pointer ${item.status === 'done' || item.status === 'COMPLETED' ? 'text-green-500' :
+                                                                item.status === 'pending' || item.status === 'IN_PROGRESS' ? 'text-primary' :
                                                                     'text-slate-400 dark:text-slate-600'
                                                                 }`}
                                                         >
