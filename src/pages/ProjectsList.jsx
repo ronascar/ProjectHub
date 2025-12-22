@@ -222,7 +222,7 @@ export default function ProjectsList() {
         if (!dateString) return 'Sem prazo';
         return new Date(dateString).toLocaleDateString('pt-BR', {
             day: '2-digit',
-            month: 'short',
+            month: '2-digit',
             year: 'numeric'
         });
     };
@@ -383,7 +383,7 @@ export default function ProjectsList() {
                                                         </td>
                                                         <td className="px-6 py-4 hidden sm:table-cell">
                                                             <select
-                                                                value={project.clientId || ''}
+                                                                value={project.client?.id || ''}
                                                                 onChange={(e) => handleClientChange(project.id, e.target.value)}
                                                                 className="text-sm bg-transparent border-none text-gray-500 dark:text-text-secondary hover:text-slate-900 dark:hover:text-white focus:ring-0 cursor-pointer p-0 [&>option]:bg-white [&>option]:dark:bg-gray-800 [&>option]:text-slate-900 [&>option]:dark:text-white"
                                                             >
@@ -457,12 +457,11 @@ export default function ProjectsList() {
                                                             <select
                                                                 value={project.status}
                                                                 onChange={(e) => handleStatusChange(project.id, e.target.value)}
-                                                                className={`inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset border-none cursor-pointer [&>option]:bg-white [&>option]:dark:bg-gray-800 [&>option]:text-slate-900 [&>option]:dark:text-white ${
-                                                                    project.status === 'COMPLETED' ? 'bg-green-400/10 text-green-400 ring-green-400/30' :
-                                                                    isOverdue ? 'bg-red-400/10 text-red-400 ring-red-400/30' :
-                                                                    project.status === 'PLANNING' ? 'bg-orange-400/10 text-orange-400 ring-orange-400/30' :
-                                                                    'bg-blue-400/10 text-blue-400 ring-blue-400/30'
-                                                                }`}
+                                                                className={`inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset border-none cursor-pointer [&>option]:bg-white [&>option]:dark:bg-gray-800 [&>option]:text-slate-900 [&>option]:dark:text-white ${project.status === 'COMPLETED' ? 'bg-green-400/10 text-green-400 ring-green-400/30' :
+                                                                        isOverdue ? 'bg-red-400/10 text-red-400 ring-red-400/30' :
+                                                                            project.status === 'PLANNING' ? 'bg-orange-400/10 text-orange-400 ring-orange-400/30' :
+                                                                                'bg-blue-400/10 text-blue-400 ring-blue-400/30'
+                                                                    }`}
                                                             >
                                                                 <option value="PLANNING" className="bg-white dark:bg-gray-800 text-slate-900 dark:text-white">Planejamento</option>
                                                                 <option value="IN_PROGRESS" className="bg-white dark:bg-gray-800 text-slate-900 dark:text-white">Em Andamento</option>
