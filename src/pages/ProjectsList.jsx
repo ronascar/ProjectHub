@@ -458,9 +458,9 @@ export default function ProjectsList() {
                                                                 value={project.status}
                                                                 onChange={(e) => handleStatusChange(project.id, e.target.value)}
                                                                 className={`inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset border-none cursor-pointer [&>option]:bg-white [&>option]:dark:bg-gray-800 [&>option]:text-slate-900 [&>option]:dark:text-white ${project.status === 'COMPLETED' ? 'bg-green-400/10 text-green-400 ring-green-400/30' :
-                                                                        isOverdue ? 'bg-red-400/10 text-red-400 ring-red-400/30' :
-                                                                            project.status === 'PLANNING' ? 'bg-orange-400/10 text-orange-400 ring-orange-400/30' :
-                                                                                'bg-blue-400/10 text-blue-400 ring-blue-400/30'
+                                                                    isOverdue ? 'bg-red-400/10 text-red-400 ring-red-400/30' :
+                                                                        project.status === 'PLANNING' ? 'bg-orange-400/10 text-orange-400 ring-orange-400/30' :
+                                                                            'bg-blue-400/10 text-blue-400 ring-blue-400/30'
                                                                     }`}
                                                             >
                                                                 <option value="PLANNING" className="bg-white dark:bg-gray-800 text-slate-900 dark:text-white">Planejamento</option>
@@ -490,7 +490,7 @@ export default function ProjectsList() {
                                                                     <span className="material-symbols-outlined">more_vert</span>
                                                                 </button>
                                                                 {openMenuId === project.id && (
-                                                                    <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-[#1d2832] border border-slate-200 dark:border-[#233648] rounded-lg shadow-xl py-1 z-50">
+                                                                    <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-[#1d2832] border border-slate-200 dark:border-[#233648] rounded-lg shadow-xl py-1 z-[100]">
                                                                         <button
                                                                             onClick={() => { handleViewProject(project.id); setOpenMenuId(null); }}
                                                                             className="w-full text-left px-4 py-2 text-sm text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-[#2c3b4a] flex items-center gap-2"
