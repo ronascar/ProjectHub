@@ -214,6 +214,10 @@ export default function ProjectEdit() {
     // Calculate days remaining
     const daysRemaining = Math.ceil((new Date(formData.dueDate) - new Date()) / (1000 * 60 * 60 * 24));
 
+    // Helper to safely get the selected client object for display
+    const selectedClient = clients.find(c => c.id === formData.client);
+    console.log('ProjectEdit Render Debug:', { formDataClient: formData.client, selectedClient });
+
     return (
         <div className="layout-container flex h-full grow flex-col px-4 md:px-10 lg:px-40 py-8">
             {loading ? (
@@ -576,7 +580,7 @@ export default function ProjectEdit() {
                                     <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-200 dark:border-border-dark p-6 shadow-sm">
                                         <div className="flex justify-between items-center mb-4">
                                             <h3 className="text-sm font-bold uppercase tracking-wider text-slate-500 dark:text-[#94a3b8]">Cliente</h3>
-                                            <a onClick={handleEditClient} className="text-xs text-primary font-bold hover:underline cursor-pointer">Editar Cliente</a>
+                                            <button type="button" onClick={handleEditClient} className="text-xs text-primary font-bold hover:underline cursor-pointer">Editar Cliente</button>
                                         </div>
                                         <div className="mb-4">
                                             <select
@@ -600,15 +604,10 @@ export default function ProjectEdit() {
                                             </div>
                                             <div>
                                                 <p className="text-lg font-bold text-slate-900 dark:text-white leading-none mb-1">
-                                                    {clients.find(c => c.id === formData.client)?.name || 'Selecione um cliente'}
+                                                    {selectedClient?.name || 'Selecione um cliente'}
                                                 </p>
                                                 <p className="text-sm text-slate-500 dark:text-slate-400">
-                                                    {(() => {
-                                                        const client = clients.find(c => c.id === formData.client);
-                                                        if (!client) return 'Endereço não disponível';
-                                                        const parts = [client.city, client.state || client.country].filter(Boolean);
-                                                        return parts.length > 0 ? parts.join(', ') : 'Endereço não disponível';
-                                                    })()}
+                                                    {selectedClient ? [selectedClient.city, selectedClient.state || selectedClient.country].filter(Boolean).join(', ') : 'Endereço não disponível'}
                                                 </p>
                                             </div>
                                         </div>
@@ -618,10 +617,10 @@ export default function ProjectEdit() {
                                                 <div className="flex items-center gap-2">
                                                     <div
                                                         className="size-6 rounded-full bg-cover bg-gray-200"
-                                                        style={{ backgroundImage: `url('${clients.find(c => c.id === formData.client)?.logo || ''}')` }}
+                                                        style={{ backgroundImage: selectedClient?.logo ? "url('" + selectedClient.logo + "')" : 'none' }}
                                                     />
                                                     <span className="text-sm font-medium text-slate-900 dark:text-white">
-                                                        {clients.find(c => c.id === formData.client)?.contactName || 'Sem contato'}
+                                                        {selectedClient?.contactName || 'Sem contato'}
                                                     </span>
                                                 </div>
                                                 <button type="button" onClick={handleEditContact} className="text-slate-400 hover:text-primary">
