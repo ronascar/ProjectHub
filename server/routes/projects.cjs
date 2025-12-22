@@ -131,7 +131,7 @@ router.post('/', authMiddleware, managerMiddleware, async (req, res) => {
         const {
             name, description, shortDescription, category, status, priority,
             startDate, estimatedDate, dueDate, clientId, color, budget,
-            technologies, members
+            technologies, members, deliverables
         } = req.body;
 
         if (!name) {
@@ -164,6 +164,15 @@ router.post('/', authMiddleware, managerMiddleware, async (req, res) => {
                     create: members.map(m => ({
                         user: { connect: { id: m.userId } },
                         role: m.role || 'DEVELOPER'
+                    }))
+                } : undefined,
+                // Add deliverables
+                deliverables: deliverables?.length ? {
+                    create: deliverables.map((d, index) => ({
+                        title: d.title,
+                        description: d.description || null,
+                        status: d.status || 'PENDING',
+                        order: index + 1
                     }))
                 } : undefined
             },
@@ -213,7 +222,7 @@ router.patch('/:id/quick-update', authMiddleware, async (req, res) => {
         }
 
         const updateData = {};
-        
+
         if (status !== undefined) {
             updateData.status = status;
             if (status === 'COMPLETED') {
@@ -221,11 +230,11 @@ router.patch('/:id/quick-update', authMiddleware, async (req, res) => {
                 updateData.progress = 100;
             }
         }
-        
+
         if (clientId !== undefined) {
             updateData.clientId = clientId === '' ? null : clientId;
         }
-        
+
         if (progress !== undefined) {
             updateData.progress = Math.min(100, Math.max(0, parseInt(progress)));
         }

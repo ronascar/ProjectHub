@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { projectsAPI, clientsAPI } from '../services/api';
+import { projectsAPI, clientsAPI, usersAPI } from '../services/api';
 
 export default function CreateProject() {
     const navigate = useNavigate();
@@ -21,22 +21,60 @@ export default function CreateProject() {
         techStack: []
     });
     const [clients, setClients] = useState([]);
+    const [users, setUsers] = useState([]);
+    const [newDeliverable, setNewDeliverable] = useState('');
+    const [deliverables, setDeliverables] = useState([]);
+    const [techStack, setTechStack] = useState([]);
+    const [selectedTeam, setSelectedTeam] = useState([]);
+    const [managerId, setManagerId] = useState('');
+
+    const availableTechs = ['React', 'Next.js', 'TypeScript', 'Tailwind', 'PostgreSQL', 'Node.js', 'Figma', 'Docker'];
 
     React.useEffect(() => {
-        const loadClients = async () => {
+        const loadData = async () => {
             try {
-                const data = await clientsAPI.list();
-                setClients(data);
+                const [clientsData, usersData] = await Promise.all([
+                    clientsAPI.list(),
+                    usersAPI.list()
+                ]);
+                setClients(clientsData);
+                setUsers(usersData);
             } catch (err) {
-                console.error('Error loading clients:', err);
+                console.error('Error loading data:', err);
             }
         };
-        loadClients();
+        loadData();
     }, []);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData(prev => ({ ...prev, [name]: value }));
+    };
+
+    const handleAddDeliverable = () => {
+        if (!newDeliverable.trim()) return;
+        setDeliverables([...deliverables, { title: newDeliverable.trim(), status: 'PENDING' }]);
+        setNewDeliverable('');
+    };
+
+    const handleRemoveDeliverable = (index) => {
+        setDeliverables(deliverables.filter((_, i) => i !== index));
+    };
+
+    const toggleTech = (tech) => {
+        if (techStack.includes(tech)) {
+            setTechStack(techStack.filter(t => t !== tech));
+        } else {
+            setTechStack([...techStack, tech]);
+        }
+    };
+
+    const toggleTeamMember = (userId) => {
+        if (selectedTeam.includes(userId)) {
+            setSelectedTeam(selectedTeam.filter(id => id !== userId));
+        } else {
+            setSelectedTeam([...selectedTeam, userId]);
+        }
     };
 
     const handleSave = async () => {
@@ -68,7 +106,22 @@ export default function CreateProject() {
                 dueDate: formData.finalDate || null,
                 clientId: formData.client?.trim() || null,
                 progress: 0,
-                color: '#4f46e5'
+                color: '#4f46e5',
+                // Add members (Manager + Selected Team)
+                members: [
+                    ...(managerId ? [{ userId: managerId, role: 'MANAGER' }] : []),
+                    ...selectedTeam.map(userId => ({ userId, role: 'DEVELOPER' }))
+                    // Remove duplicates in case manager is also selected in team
+                ].filter((v, i, a) => a.findIndex(t => (t.userId === v.userId)) === i),
+                // Add deliverables
+                deliverables: deliverables,
+                // Add tech stack (sending as simple array if backend supported it, but for now just as metadata or tags if supported, 
+                // OR assuming we might send it later. Since backend expects IDs for 'technologies', we would need valid IDs. 
+                // For this quick fix, we won't send 'technologies' to avoid ID errors unless we map them. 
+                // We will skip sending technologies to backend for now to prevent errors, as we only have names in UI)
+                // If we really wanted to persist tech stack without IDs, we'd need to modify backend to FindOrCreate.
+                // Keeping it visual-only in UI for this specific request or mapped if possible.
+                // Let's NOT send 'techStack' to 'technologies' to avoid composite key errors.
             };
 
             console.log('📤 Enviando dados do projeto:', projectData);
@@ -225,18 +278,38 @@ export default function CreateProject() {
                             <div className="flex flex-col gap-4">
                                 <div className="flex gap-2">
                                     <input
+                                        value={newDeliverable}
+                                        onChange={(e) => setNewDeliverable(e.target.value)}
+                                        onKeyDown={(e) => e.key === 'Enter' && handleAddDeliverable()}
                                         className="flex-1 bg-white dark:bg-background-dark border border-gray-200 dark:border-border-dark rounded-lg px-4 py-2 text-sm text-slate-900 dark:text-white placeholder-gray-400 focus:ring-2 focus:ring-primary transition-all"
                                         placeholder="Adicionar novo entregável..."
                                         type="text"
                                     />
-                                    <button className="px-4 py-2 bg-slate-100 dark:bg-background-dark border border-gray-200 dark:border-border-dark rounded-lg text-primary hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors">
+                                    <button
+                                        onClick={handleAddDeliverable}
+                                        className="px-4 py-2 bg-slate-100 dark:bg-background-dark border border-gray-200 dark:border-border-dark rounded-lg text-primary hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
+                                    >
                                         <span className="material-symbols-outlined text-[20px] block">add</span>
                                     </button>
                                 </div>
                                 <div className="flex flex-col gap-2">
-                                    <div className="flex items-center gap-3 p-3 rounded-lg border border-dashed border-gray-200 dark:border-border-dark text-slate-400 text-sm italic">
-                                        Nenhum entregável adicionado ainda.
-                                    </div>
+                                    {deliverables.length === 0 ? (
+                                        <div className="flex items-center gap-3 p-3 rounded-lg border border-dashed border-gray-200 dark:border-border-dark text-slate-400 text-sm italic">
+                                            Nenhum entregável adicionado ainda.
+                                        </div>
+                                    ) : (
+                                        deliverables.map((item, idx) => (
+                                            <div key={idx} className="flex items-center justify-between p-3 rounded-lg bg-gray-50 dark:bg-background-dark border border-gray-100 dark:border-border-dark">
+                                                <span className="text-sm text-slate-700 dark:text-gray-300">{item.title}</span>
+                                                <button
+                                                    onClick={() => handleRemoveDeliverable(idx)}
+                                                    className="text-red-400 hover:text-red-600 transition-colors"
+                                                >
+                                                    <span className="material-symbols-outlined text-[18px]">close</span>
+                                                </button>
+                                            </div>
+                                        ))
+                                    )}
                                 </div>
                             </div>
                         </div>
@@ -248,10 +321,14 @@ export default function CreateProject() {
                                 Stack Tecnológica
                             </h3>
                             <div className="flex flex-wrap gap-4">
-                                {['React', 'Next.js', 'TypeScript', 'Tailwind', 'PostgreSQL', 'Node.js', 'Figma', 'Docker'].map(tech => (
+                                {availableTechs.map(tech => (
                                     <button
                                         key={tech}
-                                        className="px-4 py-2 rounded-full border border-gray-200 dark:border-border-dark bg-slate-50 dark:bg-background-dark text-slate-600 dark:text-slate-400 text-sm font-medium hover:border-primary hover:text-primary transition-all"
+                                        onClick={() => toggleTech(tech)}
+                                        className={`px-4 py-2 rounded-full border text-sm font-medium transition-all ${techStack.includes(tech)
+                                            ? 'bg-primary border-primary text-white'
+                                            : 'border-gray-200 dark:border-border-dark bg-slate-50 dark:bg-background-dark text-slate-600 dark:text-slate-400 hover:border-primary hover:text-primary'
+                                            }`}
                                     >
                                         {tech}
                                     </button>
@@ -342,13 +419,16 @@ export default function CreateProject() {
                                 </div>
                                 <div className="flex flex-col gap-2">
                                     <label className="text-xs font-bold text-slate-500 dark:text-text-secondary uppercase">Gerente Responsável</label>
-                                    <button className="w-full flex items-center justify-between p-3 rounded-lg border border-gray-200 dark:border-border-dark hover:bg-gray-50 dark:hover:bg-background-dark transition-all">
-                                        <div className="flex items-center gap-3">
-                                            <div className="size-8 rounded-full bg-primary flex items-center justify-center text-white text-xs font-bold">AM</div>
-                                            <span className="text-sm text-slate-700 dark:text-white font-medium">Alex Morgan</span>
-                                        </div>
-                                        <span className="material-symbols-outlined text-slate-400 text-[18px]">edit</span>
-                                    </button>
+                                    <select
+                                        value={managerId}
+                                        onChange={(e) => setManagerId(e.target.value)}
+                                        className="w-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-slate-600 rounded-lg px-4 py-2.5 text-slate-900 dark:text-white text-sm font-medium focus:ring-2 focus:ring-primary cursor-pointer"
+                                    >
+                                        <option value="">Selecione um gestor...</option>
+                                        {users.map(user => (
+                                            <option key={user.id} value={user.id}>{user.name}</option>
+                                        ))}
+                                    </select>
                                 </div>
                             </div>
                         </div>
@@ -364,10 +444,27 @@ export default function CreateProject() {
                                     <span className="material-symbols-outlined text-[20px]">person_add</span>
                                 </button>
                             </h3>
-                            <div className="flex -space-x-3 mb-4">
-                                <div className="size-10 rounded-full border-2 border-white dark:border-surface-dark bg-slate-100 dark:bg-slate-700 flex items-center justify-center text-xs font-bold text-slate-400">+</div>
+                            <div className="flex flex-col gap-2 max-h-48 overflow-y-auto">
+                                <p className="text-xs text-slate-500 mb-2">Selecione os membros:</p>
+                                {users.map(user => (
+                                    <label key={user.id} className="flex items-center gap-3 p-2 hover:bg-gray-50 dark:hover:bg-screen-dark rounded-lg cursor-pointer">
+                                        <input
+                                            type="checkbox"
+                                            checked={selectedTeam.includes(user.id)}
+                                            onChange={() => toggleTeamMember(user.id)}
+                                            className="rounded border-gray-300 text-primary focus:ring-primary"
+                                        />
+                                        <div className="flex items-center gap-2">
+                                            {user.avatar ? (
+                                                <img src={user.avatar} alt={user.name} className="size-6 rounded-full object-cover" />
+                                            ) : (
+                                                <div className="size-6 rounded-full bg-gray-200 flex items-center justify-center text-[10px] font-bold">{user.name.charAt(0)}</div>
+                                            )}
+                                            <span className="text-sm font-medium text-slate-700 dark:text-gray-300">{user.name}</span>
+                                        </div>
+                                    </label>
+                                ))}
                             </div>
-                            <p className="text-xs text-slate-500 italic">Adicione membros para iniciar a colaboração.</p>
                         </div>
                     </div>
                 </div>
