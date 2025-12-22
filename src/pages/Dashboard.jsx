@@ -375,7 +375,7 @@ export default function Dashboard() {
                                             Nenhuma atividade recente
                                         </li>
                                     ) : (
-                                        activities.map((activity) => {
+                                        activities.slice(0, 5).map((activity) => {
                                             const activityColor = getActivityColor(activity.type);
                                             const activityIcon = getActivityIcon(activity.type);
 
