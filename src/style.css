@@ -25,3 +25,15 @@
 .material-symbols-outlined.filled {
   font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
 }
+
+/* Fix for select dropdowns in dark mode */
+@layer components {
+  select option {
+    @apply bg-white text-slate-900;
+  }
+
+  .dark select option {
+    background-color: #1e2a36;
+    color: #ffffff;
+  }
+}
