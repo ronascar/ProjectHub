@@ -93,6 +93,7 @@ export default function ProjectEdit() {
 
     // Missing state definitions restored
     const [deliverables, setDeliverables] = useState([]);
+    const [resources, setResources] = useState([]);
     const [technologies, setTechnologies] = useState([]);
     const [newTech, setNewTech] = useState('');
 
