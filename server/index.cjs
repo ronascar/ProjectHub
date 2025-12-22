@@ -28,6 +28,7 @@ const taskRoutes = require('./routes/tasks.cjs');
 const clientRoutes = require('./routes/clients.cjs');
 const teamRoutes = require('./routes/team.cjs');
 const dashboardRoutes = require('./routes/dashboard.cjs');
+const technologiesRoutes = require('./routes/technologies.cjs');
 
 const app = express();
 const prisma = new PrismaClient();
@@ -76,6 +77,7 @@ app.use('/api/tasks', taskRoutes);
 app.use('/api/clients', clientRoutes);
 app.use('/api/team', teamRoutes);
 app.use('/api/dashboard', dashboardRoutes);
+app.use('/api/technologies', technologiesRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {

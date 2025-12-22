@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
-import { projectsAPI, clientsAPI, usersAPI } from '../services/api';
+import { projectsAPI, clientsAPI, usersAPI, technologiesAPI } from '../services/api';
 
 export default function ProjectEdit() {
     const { projectId } = useParams();
@@ -31,20 +31,23 @@ export default function ProjectEdit() {
         const loadProject = async () => {
             try {
                 setLoading(true);
-                const [project, clientsData, usersData] = await Promise.all([
+                const [project, clientsData, usersData, technologiesData] = await Promise.all([
                     projectsAPI.getById(projectId),
                     clientsAPI.list(),
-                    usersAPI.list()
+                    usersAPI.list(),
+                    technologiesAPI.list()
                 ]);
 
                 setClients(clientsData);
                 setAllUsers(usersData);
+                setAvailableTechnologies(technologiesData);
 
                 // Debug: log full project data
                 console.log('📦 Projeto carregado completo:', {
                     deliverables: project.deliverables,
                     resources: project.resources,
-                    technologies: project.technologies
+                    technologies: project.technologies,
+                    availableTechnologies: technologiesData
                 });
 
                 // Map API data to form format
@@ -109,7 +112,8 @@ export default function ProjectEdit() {
     const [deliverables, setDeliverables] = useState([]);
     const [resources, setResources] = useState([]);
     const [technologies, setTechnologies] = useState([]);
-    const [newTech, setNewTech] = useState('');
+    const [availableTechnologies, setAvailableTechnologies] = useState([]);
+    const [selectedTech, setSelectedTech] = useState('');
 
     // Handlers
     const handleInputChange = (field, value) => {
@@ -155,8 +159,8 @@ export default function ProjectEdit() {
                     title: r.title || r.name,
                     url: r.url,
                     type: r.type || 'LINK'
-                }))
-                // Note: technologies not sent yet - need proper ID mapping from backend
+                })),
+                technologies: technologies.map(t => ({ id: t.id }))
             };
 
             await projectsAPI.update(projectId, updateData);
@@ -554,37 +558,57 @@ export default function ProjectEdit() {
                                     <div className="bg-white dark:bg-surface-dark rounded-xl border border-slate-200 dark:border-border-dark overflow-hidden shadow-sm">
                                         <div className="px-6 py-4 border-b border-slate-200 dark:border-border-dark bg-slate-50/50 dark:bg-[#1e293b]">
                                             <h3 className="text-lg font-bold text-slate-900 dark:text-white">Stack Tecnológica</h3>
-                                            <p className="text-xs text-orange-600 dark:text-orange-400 mt-1">
-                                                ⚠️ A edição de tecnologias será implementada em breve. As tecnologias existentes são apenas para visualização.
-                                            </p>
                                         </div>
                                         <div className="p-6">
                                             <div className="flex flex-wrap gap-3 mb-4">
-                                                {technologies.map((tech, index) => (
-                                                    <div key={index} className="group relative px-3 py-1.5 rounded-md bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 text-sm font-medium flex items-center gap-2 cursor-default">
+                                                {technologies.map((tech) => (
+                                                    <div key={tech.id} className="group relative px-3 py-1.5 rounded-md bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 text-sm font-medium flex items-center gap-2 pr-8 cursor-default">
                                                         {tech.icon && (
                                                             <img
                                                                 src={tech.icon}
                                                                 alt={`${tech.name} logo`}
-                                                                className={`size-4 ${tech.invert ? 'invert dark:invert-0' : ''}`}
+                                                                className="size-4"
                                                             />
                                                         )}
                                                         {tech.name}
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => setTechnologies(technologies.filter(t => t.id !== tech.id))}
+                                                            className="absolute right-1 top-1/2 -translate-y-1/2 p-0.5 rounded-full hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-400 hover:text-red-500 transition-colors"
+                                                        >
+                                                            <span className="material-symbols-outlined text-[14px]">close</span>
+                                                        </button>
                                                     </div>
                                                 ))}
                                             </div>
-                                            <div className="flex gap-2 opacity-50 pointer-events-none">
-                                                <input
-                                                    type="text"
-                                                    value={newTech}
-                                                    disabled
-                                                    placeholder="Funcionalidade desabilitada temporariamente..."
+                                            <div className="flex gap-2">
+                                                <select
+                                                    value={selectedTech}
+                                                    onChange={(e) => setSelectedTech(e.target.value)}
                                                     className="flex-1 text-sm rounded-md border border-slate-200 dark:border-slate-600 bg-white dark:bg-gray-800 text-slate-900 dark:text-white focus:ring-primary focus:border-primary"
-                                                />
+                                                >
+                                                    <option value="">Selecione uma tecnologia...</option>
+                                                    {availableTechnologies
+                                                        .filter(tech => !technologies.find(t => t.id === tech.id))
+                                                        .map(tech => (
+                                                            <option key={tech.id} value={tech.id}>
+                                                                {tech.name}
+                                                            </option>
+                                                        ))}
+                                                </select>
                                                 <button
                                                     type="button"
-                                                    disabled
-                                                    className="px-3 py-2 bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-white rounded-md"
+                                                    onClick={() => {
+                                                        if (selectedTech) {
+                                                            const tech = availableTechnologies.find(t => t.id === selectedTech);
+                                                            if (tech && !technologies.find(t => t.id === tech.id)) {
+                                                                setTechnologies([...technologies, tech]);
+                                                                setSelectedTech('');
+                                                            }
+                                                        }
+                                                    }}
+                                                    disabled={!selectedTech}
+                                                    className="px-3 py-2 bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-600 dark:text-white rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                                                 >
                                                     <span className="material-symbols-outlined text-[20px]">add</span>
                                                 </button>

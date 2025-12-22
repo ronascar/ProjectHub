@@ -185,6 +185,19 @@ export const projectsAPI = {
     }
 };
 
+// ==================== TECHNOLOGIES ====================
+export const technologiesAPI = {
+    list: async () => {
+        const res = await fetch(`${API_BASE_URL}/technologies`, createOptions());
+        return handleResponse(res);
+    },
+
+    create: async (data) => {
+        const res = await fetch(`${API_BASE_URL}/technologies`, createOptions('POST', data));
+        return handleResponse(res);
+    }
+};
+
 // ==================== TASKS ====================
 export const tasksAPI = {
     list: async (params = {}) => {
