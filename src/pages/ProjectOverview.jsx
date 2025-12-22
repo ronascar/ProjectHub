@@ -45,9 +45,27 @@ export default function ProjectOverview({ projectData, project }) {
                         <h3 className="text-lg font-bold text-slate-900 dark:text-white">Escopo & Entregáveis</h3>
                     </div>
                     <div className="p-6">
-                        <p className="text-slate-400 dark:text-slate-500 italic text-sm">
-                            Funcionalidade de escopo e entregáveis será implementada em breve.
-                        </p>
+                        {project?.deliverables && project.deliverables.length > 0 ? (
+                            <ul className="space-y-3">
+                                {project.deliverables.map((item) => (
+                                    <li key={item.id} className="flex items-start gap-3">
+                                        <span className={`mt-1 ${item.status === 'COMPLETED' ? 'text-green-500' : item.status === 'IN_PROGRESS' ? 'text-blue-500' : 'text-slate-400'}`}>
+                                            {item.status === 'COMPLETED' ? '✓' : item.status === 'IN_PROGRESS' ? '⋯' : '○'}
+                                        </span>
+                                        <div className="flex-1">
+                                            <p className="text-slate-900 dark:text-white font-medium">{item.title}</p>
+                                            {item.description && (
+                                                <p className="text-sm text-slate-500 dark:text-slate-400">{item.description}</p>
+                                            )}
+                                        </div>
+                                    </li>
+                                ))}
+                            </ul>
+                        ) : (
+                            <p className="text-slate-400 dark:text-slate-500 italic text-sm">
+                                Nenhum entregável definido ainda.
+                            </p>
+                        )}
                     </div>
                 </div>
                 {/* Tech Stack */}
@@ -56,9 +74,22 @@ export default function ProjectOverview({ projectData, project }) {
                         <h3 className="text-lg font-bold text-slate-900 dark:text-white">Stack Tecnológica</h3>
                     </div>
                     <div className="p-6">
-                        <p className="text-slate-400 dark:text-slate-500 italic text-sm">
-                            Funcionalidade de stack tecnológica será implementada em breve.
-                        </p>
+                        {project?.technologies && project.technologies.length > 0 ? (
+                            <div className="flex flex-wrap gap-2">
+                                {project.technologies.map((pt, index) => (
+                                    <div key={index} className="px-3 py-1.5 rounded-md bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 text-sm font-medium flex items-center gap-2">
+                                        {pt.technology.icon && (
+                                            <img src={pt.technology.icon} alt={pt.technology.name} className="size-4" />
+                                        )}
+                                        {pt.technology.name}
+                                    </div>
+                                ))}
+                            </div>
+                        ) : (
+                            <p className="text-slate-400 dark:text-slate-500 italic text-sm">
+                                Nenhuma tecnologia definida ainda.
+                            </p>
+                        )}
                     </div>
                 </div>
             </div>
