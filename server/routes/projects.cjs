@@ -268,7 +268,8 @@ router.put('/:id', authMiddleware, async (req, res) => {
         const { id } = req.params;
         const {
             name, description, shortDescription, category, status, priority, progress,
-            startDate, estimatedDate, dueDate, clientId, color, budget, isArchived
+            startDate, estimatedDate, dueDate, clientId, color, budget, isArchived,
+            deliverables, resources, technologies
         } = req.body;
 
         // Check if user can update (owner or admin)
@@ -290,7 +291,33 @@ router.put('/:id', authMiddleware, async (req, res) => {
             startDate: startDate ? new Date(startDate) : undefined,
             estimatedDate: estimatedDate ? new Date(estimatedDate) : undefined,
             dueDate: dueDate ? new Date(dueDate) : undefined,
-            clientId, color, budget, isArchived
+            clientId, color, budget, isArchived,
+            // Update deliverables (Replace all)
+            deliverables: deliverables ? {
+                deleteMany: {},
+                create: deliverables.map((d, index) => ({
+                    title: d.title,
+                    description: d.description || null,
+                    status: d.status || 'PENDING',
+                    order: index + 1
+                }))
+            } : undefined,
+            // Update resources (Replace all)
+            resources: resources ? {
+                deleteMany: {},
+                create: resources.map(r => ({
+                    name: r.name || r.title,
+                    type: r.type || 'LINK',
+                    url: r.url
+                }))
+            } : undefined,
+            // Update technologies (Replace all)
+            technologies: technologies ? {
+                deleteMany: {},
+                create: technologies.map(t => ({
+                    technology: { connect: { id: t.id } }
+                }))
+            } : undefined
         };
 
         // Handle completion
@@ -309,7 +336,10 @@ router.put('/:id', authMiddleware, async (req, res) => {
             data: updateData,
             include: {
                 owner: { select: { id: true, name: true, avatar: true } },
-                client: { select: { id: true, name: true } }
+                client: { select: { id: true, name: true } },
+                technologies: { include: { technology: true } },
+                deliverables: true,
+                resources: true
             }
         });
 
