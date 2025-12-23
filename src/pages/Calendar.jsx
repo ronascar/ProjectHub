@@ -492,7 +492,7 @@ export default function Calendar() {
                                                     className={`${event.type === 'project'
                                                         ? 'bg-gradient-to-r from-purple-500/10 to-purple-500/5 dark:from-purple-500/20 dark:to-purple-500/10 border-l-4 border-purple-500'
                                                         : getColorClasses(event.priority) + ' border-l-2'
-                                                        } rounded-r px-2 py-1 text-xs text-slate-700 dark:text-white truncate ${event.type === 'task' ? 'cursor-move' : 'cursor-pointer'} hover:opacity-80 transition-all ${draggedTask ? 'pointer-events-none' : ''}`}
+                                                        } rounded-r px-2 py-1 text-xs text-slate-700 dark:text-white truncate ${event.type === 'task' ? 'cursor-move' : 'cursor-pointer'} hover:opacity-80 transition-all ${draggedTask && draggedTask.id !== event.id ? 'pointer-events-none' : ''}`}
                                                     title={`${event.time} - ${event.title}${event.type === 'project' ? ' (Projeto)' : ` (${event.projectName})`}`}
                                                     style={event.type === 'project' ? { borderLeftColor: event.color } : {}}
                                                 >
@@ -560,7 +560,7 @@ export default function Calendar() {
                                                     className={`${event.type === 'project'
                                                         ? 'bg-gradient-to-r from-purple-500/10 to-purple-500/5 dark:from-purple-500/20 dark:to-purple-500/10 border-l-4 border-purple-500'
                                                         : getColorClasses(event.priority) + ' border-l-2'
-                                                        } rounded-r px-2 py-1.5 text-xs text-slate-700 dark:text-white ${event.type === 'task' ? 'cursor-move' : 'cursor-pointer'} hover:opacity-80 transition-all ${draggedTask ? 'pointer-events-none' : ''}`}
+                                                        } rounded-r px-2 py-1.5 text-xs text-slate-700 dark:text-white ${event.type === 'task' ? 'cursor-move' : 'cursor-pointer'} hover:opacity-80 transition-all ${draggedTask && draggedTask.id !== event.id ? 'pointer-events-none' : ''}`}
                                                     style={event.type === 'project' ? { borderLeftColor: event.color } : {}}
                                                 >
                                                     <div className="font-bold flex items-center gap-1">
@@ -618,7 +618,7 @@ export default function Calendar() {
                                                 className={`${event.type === 'project'
                                                     ? 'bg-gradient-to-r from-purple-500/10 to-purple-500/5 dark:from-purple-500/20 dark:to-purple-500/10 border-l-4 border-purple-500'
                                                     : getColorClasses(event.priority) + ' border-l-2'
-                                                    } rounded-r px-4 py-3 text-sm text-slate-700 dark:text-white ${event.type === 'task' ? 'cursor-move' : 'cursor-pointer'} hover:opacity-80 transition-all ${draggedTask ? 'pointer-events-none' : ''}`}
+                                                    } rounded-r px-4 py-3 text-sm text-slate-700 dark:text-white ${event.type === 'task' ? 'cursor-move' : 'cursor-pointer'} hover:opacity-80 transition-all ${draggedTask && draggedTask.id !== event.id ? 'pointer-events-none' : ''}`}
                                                 style={event.type === 'project' ? { borderLeftColor: event.color } : {}}
                                             >
                                                 <div className="font-bold text-base flex items-center gap-2">
