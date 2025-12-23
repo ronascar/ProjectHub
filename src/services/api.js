@@ -15,7 +15,6 @@ const handleResponse = async (response) => {
 
             // Redirect to login only if not already on login page
             if (!window.location.pathname.includes('/login')) {
-                alert('Sua sessão expirou. Por favor, faça login novamente.');
                 window.location.href = '/login';
             }
         }

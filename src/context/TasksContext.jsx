@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { tasksAPI } from '../services/api';
+import { useAuth } from './AuthContext';
 
 const TasksContext = createContext(null);
 
@@ -7,9 +8,16 @@ export function TasksProvider({ children }) {
     const [tasks, setTasks] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const { user, loading: authLoading } = useAuth();
 
     // Load all tasks
     const loadTasks = useCallback(async () => {
+        // Only load if user is authenticated
+        if (!user) {
+            setLoading(false);
+            return;
+        }
+
         try {
             setLoading(true);
             setError(null);
@@ -21,7 +29,7 @@ export function TasksProvider({ children }) {
         } finally {
             setLoading(false);
         }
-    }, []);
+    }, [user]);
 
     // Create new task
     const createTask = useCallback(async (taskData) => {
@@ -63,10 +71,12 @@ export function TasksProvider({ children }) {
         await loadTasks();
     }, [loadTasks]);
 
-    // Load tasks on mount
+    // Load tasks only when auth is complete and user is available
     useEffect(() => {
-        loadTasks();
-    }, [loadTasks]);
+        if (!authLoading) {
+            loadTasks();
+        }
+    }, [authLoading, loadTasks]);
 
     const value = {
         tasks,
