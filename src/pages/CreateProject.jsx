@@ -112,12 +112,12 @@ export default function CreateProject() {
                 startDate: formData.startDate || null,
                 estimatedDate: formData.estimatedDate || null,
                 dueDate: formData.finalDate || null,
-                clientId: formData.client?.trim() || null,
+                clientId: formData.client || null,
                 progress: 0,
                 color: '#4f46e5',
                 // Add members (Manager + Selected Team)
                 members: [
-                    ...(managerId ? [{ userId: managerId, role: 'MANAGER' }] : []),
+                    ...(managerId ? [{ userId: managerId, role: 'LEAD' }] : []),
                     ...selectedTeam.map(userId => ({ userId, role: 'DEVELOPER' }))
                     // Remove duplicates in case manager is also selected in team
                 ].filter((v, i, a) => a.findIndex(t => (t.userId === v.userId)) === i),
@@ -135,6 +135,7 @@ export default function CreateProject() {
             navigate('/projects');
         } catch (err) {
             console.error('❌ Erro completo ao criar projeto:', err);
+            console.error('❌ Resposta do servidor:', err.response?.data);
 
             // Tratamento de erros específicos baseado no status code
             if (err.status === 403) {
@@ -143,9 +144,10 @@ export default function CreateProject() {
                 setError('Sua sessão expirou. Por favor, faça login novamente.');
                 setTimeout(() => navigate('/login'), 2000);
             } else if (err.status === 400) {
-                setError(`Dados inválidos: ${err.message}`);
+                setError(`Dados inválidos: ${err.response?.data?.details || err.message}`);
             } else if (err.status === 500) {
-                setError('Erro no servidor. Por favor, tente novamente mais tarde.');
+                const details = err.response?.data?.details;
+                setError(`Erro no servidor${details ? ': ' + details : '. Por favor, tente novamente mais tarde.'}`);
             } else {
                 setError(err.message || 'Erro ao criar projeto. Verifique sua conexão e tente novamente.');
             }
