@@ -257,26 +257,26 @@ export default function Calendar() {
 
         if (!draggedTask) return;
 
-        // Debug: Log the dates
-        console.log('Drop date received:', date);
-        console.log('Drop date ISO:', date.toISOString().split('T')[0]);
-        console.log('Dragged task current date:', draggedTask.date);
-
         try {
-            // Calculate new due date - preserve the time if it exists
-            const oldDueDate = new Date(draggedTask.date);
-            const newDueDate = new Date(date);
+            // Get the date in YYYY-MM-DD format from the drop target
+            const newDateStr = date.toISOString().split('T')[0];
 
-            // Set the time from the old date to the new date
-            newDueDate.setHours(oldDueDate.getHours());
-            newDueDate.setMinutes(oldDueDate.getMinutes());
-            newDueDate.setSeconds(oldDueDate.getSeconds());
+            // Get the original time from the task (or use midnight if no time exists)
+            let timeStr = '00:00:00';
+            if (draggedTask.date && draggedTask.date.includes('T')) {
+                timeStr = draggedTask.date.split('T')[1]; // Preserve original time
+            }
 
-            console.log('New due date will be:', newDueDate.toISOString());
+            // Combine new date with original time
+            const newDueDateISO = `${newDateStr}T${timeStr}`;
+
+            console.log('Drop date:', newDateStr);
+            console.log('Original task date:', draggedTask.date);
+            console.log('New due date:', newDueDateISO);
 
             // Update the task with the new due date
             await updateTask(draggedTask.id, {
-                dueDate: newDueDate.toISOString()
+                dueDate: newDueDateISO
             });
 
             setDraggedTask(null);
