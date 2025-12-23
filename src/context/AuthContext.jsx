@@ -5,6 +5,10 @@ import { authAPI } from '../services/api';
 const AuthContext = createContext();
 
 // Inactivity timeout: 15 minutes in milliseconds
+// Outras opções:
+// 5 minutos:  5 * 60 * 1000
+// 10 minutos: 10 * 60 * 1000
+// 30 minutos: 30 * 60 * 1000
 const INACTIVITY_TIMEOUT = 15 * 60 * 1000;
 
 export function AuthProvider({ children }) {
