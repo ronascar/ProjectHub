@@ -355,6 +355,41 @@ export const dashboardAPI = {
     }
 };
 
+// ==================== REPORTS ====================
+export const reportsAPI = {
+    getData: async (params = {}) => {
+        const query = new URLSearchParams(params).toString();
+        const res = await fetch(`${API_BASE_URL}/reports/data?${query}`, createOptions());
+        return handleResponse(res);
+    },
+
+    getSummary: async (params = {}) => {
+        const query = new URLSearchParams(params).toString();
+        const res = await fetch(`${API_BASE_URL}/reports/summary?${query}`, createOptions());
+        return handleResponse(res);
+    },
+
+    export: async (format, params = {}) => {
+        const query = new URLSearchParams({ ...params, format }).toString();
+        const res = await fetch(`${API_BASE_URL}/reports/export?${query}`, createOptions());
+
+        if (format === 'csv') {
+            const blob = await res.blob();
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `relatorio-${Date.now()}.csv`;
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+            document.body.removeChild(a);
+            return { success: true };
+        }
+
+        return handleResponse(res);
+    }
+};
+
 // Export all APIs
 export default {
     auth: authAPI,
@@ -363,5 +398,6 @@ export default {
     tasks: tasksAPI,
     clients: clientsAPI,
     team: teamAPI,
-    dashboard: dashboardAPI
+    dashboard: dashboardAPI,
+    reports: reportsAPI
 };

@@ -29,6 +29,7 @@ const clientRoutes = require('./routes/clients.cjs');
 const teamRoutes = require('./routes/team.cjs');
 const dashboardRoutes = require('./routes/dashboard.cjs');
 const technologiesRoutes = require('./routes/technologies.cjs');
+const reportsRoutes = require('./routes/reports.cjs');
 
 const app = express();
 const prisma = new PrismaClient();
@@ -78,6 +79,7 @@ app.use('/api/clients', clientRoutes);
 app.use('/api/team', teamRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/technologies', technologiesRoutes);
+app.use('/api/reports', reportsRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {
