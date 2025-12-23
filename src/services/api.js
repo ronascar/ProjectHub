@@ -1,17 +1,17 @@
 // API Service for connecting to the backend
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
 
-// Helper to get auth token
-const getToken = () => localStorage.getItem('token');
+// Helper to get auth token from sessionStorage
+const getToken = () => sessionStorage.getItem('token');
 
 // Helper to handle API responses
 const handleResponse = async (response) => {
     if (!response.ok) {
         // Handle authentication errors
         if (response.status === 401 || response.status === 403) {
-            // Clear auth data
-            localStorage.removeItem('token');
-            localStorage.removeItem('user');
+            // Clear auth data from sessionStorage
+            sessionStorage.removeItem('token');
+            sessionStorage.removeItem('user');
 
             // Redirect to login only if not already on login page
             if (!window.location.pathname.includes('/login')) {
@@ -56,8 +56,9 @@ export const authAPI = {
         const res = await fetch(`${API_BASE_URL}/auth/login`, createOptions('POST', { email, password }));
         const data = await handleResponse(res);
         if (data.token) {
-            localStorage.setItem('token', data.token);
-            localStorage.setItem('user', JSON.stringify(data.user));
+            // Use sessionStorage instead of localStorage for auto-logout on browser close
+            sessionStorage.setItem('token', data.token);
+            sessionStorage.setItem('user', JSON.stringify(data.user));
         }
         return data;
     },
@@ -69,8 +70,8 @@ export const authAPI = {
 
     logout: async () => {
         await fetch(`${API_BASE_URL}/auth/logout`, createOptions('POST'));
-        localStorage.removeItem('token');
-        localStorage.removeItem('user');
+        sessionStorage.removeItem('token');
+        sessionStorage.removeItem('user');
     },
 
     getCurrentUser: async () => {
@@ -86,7 +87,7 @@ export const authAPI = {
     isAuthenticated: () => !!getToken(),
 
     getStoredUser: () => {
-        const user = localStorage.getItem('user');
+        const user = sessionStorage.getItem('user');
         return user ? JSON.parse(user) : null;
     }
 };
