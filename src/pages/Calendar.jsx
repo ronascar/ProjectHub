@@ -270,10 +270,6 @@ export default function Calendar() {
             // Combine new date with original time
             const newDueDateISO = `${newDateStr}T${timeStr}`;
 
-            console.log('Drop date:', newDateStr);
-            console.log('Original task date:', draggedTask.date);
-            console.log('New due date:', newDueDateISO);
-
             // Update the task with the new due date
             await updateTask(draggedTask.id, {
                 dueDate: newDueDateISO
