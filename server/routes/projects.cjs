@@ -196,8 +196,18 @@ router.post('/', authMiddleware, managerMiddleware, async (req, res) => {
 
         res.status(201).json(project);
     } catch (error) {
-        console.error('Create project error:', error);
-        res.status(500).json({ error: 'Failed to create project' });
+        console.error('❌ Create project error:', error);
+        console.error('Error details:', {
+            message: error.message,
+            code: error.code,
+            meta: error.meta,
+            stack: error.stack
+        });
+        console.error('Request body:', req.body);
+        res.status(500).json({
+            error: 'Failed to create project',
+            details: process.env.NODE_ENV === 'development' ? error.message : undefined
+        });
     }
 });
 

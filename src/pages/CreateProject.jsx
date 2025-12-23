@@ -124,7 +124,7 @@ export default function CreateProject() {
                 // Add deliverables
                 deliverables: deliverables,
                 // Add technologies with proper IDs
-                technologies: technologies.map(t => ({ id: t.id }))
+                technologies: technologies.map(t => t.id)
             };
 
             console.log('📤 Enviando dados do projeto:', projectData);
