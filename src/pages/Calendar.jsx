@@ -227,7 +227,7 @@ export default function Calendar() {
     const handleDragStart = (e, task) => {
         setDraggedTask(task);
         e.dataTransfer.effectAllowed = 'move';
-        e.dataTransfer.setData('text/html', e.target);
+        e.dataTransfer.setData('text/plain', task.id); // Store task ID
         // Add a slight opacity to the dragged element
         e.target.style.opacity = '0.5';
     };
@@ -240,19 +240,27 @@ export default function Calendar() {
 
     const handleDragOver = (e, date) => {
         e.preventDefault();
+        e.stopPropagation(); // Prevent event bubbling
         e.dataTransfer.dropEffect = 'move';
         setDragOverDate(date.toISOString().split('T')[0]);
     };
 
-    const handleDragLeave = () => {
+    const handleDragLeave = (e) => {
+        e.stopPropagation();
         setDragOverDate(null);
     };
 
     const handleDrop = async (e, date) => {
         e.preventDefault();
+        e.stopPropagation(); // Prevent event bubbling
         setDragOverDate(null);
 
         if (!draggedTask) return;
+
+        // Debug: Log the dates
+        console.log('Drop date received:', date);
+        console.log('Drop date ISO:', date.toISOString().split('T')[0]);
+        console.log('Dragged task current date:', draggedTask.date);
 
         try {
             // Calculate new due date - preserve the time if it exists
@@ -263,6 +271,8 @@ export default function Calendar() {
             newDueDate.setHours(oldDueDate.getHours());
             newDueDate.setMinutes(oldDueDate.getMinutes());
             newDueDate.setSeconds(oldDueDate.getSeconds());
+
+            console.log('New due date will be:', newDueDate.toISOString());
 
             // Update the task with the new due date
             await updateTask(draggedTask.id, {
