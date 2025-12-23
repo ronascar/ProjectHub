@@ -390,6 +390,39 @@ export const reportsAPI = {
     }
 };
 
+// ==================== MESSAGES ====================
+export const messagesAPI = {
+    list: async () => {
+        const res = await fetch(`${API_BASE_URL}/messages`, createOptions());
+        return handleResponse(res);
+    },
+
+    getUnreadCount: async () => {
+        const res = await fetch(`${API_BASE_URL}/messages/unread-count`, createOptions());
+        return handleResponse(res);
+    },
+
+    send: async (receiverId, content) => {
+        const res = await fetch(`${API_BASE_URL}/messages`, createOptions('POST', { receiverId, content }));
+        return handleResponse(res);
+    },
+
+    markAsRead: async (id) => {
+        const res = await fetch(`${API_BASE_URL}/messages/${id}/read`, createOptions('PUT'));
+        return handleResponse(res);
+    },
+
+    markAllAsRead: async () => {
+        const res = await fetch(`${API_BASE_URL}/messages/read-all`, createOptions('PUT'));
+        return handleResponse(res);
+    },
+
+    delete: async (id) => {
+        const res = await fetch(`${API_BASE_URL}/messages/${id}`, createOptions('DELETE'));
+        return handleResponse(res);
+    }
+};
+
 // Export all APIs
 export default {
     auth: authAPI,
@@ -399,5 +432,6 @@ export default {
     clients: clientsAPI,
     team: teamAPI,
     dashboard: dashboardAPI,
-    reports: reportsAPI
+    reports: reportsAPI,
+    messages: messagesAPI
 };

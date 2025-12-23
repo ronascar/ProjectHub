@@ -1,11 +1,13 @@
 import { NavLink } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useTasks } from '../context/TasksContext';
-import { useMemo } from 'react';
+import { useState, useEffect, useMemo } from 'react';
+import { messagesAPI } from '../services/api';
 
 export default function Sidebar({ isMobile = false, onClose }) {
     const { user, logout } = useAuth();
     const { tasks } = useTasks();
+    const [unreadMessages, setUnreadMessages] = useState(0);
 
     // Calculate active tasks count (not done and not cancelled)
     const activeTasksCount = useMemo(() => {
@@ -13,6 +15,24 @@ export default function Sidebar({ isMobile = false, onClose }) {
             task.status !== 'DONE' && task.status !== 'CANCELLED'
         ).length;
     }, [tasks]);
+
+    // Load unread messages count
+    useEffect(() => {
+        const loadUnreadCount = async () => {
+            try {
+                const { count } = await messagesAPI.getUnreadCount();
+                setUnreadMessages(count);
+            } catch (error) {
+                console.error('Error loading unread messages:', error);
+            }
+        };
+
+        loadUnreadCount();
+
+        // Poll for new messages every 30 seconds
+        const interval = setInterval(loadUnreadCount, 30000);
+        return () => clearInterval(interval);
+    }, []);
 
     const navItems = [
         { path: '/', icon: 'dashboard', label: 'Painel', filled: true },
@@ -26,8 +46,21 @@ export default function Sidebar({ isMobile = false, onClose }) {
     ];
 
     const workspaceItems = [
-        { path: '/tasks', icon: 'assignment', label: 'Minhas Tarefas', badge: activeTasksCount },
-        { path: '/inbox', icon: 'inbox', label: 'Caixa de Entrada' },
+        {
+            path: '/tasks',
+            icon: 'assignment',
+            label: 'Minhas Tarefas',
+            badge: activeTasksCount,
+            badgeColor: 'red'
+        },
+        {
+            path: '/inbox',
+            icon: 'notifications',
+            label: 'Caixa de Entrada',
+            badge: unreadMessages,
+            badgeColor: 'amber',
+            filled: true
+        },
     ];
 
     const handleNavClick = () => {
@@ -129,12 +162,21 @@ export default function Sidebar({ isMobile = false, onClose }) {
                                     }`
                                 }
                             >
-                                <span className="material-symbols-outlined">{item.icon}</span>
-                                <span className="font-medium">{item.label}</span>
-                                {item.badge > 0 && (
-                                    <span className="ml-auto rounded bg-red-500/10 px-1.5 py-0.5 text-xs font-medium text-red-500">
-                                        {item.badge}
-                                    </span>
+                                {({ isActive }) => (
+                                    <>
+                                        <span className={`material-symbols-outlined ${isActive && item.filled ? 'filled' : ''}`}>
+                                            {item.icon}
+                                        </span>
+                                        <span className="font-medium">{item.label}</span>
+                                        {item.badge > 0 && (
+                                            <span className={`ml-auto rounded px-1.5 py-0.5 text-xs font-medium ${item.badgeColor === 'amber'
+                                                    ? 'bg-amber-500/10 text-amber-600 dark:text-amber-400'
+                                                    : 'bg-red-500/10 text-red-500'
+                                                }`}>
+                                                {item.badge}
+                                            </span>
+                                        )}
+                                    </>
                                 )}
                             </NavLink>
                         ))}
