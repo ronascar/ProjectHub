@@ -17,17 +17,25 @@ export function AuthProvider({ children }) {
     useEffect(() => {
         const checkAuth = async () => {
             const token = localStorage.getItem('token');
-            if (token) {
+            const savedUser = localStorage.getItem('user');
+
+            // If we have both token and user, validate the token
+            if (token && savedUser) {
                 try {
                     const currentUser = await authAPI.getCurrentUser();
                     setUser(currentUser);
                     localStorage.setItem('user', JSON.stringify(currentUser));
                 } catch (err) {
-                    // Token invalid, clear storage
+                    // Token invalid or expired, clear storage
+                    console.log('Auth check failed:', err.message);
                     localStorage.removeItem('token');
                     localStorage.removeItem('user');
                     setUser(null);
+                    // Don't navigate here - let the ProtectedRoute handle it
                 }
+            } else {
+                // No token or user, clear state
+                setUser(null);
             }
             setLoading(false);
         };

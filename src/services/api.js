@@ -7,6 +7,19 @@ const getToken = () => localStorage.getItem('token');
 // Helper to handle API responses
 const handleResponse = async (response) => {
     if (!response.ok) {
+        // Handle authentication errors
+        if (response.status === 401 || response.status === 403) {
+            // Clear auth data
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+
+            // Redirect to login only if not already on login page
+            if (!window.location.pathname.includes('/login')) {
+                alert('Sua sessão expirou. Por favor, faça login novamente.');
+                window.location.href = '/login';
+            }
+        }
+
         const error = await response.json().catch(() => ({ error: 'Network error' }));
         const errorMessage = error.error || `Request failed with status ${response.status}`;
         const err = new Error(errorMessage);
