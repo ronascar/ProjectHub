@@ -312,11 +312,13 @@ router.put('/:id', authMiddleware, async (req, res) => {
                 }))
             } : undefined,
             // Update technologies (Replace all)
-            technologies: technologies ? {
+            technologies: technologies?.length ? {
                 deleteMany: {},
-                create: technologies.map(t => ({
-                    technology: { connect: { id: t.id } }
-                }))
+                create: technologies
+                    .filter(t => t.id) // Only process technologies with valid IDs
+                    .map(t => ({
+                        technology: { connect: { id: t.id } }
+                    }))
             } : undefined
         };
 
@@ -356,6 +358,11 @@ router.put('/:id', authMiddleware, async (req, res) => {
         res.json(project);
     } catch (error) {
         console.error('Update project error:', error);
+        console.error('Error details:', {
+            message: error.message,
+            code: error.code,
+            meta: error.meta
+        });
         res.status(500).json({ error: 'Failed to update project' });
     }
 });

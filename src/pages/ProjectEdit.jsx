@@ -79,11 +79,13 @@ export default function ProjectEdit() {
                 }
                 if (project.resources) setResources(project.resources);
                 if (project.members) setTeamMembers(project.members.map(m => m.user));
-                // Technologies (visual only for now as we don't have full ID mapping)
+                // Map technologies with full data including IDs
                 if (project.technologies) {
                     setTechnologies(project.technologies.map(pt => ({
+                        id: pt.technology.id,
                         name: pt.technology.name,
                         icon: pt.technology.icon,
+                        color: pt.technology.color,
                         invert: false // Default
                     })));
                 }
@@ -160,7 +162,9 @@ export default function ProjectEdit() {
                     url: r.url,
                     type: r.type || 'LINK'
                 })),
-                technologies: technologies.map(t => ({ id: t.id }))
+                technologies: technologies
+                    .filter(t => t.id) // Only include technologies with valid IDs
+                    .map(t => ({ id: t.id }))
             };
 
             await projectsAPI.update(projectId, updateData);
