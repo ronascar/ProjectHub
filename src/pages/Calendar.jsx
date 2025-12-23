@@ -17,15 +17,25 @@ const getColorClasses = (priority) => {
     return colors[priority] || colors.MEDIUM;
 };
 
+const TASK_STATUSES = [
+    { value: 'TODO', label: 'A Fazer' },
+    { value: 'IN_PROGRESS', label: 'Em Progresso' },
+    { value: 'DONE', label: 'Concluído' },
+    { value: 'CANCELLED', label: 'Cancelado' }
+];
+
 export default function Calendar() {
     const navigate = useNavigate();
     const today = new Date();
     const [currentDate, setCurrentDate] = useState(new Date(today.getFullYear(), today.getMonth(), 1));
     const [selectedProjects, setSelectedProjects] = useState([]);
+    const [selectedStatuses, setSelectedStatuses] = useState(['TODO', 'IN_PROGRESS', 'DONE']);
     const [viewMode, setViewMode] = useState('Mês');
     const [projects, setProjects] = useState([]);
+    const [draggedTask, setDraggedTask] = useState(null);
+    const [dragOverDate, setDragOverDate] = useState(null);
 
-    const { tasks, loading } = useTasks();
+    const { tasks, loading, updateTask } = useTasks();
 
     // Load projects
     useEffect(() => {
@@ -92,21 +102,49 @@ export default function Calendar() {
         return days;
     }, [currentDate]);
 
-    // Convert tasks to calendar events
+    // Convert tasks and projects to calendar events
     const events = useMemo(() => {
-        return tasks
+        const taskEvents = tasks
             .filter(task => task.dueDate) // Only tasks with due dates
             .filter(task => !task.projectId || selectedProjects.includes(task.projectId)) // Filter by selected projects
+            .filter(task => selectedStatuses.includes(task.status || 'TODO')) // Filter by selected statuses
             .map(task => ({
                 id: task.id,
+                type: 'task',
                 date: task.dueDate.split('T')[0], // Get date part only
                 time: task.dueDate ? new Date(task.dueDate).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }) : 'Todo o dia',
                 title: task.title,
                 priority: task.priority || 'MEDIUM',
+                status: task.status || 'TODO',
                 projectId: task.projectId,
                 projectName: task.project?.name || 'Sem Projeto'
             }));
-    }, [tasks, selectedProjects]);
+
+        // Add project events
+        const projectEvents = projects
+            .filter(p => p.startDate && selectedProjects.includes(p.id))
+            .map(project => ({
+                id: `project-${project.id}`,
+                type: 'project',
+                projectRealId: project.id,
+                date: project.startDate.split('T')[0],
+                endDate: project.endDate?.split('T')[0],
+                time: 'Projeto',
+                title: project.name,
+                color: project.color || '#3b82f6',
+                projectName: project.name
+            }));
+
+        return [...taskEvents, ...projectEvents].sort((a, b) => {
+            if (a.date === b.date) {
+                // Projects go first, then sort by time
+                if (a.type === 'project' && b.type === 'task') return -1;
+                if (a.type === 'task' && b.type === 'project') return 1;
+                return 0;
+            }
+            return a.date.localeCompare(b.date);
+        });
+    }, [tasks, projects, selectedProjects, selectedStatuses]);
 
     // Get events for a specific date
     const getEventsForDate = (date) => {
@@ -120,12 +158,32 @@ export default function Calendar() {
     };
 
     // Navigation handlers
-    const goToPreviousMonth = () => {
-        setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1));
+    const goToPrevious = () => {
+        if (viewMode === 'Dia') {
+            const newDate = new Date(currentDate);
+            newDate.setDate(newDate.getDate() - 1);
+            setCurrentDate(newDate);
+        } else if (viewMode === 'Semana') {
+            const newDate = new Date(currentDate);
+            newDate.setDate(newDate.getDate() - 7);
+            setCurrentDate(newDate);
+        } else {
+            setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1));
+        }
     };
 
-    const goToNextMonth = () => {
-        setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1));
+    const goToNext = () => {
+        if (viewMode === 'Dia') {
+            const newDate = new Date(currentDate);
+            newDate.setDate(newDate.getDate() + 1);
+            setCurrentDate(newDate);
+        } else if (viewMode === 'Semana') {
+            const newDate = new Date(currentDate);
+            newDate.setDate(newDate.getDate() + 7);
+            setCurrentDate(newDate);
+        } else {
+            setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1));
+        }
     };
 
     const goToToday = () => {
@@ -141,9 +199,81 @@ export default function Calendar() {
         );
     };
 
+    // Toggle status filter
+    const toggleStatus = (status) => {
+        setSelectedStatuses(prev =>
+            prev.includes(status)
+                ? prev.filter(s => s !== status)
+                : [...prev, status]
+        );
+    };
+
+    // Clear all filters
+    const clearFilters = () => {
+        setSelectedProjects(projects.map(p => p.id));
+        setSelectedStatuses(['TODO', 'IN_PROGRESS', 'DONE']);
+    };
+
     // Handle event click
-    const handleEventClick = (eventId) => {
-        navigate(`/tasks/${eventId}/edit`);
+    const handleEventClick = (event) => {
+        if (event.type === 'project') {
+            navigate(`/projects/${event.projectRealId}`);
+        } else {
+            navigate(`/tasks/${event.id}/edit`);
+        }
+    };
+
+    // Drag and Drop handlers
+    const handleDragStart = (e, task) => {
+        setDraggedTask(task);
+        e.dataTransfer.effectAllowed = 'move';
+        e.dataTransfer.setData('text/html', e.target);
+        // Add a slight opacity to the dragged element
+        e.target.style.opacity = '0.5';
+    };
+
+    const handleDragEnd = (e) => {
+        e.target.style.opacity = '1';
+        setDraggedTask(null);
+        setDragOverDate(null);
+    };
+
+    const handleDragOver = (e, date) => {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'move';
+        setDragOverDate(date.toISOString().split('T')[0]);
+    };
+
+    const handleDragLeave = () => {
+        setDragOverDate(null);
+    };
+
+    const handleDrop = async (e, date) => {
+        e.preventDefault();
+        setDragOverDate(null);
+
+        if (!draggedTask) return;
+
+        try {
+            // Calculate new due date - preserve the time if it exists
+            const oldDueDate = new Date(draggedTask.date);
+            const newDueDate = new Date(date);
+
+            // Set the time from the old date to the new date
+            newDueDate.setHours(oldDueDate.getHours());
+            newDueDate.setMinutes(oldDueDate.getMinutes());
+            newDueDate.setSeconds(oldDueDate.getSeconds());
+
+            // Update the task with the new due date
+            await updateTask(draggedTask.id, {
+                dueDate: newDueDate.toISOString()
+            });
+
+            setDraggedTask(null);
+        } catch (err) {
+            console.error('Error updating task date:', err);
+            alert('Erro ao atualizar a data da tarefa. Tente novamente.');
+        }
     };
 
     if (loading) {
@@ -165,17 +295,20 @@ export default function Calendar() {
                 <div className="mb-8">
                     <div className="flex items-center justify-between mb-4 px-2">
                         <span className="text-slate-900 dark:text-white font-bold">
-                            {MONTHS[currentDate.getMonth()]} {currentDate.getFullYear()}
+                            {viewMode === 'Mês'
+                                ? `${MONTHS[currentDate.getMonth()]} ${currentDate.getFullYear()}`
+                                : `${currentDate.toLocaleDateString('pt-BR')}`
+                            }
                         </span>
                         <div className="flex gap-1">
                             <button
-                                onClick={goToPreviousMonth}
+                                onClick={goToPrevious}
                                 className="p-1 hover:bg-gray-100 dark:hover:bg-border-dark rounded text-slate-700 dark:text-white transition-colors"
                             >
                                 <span className="material-symbols-outlined text-sm">chevron_left</span>
                             </button>
                             <button
-                                onClick={goToNextMonth}
+                                onClick={goToNext}
                                 className="p-1 hover:bg-gray-100 dark:hover:bg-border-dark rounded text-slate-700 dark:text-white transition-colors"
                             >
                                 <span className="material-symbols-outlined text-sm">chevron_right</span>
@@ -204,7 +337,7 @@ export default function Calendar() {
                 </div>
 
                 {/* Projects Filter */}
-                <div className="mb-8">
+                <div className="mb-6">
                     <h3 className="text-slate-500 dark:text-[#92adc9] text-xs font-bold uppercase tracking-wider mb-3 px-2">Projetos</h3>
                     <div className="space-y-1">
                         {projects.map((project) => (
@@ -224,6 +357,34 @@ export default function Calendar() {
                         )}
                     </div>
                 </div>
+
+                {/* Status Filter */}
+                <div className="mb-6">
+                    <h3 className="text-slate-500 dark:text-[#92adc9] text-xs font-bold uppercase tracking-wider mb-3 px-2">Status</h3>
+                    <div className="space-y-1">
+                        {TASK_STATUSES.map((status) => (
+                            <label key={status.value} className="flex items-center gap-3 px-2 py-1.5 hover:bg-gray-100 dark:hover:bg-border-dark rounded-md cursor-pointer group transition-colors">
+                                <input
+                                    type="checkbox"
+                                    checked={selectedStatuses.includes(status.value)}
+                                    onChange={() => toggleStatus(status.value)}
+                                    className="rounded border-gray-300 dark:border-border-dark bg-white dark:bg-background-dark text-primary focus:ring-0 focus:ring-offset-0 size-4"
+                                />
+                                <span className="text-sm text-slate-700 dark:text-white flex-1 group-hover:text-primary transition-colors">{status.label}</span>
+                            </label>
+                        ))}
+                    </div>
+                </div>
+
+                {/* Clear Filters Button */}
+                <div className="px-2">
+                    <button
+                        onClick={clearFilters}
+                        className="w-full px-4 py-2 text-sm font-medium text-slate-700 dark:text-white bg-gray-100 dark:bg-border-dark hover:bg-gray-200 dark:hover:bg-border-dark/80 rounded-lg transition-colors"
+                    >
+                        Limpar Filtros
+                    </button>
+                </div>
             </div>
 
             {/* Calendar Grid Area */}
@@ -236,17 +397,19 @@ export default function Calendar() {
                             Nova Tarefa
                         </Link>
                         <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white tracking-tight">
-                            {MONTHS[currentDate.getMonth()]} {currentDate.getFullYear()}
+                            {viewMode === 'Dia' && currentDate.toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' })}
+                            {viewMode === 'Semana' && `Semana de ${currentDate.toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' })}`}
+                            {viewMode === 'Mês' && `${MONTHS[currentDate.getMonth()]} ${currentDate.getFullYear()}`}
                         </h2>
                         <div className="flex items-center rounded-lg border border-gray-200 dark:border-border-dark bg-gray-50 dark:bg-surface-dark p-0.5 ml-2">
                             <button
-                                onClick={goToPreviousMonth}
+                                onClick={goToPrevious}
                                 className="p-1 hover:text-slate-900 dark:hover:text-white text-slate-500 dark:text-[#92adc9] hover:bg-white dark:hover:bg-background-dark rounded transition-colors shadow-sm"
                             >
                                 <span className="material-symbols-outlined">chevron_left</span>
                             </button>
                             <button
-                                onClick={goToNextMonth}
+                                onClick={goToNext}
                                 className="p-1 hover:text-slate-900 dark:hover:text-white text-slate-500 dark:text-[#92adc9] hover:bg-white dark:hover:bg-background-dark rounded transition-colors shadow-sm"
                             >
                                 <span className="material-symbols-outlined">chevron_right</span>
@@ -279,56 +442,200 @@ export default function Calendar() {
                     </div>
                 </div>
 
-                {/* Calendar Grid (Month View) */}
+
+                {/* Calendar Views */}
                 <div className="flex-1 overflow-y-auto p-6">
-                    <div className="bg-white dark:bg-surface-dark rounded-xl border border-gray-200 dark:border-border-dark shadow-sm overflow-hidden min-h-[700px] flex flex-col">
-                        {/* Days Header */}
-                        <div className="grid grid-cols-7 border-b border-gray-200 dark:border-border-dark bg-gray-50 dark:bg-background-dark/50">
-                            {DAYS_OF_WEEK.map((day, i) => (
-                                <div key={day} className={`py-3 text-center text-sm font-semibold uppercase tracking-wider ${i >= 5 ? 'text-primary' : 'text-slate-500 dark:text-[#92adc9]'}`}>
-                                    {day}
-                                </div>
-                            ))}
+                    {viewMode === 'Mês' && (
+                        <div className="bg-white dark:bg-surface-dark rounded-xl border border-gray-200 dark:border-border-dark shadow-sm overflow-hidden min-h-[700px] flex flex-col">
+                            {/* Days Header */}
+                            <div className="grid grid-cols-7 border-b border-gray-200 dark:border-border-dark bg-gray-50 dark:bg-background-dark/50">
+                                {DAYS_OF_WEEK.map((day, i) => (
+                                    <div key={day} className={`py-3 text-center text-sm font-semibold uppercase tracking-wider ${i >= 5 ? 'text-primary' : 'text-slate-500 dark:text-[#92adc9]'}`}>
+                                        {day}
+                                    </div>
+                                ))}
+                            </div>
+
+                            {/* Days Grid */}
+                            <div className="grid grid-cols-7 flex-1 auto-rows-fr bg-gray-200 dark:bg-border-dark gap-px">
+                                {calendarData.map((dayData, index) => {
+                                    const dayEvents = getEventsForDate(dayData.date);
+                                    return (
+                                        <div
+                                            key={index}
+                                            className={`bg-white dark:bg-surface-dark p-2 min-h-[100px] flex flex-col gap-1 relative group hover:bg-gray-50 dark:hover:bg-[#1a2632] transition-colors ${!dayData.isCurrentMonth ? 'opacity-50' : ''
+                                                } ${dragOverDate === dayData.date.toISOString().split('T')[0]
+                                                    ? 'ring-2 ring-primary ring-inset bg-primary/5 dark:bg-primary/10'
+                                                    : ''
+                                                }`}
+                                            onDragOver={(e) => handleDragOver(e, dayData.date)}
+                                            onDragLeave={handleDragLeave}
+                                            onDrop={(e) => handleDrop(e, dayData.date)}
+                                        >
+                                            <span className={`text-sm font-medium p-1 ${isToday(dayData.date)
+                                                ? 'text-white bg-primary rounded-full size-7 flex items-center justify-center shadow-lg shadow-primary/40'
+                                                : dayData.isCurrentMonth
+                                                    ? 'text-slate-700 dark:text-white'
+                                                    : 'text-slate-400 dark:text-[#92adc9]'
+                                                }`}>
+                                                {dayData.day}
+                                            </span>
+
+                                            {/* Events */}
+                                            {dayEvents.slice(0, 3).map((event) => (
+                                                <div
+                                                    key={event.id}
+                                                    draggable={event.type === 'task'}
+                                                    onDragStart={(e) => event.type === 'task' && handleDragStart(e, event)}
+                                                    onDragEnd={handleDragEnd}
+                                                    onClick={() => handleEventClick(event)}
+                                                    className={`${event.type === 'project'
+                                                        ? 'bg-gradient-to-r from-purple-500/10 to-purple-500/5 dark:from-purple-500/20 dark:to-purple-500/10 border-l-4 border-purple-500'
+                                                        : getColorClasses(event.priority) + ' border-l-2'
+                                                        } rounded-r px-2 py-1 text-xs text-slate-700 dark:text-white truncate ${event.type === 'task' ? 'cursor-move' : 'cursor-pointer'} hover:opacity-80 transition-all`}
+                                                    title={`${event.time} - ${event.title}${event.type === 'project' ? ' (Projeto)' : ` (${event.projectName})`}`}
+                                                    style={event.type === 'project' ? { borderLeftColor: event.color } : {}}
+                                                >
+                                                    <span className="font-bold flex items-center gap-1">
+                                                        {event.type === 'project' && <span className="material-symbols-outlined text-xs">folder</span>}
+                                                        {event.time}
+                                                    </span> {event.title}
+                                                </div>
+                                            ))}
+                                            {dayEvents.length > 3 && (
+                                                <span className="text-xs text-primary font-medium px-2">+{dayEvents.length - 3} mais</span>
+                                            )}
+                                        </div>
+                                    );
+                                })}
+                            </div>
                         </div>
+                    )}
 
-                        {/* Days Grid */}
-                        <div className="grid grid-cols-7 flex-1 auto-rows-fr bg-gray-200 dark:bg-border-dark gap-px">
-                            {calendarData.map((dayData, index) => {
-                                const dayEvents = getEventsForDate(dayData.date);
-                                return (
-                                    <div
-                                        key={index}
-                                        className={`bg-white dark:bg-surface-dark p-2 min-h-[100px] flex flex-col gap-1 relative group hover:bg-gray-50 dark:hover:bg-[#1a2632] transition-colors ${!dayData.isCurrentMonth ? 'opacity-50' : ''
-                                            }`}
-                                    >
-                                        <span className={`text-sm font-medium p-1 ${isToday(dayData.date)
-                                            ? 'text-white bg-primary rounded-full size-7 flex items-center justify-center shadow-lg shadow-primary/40'
-                                            : dayData.isCurrentMonth
-                                                ? 'text-slate-700 dark:text-white'
-                                                : 'text-slate-400 dark:text-[#92adc9]'
-                                            }`}>
-                                            {dayData.day}
-                                        </span>
+                    {viewMode === 'Semana' && (
+                        <div className="bg-white dark:bg-surface-dark rounded-xl border border-gray-200 dark:border-border-dark shadow-sm overflow-hidden min-h-[700px]">
+                            {/* Week Header */}
+                            <div className="grid grid-cols-7 border-b border-gray-200 dark:border-border-dark bg-gray-50 dark:bg-background-dark/50">
+                                {Array.from({ length: 7 }).map((_, i) => {
+                                    const weekDay = new Date(currentDate);
+                                    weekDay.setDate(currentDate.getDate() - currentDate.getDay() + i + 1);
+                                    return (
+                                        <div key={i} className="py-3 text-center">
+                                            <div className={`text-sm font-semibold uppercase tracking-wider ${i >= 5 ? 'text-primary' : 'text-slate-500 dark:text-[#92adc9]'}`}>
+                                                {DAYS_OF_WEEK[i]}
+                                            </div>
+                                            <div className={`text-lg font-bold mt-1 ${isToday(weekDay) ? 'text-primary' : 'text-slate-700 dark:text-white'}`}>
+                                                {weekDay.getDate()}
+                                            </div>
+                                        </div>
+                                    );
+                                })}
+                            </div>
 
-                                        {/* Events */}
-                                        {dayEvents.slice(0, 3).map((event) => (
+                            {/* Week Body */}
+                            <div className="grid grid-cols-7 gap-px bg-gray-200 dark:bg-border-dark auto-rows-fr min-h-[650px]">
+                                {Array.from({ length: 7 }).map((_, i) => {
+                                    const weekDay = new Date(currentDate);
+                                    weekDay.setDate(currentDate.getDate() - currentDate.getDay() + i + 1);
+                                    const dayEvents = getEventsForDate(weekDay);
+
+                                    return (
+                                        <div
+                                            key={i}
+                                            className={`bg-white dark:bg-surface-dark p-3 flex flex-col gap-2 ${dragOverDate === weekDay.toISOString().split('T')[0]
+                                                ? 'ring-2 ring-primary ring-inset bg-primary/5 dark:bg-primary/10'
+                                                : ''
+                                                }`}
+                                            onDragOver={(e) => handleDragOver(e, weekDay)}
+                                            onDragLeave={handleDragLeave}
+                                            onDrop={(e) => handleDrop(e, weekDay)}
+                                        >
+                                            {dayEvents.map((event) => (
+                                                <div
+                                                    key={event.id}
+                                                    draggable={event.type === 'task'}
+                                                    onDragStart={(e) => event.type === 'task' && handleDragStart(e, event)}
+                                                    onDragEnd={handleDragEnd}
+                                                    onClick={() => handleEventClick(event)}
+                                                    className={`${event.type === 'project'
+                                                        ? 'bg-gradient-to-r from-purple-500/10 to-purple-500/5 dark:from-purple-500/20 dark:to-purple-500/10 border-l-4 border-purple-500'
+                                                        : getColorClasses(event.priority) + ' border-l-2'
+                                                        } rounded-r px-2 py-1.5 text-xs text-slate-700 dark:text-white ${event.type === 'task' ? 'cursor-move' : 'cursor-pointer'} hover:opacity-80 transition-all`}
+                                                    style={event.type === 'project' ? { borderLeftColor: event.color } : {}}
+                                                >
+                                                    <div className="font-bold flex items-center gap-1">
+                                                        {event.type === 'project' && <span className="material-symbols-outlined text-xs">folder</span>}
+                                                        {event.time}
+                                                    </div>
+                                                    <div className="truncate">{event.title}</div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        </div>
+                    )}
+
+                    {viewMode === 'Dia' && (
+                        <div className="bg-white dark:bg-surface-dark rounded-xl border border-gray-200 dark:border-border-dark shadow-sm overflow-hidden">
+                            {/* Day Header */}
+                            <div className="border-b border-gray-200 dark:border-border-dark bg-gray-50 dark:bg-background-dark/50 py-4 px-6">
+                                <div className="text-center">
+                                    <div className="text-sm font-semibold uppercase tracking-wider text-slate-500 dark:text-[#92adc9]">
+                                        {DAYS_OF_WEEK[currentDate.getDay() === 0 ? 6 : currentDate.getDay() - 1]}
+                                    </div>
+                                    <div className={`text-2xl font-bold mt-1 ${isToday(currentDate) ? 'text-primary' : 'text-slate-700 dark:text-white'}`}>
+                                        {currentDate.getDate()}
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Day Body */}
+                            <div
+                                className={`p-6 min-h-[700px] ${dragOverDate === currentDate.toISOString().split('T')[0]
+                                    ? 'ring-2 ring-primary ring-inset bg-primary/5 dark:bg-primary/10'
+                                    : ''
+                                    }`}
+                                onDragOver={(e) => handleDragOver(e, currentDate)}
+                                onDragLeave={handleDragLeave}
+                                onDrop={(e) => handleDrop(e, currentDate)}
+                            >
+                                <div className="space-y-2">
+                                    {getEventsForDate(currentDate).length === 0 ? (
+                                        <div className="text-center py-20 text-gray-500 dark:text-gray-400">
+                                            <span className="material-symbols-outlined text-6xl opacity-50">event_available</span>
+                                            <p className="mt-4 text-lg">Nenhum evento para este dia</p>
+                                        </div>
+                                    ) : (
+                                        getEventsForDate(currentDate).map((event) => (
                                             <div
                                                 key={event.id}
-                                                onClick={() => handleEventClick(event.id)}
-                                                className={`${getColorClasses(event.priority)} border-l-2 rounded-r px-2 py-1 text-xs text-slate-700 dark:text-white truncate cursor-pointer hover:opacity-80 transition-all`}
-                                                title={`${event.time} - ${event.title} (${event.projectName})`}
+                                                draggable={event.type === 'task'}
+                                                onDragStart={(e) => event.type === 'task' && handleDragStart(e, event)}
+                                                onDragEnd={handleDragEnd}
+                                                onClick={() => handleEventClick(event)}
+                                                className={`${event.type === 'project'
+                                                    ? 'bg-gradient-to-r from-purple-500/10 to-purple-500/5 dark:from-purple-500/20 dark:to-purple-500/10 border-l-4 border-purple-500'
+                                                    : getColorClasses(event.priority) + ' border-l-2'
+                                                    } rounded-r px-4 py-3 text-sm text-slate-700 dark:text-white ${event.type === 'task' ? 'cursor-move' : 'cursor-pointer'} hover:opacity-80 transition-all`}
+                                                style={event.type === 'project' ? { borderLeftColor: event.color } : {}}
                                             >
-                                                <span className="font-bold">{event.time}</span> {event.title}
+                                                <div className="font-bold text-base flex items-center gap-2">
+                                                    {event.type === 'project' && <span className="material-symbols-outlined">folder</span>}
+                                                    {event.time}
+                                                </div>
+                                                <div className="mt-1 text-base">{event.title}</div>
+                                                <div className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+                                                    {event.type === 'project' ? 'Projeto' : event.projectName}
+                                                </div>
                                             </div>
-                                        ))}
-                                        {dayEvents.length > 3 && (
-                                            <span className="text-xs text-primary font-medium px-2">+{dayEvents.length - 3} mais</span>
-                                        )}
-                                    </div>
-                                );
-                            })}
+                                        ))
+                                    )}
+                                </div>
+                            </div>
                         </div>
-                    </div>
+                    )}
                 </div>
             </div>
         </div>
