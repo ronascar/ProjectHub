@@ -101,7 +101,7 @@ export default function ProjectDetails() {
             <div className="layout-content-container flex flex-col w-full max-w-[1200px] mx-auto flex-1 gap-6">
                 {/* Breadcrumbs */}
                 <nav className="flex items-center gap-2 text-sm text-slate-500 dark:text-[#92adc9]">
-                    <Link className="hover:text-primary transition-colors" to="/">Home</Link>
+                    <Link className="hover:text-primary transition-colors" to="/">Início</Link>
                     <span className="material-symbols-outlined text-[16px]">chevron_right</span>
                     <Link className="hover:text-primary transition-colors" to="/projects">Projetos</Link>
                     <span className="material-symbols-outlined text-[16px]">chevron_right</span>
@@ -121,7 +121,7 @@ export default function ProjectDetails() {
                     <div className="flex items-center gap-3">
                         <button className="flex items-center gap-2 px-4 h-10 rounded-lg border border-slate-200 dark:border-[#334155] text-slate-700 dark:text-white font-bold text-sm hover:bg-slate-50 dark:hover:bg-[#233648] transition-colors">
                             <span className="material-symbols-outlined text-[20px]">share</span>
-                            Share
+                            Compartilhar
                         </button>
                         <Link
                             to={`/projects/edit/${projectId}`}
@@ -176,39 +176,36 @@ export default function ProjectDetails() {
                                 <div className="bg-white dark:bg-surface-dark p-5 rounded-lg border border-slate-200 dark:border-border-dark flex flex-col gap-1">
                                     <div className="flex items-center justify-between">
                                         <span className="text-slate-500 dark:text-[#94a3b8] text-sm font-medium">Status</span>
-                                        <span className={`material-symbols-outlined text-[20px] ${
-                                            project.status === 'COMPLETED' ? 'text-green-500' :
-                                            project.status === 'IN_PROGRESS' ? 'text-blue-500' :
-                                            project.status === 'ON_HOLD' ? 'text-orange-500' :
-                                            'text-gray-500'
-                                        }`}>radio_button_checked</span>
+                                        <span className={`material-symbols-outlined text-[20px] ${project.status === 'COMPLETED' ? 'text-green-500' :
+                                                project.status === 'IN_PROGRESS' ? 'text-blue-500' :
+                                                    project.status === 'ON_HOLD' ? 'text-orange-500' :
+                                                        'text-gray-500'
+                                            }`}>radio_button_checked</span>
                                     </div>
                                     <span className="text-2xl font-bold text-slate-900 dark:text-white">{getStatusLabel(project.status)}</span>
                                     <div className="w-full bg-slate-100 dark:bg-slate-700 rounded-full h-1.5 mt-2">
-                                        <div className={`h-1.5 rounded-full ${
-                                            project.status === 'COMPLETED' ? 'bg-green-500' :
-                                            project.status === 'IN_PROGRESS' ? 'bg-blue-500' :
-                                            project.status === 'ON_HOLD' ? 'bg-orange-500' :
-                                            'bg-gray-500'
-                                        }`} style={{ width: `${project.progress || 0}%` }}></div>
+                                        <div className={`h-1.5 rounded-full ${project.status === 'COMPLETED' ? 'bg-green-500' :
+                                                project.status === 'IN_PROGRESS' ? 'bg-blue-500' :
+                                                    project.status === 'ON_HOLD' ? 'bg-orange-500' :
+                                                        'bg-gray-500'
+                                            }`} style={{ width: `${project.progress || 0}%` }}></div>
                                     </div>
                                 </div>
                                 {/* Days Remaining */}
                                 <div className="bg-white dark:bg-surface-dark p-5 rounded-lg border border-slate-200 dark:border-border-dark flex flex-col gap-1">
                                     <div className="flex items-center justify-between">
                                         <span className="text-slate-500 dark:text-[#94a3b8] text-sm font-medium">Prazo</span>
-                                        <span className={`material-symbols-outlined text-[20px] ${
-                                            daysRemaining === null ? 'text-gray-400' :
-                                            daysRemaining < 0 ? 'text-red-400' :
-                                            daysRemaining < 7 ? 'text-orange-400' :
-                                            'text-green-400'
-                                        }`}>schedule</span>
+                                        <span className={`material-symbols-outlined text-[20px] ${daysRemaining === null ? 'text-gray-400' :
+                                                daysRemaining < 0 ? 'text-red-400' :
+                                                    daysRemaining < 7 ? 'text-orange-400' :
+                                                        'text-green-400'
+                                            }`}>schedule</span>
                                     </div>
                                     <span className="text-2xl font-bold text-slate-900 dark:text-white">
                                         {daysRemaining === null ? 'Sem prazo' :
-                                         daysRemaining < 0 ? `${Math.abs(daysRemaining)} dias atrasado` :
-                                         daysRemaining === 0 ? 'Hoje' :
-                                         `${daysRemaining} dias`}
+                                            daysRemaining < 0 ? `${Math.abs(daysRemaining)} dias atrasado` :
+                                                daysRemaining === 0 ? 'Hoje' :
+                                                    `${daysRemaining} dias`}
                                     </span>
                                     <span className="text-xs text-slate-400">Entrega: {formatDate(project.dueDate)}</span>
                                 </div>

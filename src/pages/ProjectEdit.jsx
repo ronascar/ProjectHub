@@ -12,7 +12,7 @@ export default function ProjectEdit() {
     // Form state
     const [formData, setFormData] = useState({
         name: '',
-        category: 'Web Development',
+        category: 'Desenvolvimento Web',
         description: '',
         longDescription: '',
         status: 'progress',
@@ -53,7 +53,7 @@ export default function ProjectEdit() {
                 // Map API data to form format
                 setFormData({
                     name: project.name || '',
-                    category: project.category || 'Web Development',
+                    category: project.category || 'Desenvolvimento Web',
                     description: project.shortDescription || project.description || '',
                     longDescription: project.description || '',
                     status: project.status?.toLowerCase() || 'progress',
@@ -269,7 +269,7 @@ export default function ProjectEdit() {
                     )}
                     {/* Breadcrumbs */}
                     <nav className="flex items-center gap-2 text-sm text-slate-500 dark:text-[#92adc9]">
-                        <Link className="hover:text-primary transition-colors" to="/">Home</Link>
+                        <Link className="hover:text-primary transition-colors" to="/">Início</Link>
                         <span className="material-symbols-outlined text-[16px]">chevron_right</span>
                         <Link className="hover:text-primary transition-colors" to="/projects">Projetos</Link>
                         <span className="material-symbols-outlined text-[16px]">chevron_right</span>
@@ -293,10 +293,11 @@ export default function ProjectEdit() {
                                         onChange={(e) => handleInputChange('category', e.target.value)}
                                         className="appearance-none pl-3 pr-8 py-1 rounded-full bg-primary/10 hover:bg-primary/20 border-none text-primary text-xs font-bold uppercase tracking-wider cursor-pointer focus:ring-2 focus:ring-primary focus:bg-white dark:focus:bg-surface-dark transition-all"
                                     >
-                                        <option value="Web Development">Web Development</option>
-                                        <option value="Mobile App">Mobile App</option>
-                                        <option value="Marketing Campaign">Marketing Campaign</option>
+                                        <option value="Desenvolvimento Web">Desenvolvimento Web</option>
+                                        <option value="Aplicativo Móvel">Aplicativo Móvel</option>
+                                        <option value="Campanha de Marketing">Campanha de Marketing</option>
                                         <option value="Design System">Design System</option>
+                                        <option value="Consultoria">Consultoria</option>
                                     </select>
                                     <span className="material-symbols-outlined absolute right-2 top-1/2 -translate-y-1/2 text-[16px] text-primary pointer-events-none">expand_more</span>
                                 </div>

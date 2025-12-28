@@ -9,7 +9,7 @@ export default function CreateProject() {
     const [formData, setFormData] = useState({
         name: '',
         client: '',
-        category: 'Web Development',
+        category: 'Desenvolvimento Web',
         description: '',
         startDate: '',
         estimatedDate: '',
@@ -101,7 +101,7 @@ export default function CreateProject() {
                 name: formData.name.trim(),
                 description: formData.description?.trim() || null,
                 shortDescription: formData.description?.trim()?.substring(0, 200) || null,
-                category: formData.category || 'Web Development',
+                category: formData.category || 'Desenvolvimento Web',
                 status: formData.status === 'Planejamento' ? 'PLANNING' :
                     formData.status === 'Em Andamento' ? 'IN_PROGRESS' :
                         formData.status === 'Em Pausa' ? 'ON_HOLD' : 'PLANNING',
@@ -225,7 +225,7 @@ export default function CreateProject() {
                                         value={formData.name}
                                         onChange={handleChange}
                                         className="w-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-slate-600 rounded-lg px-4 py-2.5 text-slate-900 dark:text-white placeholder-gray-400 focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
-                                        placeholder="Ex: Redesign Website 2024"
+                                        placeholder="Ex: Reformulação do Site 2024"
                                         type="text"
                                     />
                                 </div>
@@ -253,10 +253,10 @@ export default function CreateProject() {
                                         onChange={handleChange}
                                         className="w-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-slate-600 rounded-lg px-4 py-2.5 text-slate-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
                                     >
-                                        <option>Web Development</option>
-                                        <option>Mobile App</option>
+                                        <option>Desenvolvimento Web</option>
+                                        <option>Aplicativo Móvel</option>
                                         <option>Marketing Digital</option>
-                                        <option>UI/UX Design</option>
+                                        <option>Design UI/UX</option>
                                         <option>Consultoria</option>
                                     </select>
                                 </div>
