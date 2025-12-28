@@ -35,14 +35,14 @@ export default function Sidebar({ isMobile = false, onClose }) {
     }, []);
 
     const navItems = [
-        { path: '/', icon: 'dashboard', label: 'Painel', filled: true },
+        { path: '/', icon: 'dashboard', label: 'Dashboard', filled: true },
         { path: '/projects', icon: 'folder_open', label: 'Projetos' },
-        { path: '/kanban', icon: 'view_kanban', label: 'Kanban' },
+        { path: '/kanban', icon: 'view_kanban', label: 'Tarefas' },
         { path: '/clients', icon: 'domain', label: 'Clientes' },
         { path: '/teams', icon: 'group', label: 'Equipes' },
         { path: '/users', icon: 'manage_accounts', label: 'Usuários', adminOnly: true },
         { path: '/reports', icon: 'bar_chart', label: 'Relatórios' },
-        { path: '/calendar', icon: 'calendar_month', label: 'Calendário' },
+        { path: '/calendar', icon: 'calendar_month', label: 'Agenda' },
     ];
 
     const workspaceItems = [
@@ -170,8 +170,8 @@ export default function Sidebar({ isMobile = false, onClose }) {
                                         <span className="font-medium">{item.label}</span>
                                         {item.badge > 0 && (
                                             <span className={`ml-auto rounded px-1.5 py-0.5 text-xs font-medium ${item.badgeColor === 'amber'
-                                                    ? 'bg-amber-500/10 text-amber-600 dark:text-amber-400'
-                                                    : 'bg-red-500/10 text-red-500'
+                                                ? 'bg-amber-500/10 text-amber-600 dark:text-amber-400'
+                                                : 'bg-red-500/10 text-red-500'
                                                 }`}>
                                                 {item.badge}
                                             </span>
