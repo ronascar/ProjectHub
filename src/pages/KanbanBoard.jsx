@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { DndContext, closestCorners, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
+import { DndContext, closestCorners, PointerSensor, useSensor, useSensors, useDroppable } from '@dnd-kit/core';
 import { SortableContext, verticalListSortingStrategy, useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { useTasks } from '../context/TasksContext';
@@ -92,9 +92,11 @@ function TaskCard({ task }) {
 }
 
 // Kanban Column Component
-function KanbanColumn({ title, tasks, count, color = 'gray' }) {
+function KanbanColumn({ id, title, tasks, count, color = 'gray' }) {
+    const { setNodeRef } = useDroppable({ id });
+
     return (
-        <div className="flex flex-col h-full rounded-xl bg-slate-100/50 dark:bg-[#16212e] border border-slate-200/50 dark:border-slate-800/50">
+        <div ref={setNodeRef} className="flex flex-col h-full rounded-xl bg-slate-100/50 dark:bg-[#16212e] border border-slate-200/50 dark:border-slate-800/50">
             <div className={`flex items-center justify-between p-4 flex-shrink-0 ${color !== 'gray' ? `border-t-2 border-${color}-500` : ''} rounded-t-xl`}>
                 <div className="flex items-center gap-2">
                     <h3 className="text-sm font-bold text-slate-700 dark:text-white uppercase tracking-wider">{title}</h3>
@@ -124,7 +126,13 @@ function KanbanColumn({ title, tasks, count, color = 'gray' }) {
 export default function KanbanBoard({ showHeader = true, projectId, project }) {
     const [organizedTasks, setOrganizedTasks] = useState({ backlog: [], inProgress: [], testing: [], done: [] });
     const { tasks, loading, error, updateTask } = useTasks();
-    const sensors = useSensors(useSensor(PointerSensor));
+    const sensors = useSensors(
+        useSensor(PointerSensor, {
+            activationConstraint: {
+                distance: 5,
+            },
+        })
+    );
 
     // Organize tasks by status whenever tasks change
     useEffect(() => {
@@ -196,29 +204,75 @@ export default function KanbanBoard({ showHeader = true, projectId, project }) {
 
     const handleDragEnd = async (event) => {
         const { active, over } = event;
-        if (!over || active.id === over.id) return;
+        if (!over) return;
 
-        // Find which columns the tasks are in
+        const activeId = active.id;
+        const overId = over.id;
+
+        if (activeId === overId) return;
+
+        // Find source column
         let sourceColumn = null;
-        let destColumn = null;
-
         Object.keys(organizedTasks).forEach(column => {
-            if (organizedTasks[column].find(t => t.id === active.id)) sourceColumn = column;
-            if (organizedTasks[column].find(t => t.id === over.id)) destColumn = column;
+            if (organizedTasks[column].find(t => t.id === activeId)) sourceColumn = column;
         });
 
-        if (!sourceColumn || !destColumn) return;
+        if (!sourceColumn) return;
 
-        // Move task between columns
-        const newTasks = { ...organizedTasks };
-        const sourceIndex = newTasks[sourceColumn].findIndex(t => t.id === active.id);
-        const destIndex = newTasks[destColumn].findIndex(t => t.id === over.id);
+        // Find destination column
+        let destColumn = null;
 
-        const [movedTask] = newTasks[sourceColumn].splice(sourceIndex, 1);
-        newTasks[destColumn].splice(destIndex, 0, movedTask);
+        // Check if dropped on a column directly
+        if (organizedTasks[overId]) {
+            destColumn = overId;
+        } else {
+            // Check if dropped on a task
+            Object.keys(organizedTasks).forEach(column => {
+                if (organizedTasks[column].find(t => t.id === overId)) destColumn = column;
+            });
+        }
 
-        // Update local state immediately for better UX
-        setOrganizedTasks(newTasks);
+        if (!destColumn) return;
+
+        // If dragging within the same column
+        if (sourceColumn === destColumn) {
+            const newColumnTasks = [...organizedTasks[sourceColumn]];
+            const oldIndex = newColumnTasks.findIndex(t => t.id === activeId);
+            const newIndex = organizedTasks[overId]
+                ? newColumnTasks.length // Dropped on column, move to end
+                : newColumnTasks.findIndex(t => t.id === overId); // Dropped on task
+
+            // Move the task
+            const [movedTask] = newColumnTasks.splice(oldIndex, 1);
+            // Adjust newIndex if moving downwards
+            const adjustedIndex = newIndex < 0 ? newColumnTasks.length : newIndex;
+            newColumnTasks.splice(adjustedIndex, 0, movedTask);
+
+            setOrganizedTasks({
+                ...organizedTasks,
+                [sourceColumn]: newColumnTasks
+            });
+            return;
+        }
+
+        // Moving between columns
+        const sourceTasks = [...organizedTasks[sourceColumn]];
+        const destTasks = [...organizedTasks[destColumn]];
+
+        const sourceIndex = sourceTasks.findIndex(t => t.id === activeId);
+        const destIndex = organizedTasks[overId]
+            ? destTasks.length // Dropped on column, move to end
+            : destTasks.findIndex(t => t.id === overId); // Dropped on task
+
+        const [movedTask] = sourceTasks.splice(sourceIndex, 1);
+        const adjustedDestIndex = destIndex < 0 ? destTasks.length : destIndex;
+        destTasks.splice(adjustedDestIndex, 0, movedTask);
+
+        setOrganizedTasks({
+            ...organizedTasks,
+            [sourceColumn]: sourceTasks,
+            [destColumn]: destTasks
+        });
 
         // Map column to status
         const statusMap = {
@@ -230,7 +284,7 @@ export default function KanbanBoard({ showHeader = true, projectId, project }) {
 
         // Update task status in the backend
         try {
-            await updateTask(active.id, { status: statusMap[destColumn] });
+            await updateTask(activeId, { status: statusMap[destColumn] });
         } catch (err) {
             console.error('Error updating task status:', err);
             // Revert on error
@@ -328,10 +382,10 @@ export default function KanbanBoard({ showHeader = true, projectId, project }) {
                 <div className="h-full p-6">
                     <DndContext sensors={sensors} collisionDetection={closestCorners} onDragEnd={handleDragEnd}>
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 h-full">
-                            <KanbanColumn title="Backlog" tasks={organizedTasks.backlog} count={organizedTasks.backlog.length} color="gray" />
-                            <KanbanColumn title="Em andamento" tasks={organizedTasks.inProgress} count={organizedTasks.inProgress.length} color="primary" />
-                            <KanbanColumn title="Em teste" tasks={organizedTasks.testing} count={organizedTasks.testing.length} color="amber" />
-                            <KanbanColumn title="Concluída" tasks={organizedTasks.done} count={organizedTasks.done.length} color="emerald" />
+                            <KanbanColumn id="backlog" title="Backlog" tasks={organizedTasks.backlog} count={organizedTasks.backlog.length} color="gray" />
+                            <KanbanColumn id="inProgress" title="Em andamento" tasks={organizedTasks.inProgress} count={organizedTasks.inProgress.length} color="primary" />
+                            <KanbanColumn id="testing" title="Em teste" tasks={organizedTasks.testing} count={organizedTasks.testing.length} color="amber" />
+                            <KanbanColumn id="done" title="Concluída" tasks={organizedTasks.done} count={organizedTasks.done.length} color="emerald" />
                         </div>
                     </DndContext>
                 </div>
