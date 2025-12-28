@@ -305,7 +305,7 @@ export default function KanbanBoard({ showHeader = true, projectId, project }) {
         const statusMap = {
             backlog: 'TODO',
             inProgress: 'IN_PROGRESS',
-            testing: 'IN_REVIEW',
+            testing: 'TESTING', // Try TESTING instead of IN_REVIEW which backend rejects
             done: 'DONE'
         };
 
