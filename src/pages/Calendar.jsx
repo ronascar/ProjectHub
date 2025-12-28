@@ -326,19 +326,25 @@ export default function Calendar() {
                         {['D', 'S', 'T', 'Q', 'Q', 'S', 'S'].map((d, i) => (
                             <span key={i} className="text-xs text-slate-500 dark:text-[#92adc9] font-medium">{d}</span>
                         ))}
-                        {calendarData.slice(0, 35).map((dayData, i) => (
-                            <button
-                                key={i}
-                                className={`size-8 mx-auto flex items-center justify-center rounded-full text-sm transition-colors ${isToday(dayData.date)
-                                    ? 'bg-primary text-white shadow-md shadow-primary/40'
-                                    : dayData.isCurrentMonth
-                                        ? 'text-slate-700 dark:text-white hover:bg-gray-100 dark:hover:bg-border-dark'
-                                        : 'text-slate-400 dark:text-slate-600'
-                                    }`}
-                            >
-                                {dayData.day}
-                            </button>
-                        ))}
+                        {calendarData.map((dayData, i) => {
+                            const isSelected = dayData.date.toDateString() === currentDate.toDateString();
+                            return (
+                                <button
+                                    key={i}
+                                    onClick={() => setCurrentDate(dayData.date)}
+                                    className={`size-8 mx-auto flex items-center justify-center rounded-full text-sm transition-colors ${isToday(dayData.date)
+                                            ? 'bg-primary text-white shadow-md shadow-primary/40'
+                                            : isSelected
+                                                ? 'bg-primary/10 text-primary font-bold ring-1 ring-primary/20'
+                                                : dayData.isCurrentMonth
+                                                    ? 'text-slate-700 dark:text-white hover:bg-gray-100 dark:hover:bg-border-dark'
+                                                    : 'text-slate-400 dark:text-slate-600'
+                                        }`}
+                                >
+                                    {dayData.day}
+                                </button>
+                            );
+                        })}
                     </div>
                 </div>
 
