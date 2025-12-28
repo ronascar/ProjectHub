@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { DndContext, closestCorners, PointerSensor, useSensor, useSensors, useDroppable } from '@dnd-kit/core';
+import { DndContext, closestCorners, PointerSensor, useSensor, useSensors, useDroppable, DragOverlay } from '@dnd-kit/core';
 import { SortableContext, verticalListSortingStrategy, useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { useTasks } from '../context/TasksContext';
@@ -202,8 +202,23 @@ export default function KanbanBoard({ showHeader = true, projectId, project }) {
         return colorMap[priority] || 'gray';
     };
 
+    const [activeTask, setActiveTask] = useState(null);
+
+    const handleDragStart = (event) => {
+        const { active } = event;
+        // Find the task object from the active ID
+        let task = null;
+        Object.keys(organizedTasks).forEach(column => {
+            const found = organizedTasks[column].find(t => String(t.id) === String(active.id));
+            if (found) task = found;
+        });
+        setActiveTask(task);
+    };
+
     const handleDragEnd = async (event) => {
         const { active, over } = event;
+        setActiveTask(null);
+
         if (!over) return;
 
         const activeId = active.id;
@@ -380,13 +395,16 @@ export default function KanbanBoard({ showHeader = true, projectId, project }) {
             {/* Kanban Board Area */}
             <div className="flex-1">
                 <div className="p-6">
-                    <DndContext sensors={sensors} collisionDetection={closestCorners} onDragEnd={handleDragEnd}>
+                    <DndContext sensors={sensors} collisionDetection={closestCorners} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                             <KanbanColumn id="backlog" title="Backlog" tasks={organizedTasks.backlog} count={organizedTasks.backlog.length} color="gray" />
                             <KanbanColumn id="inProgress" title="Em andamento" tasks={organizedTasks.inProgress} count={organizedTasks.inProgress.length} color="primary" />
                             <KanbanColumn id="testing" title="Em teste" tasks={organizedTasks.testing} count={organizedTasks.testing.length} color="amber" />
                             <KanbanColumn id="done" title="Concluída" tasks={organizedTasks.done} count={organizedTasks.done.length} color="emerald" />
                         </div>
+                        <DragOverlay>
+                            {activeTask ? <TaskCard task={activeTask} /> : null}
+                        </DragOverlay>
                     </DndContext>
                 </div>
             </div>
