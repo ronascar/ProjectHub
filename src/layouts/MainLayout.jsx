@@ -15,7 +15,7 @@ export default function MainLayout() {
     };
 
     return (
-        <div className="flex h-screen w-full overflow-hidden">
+        <div className="flex h-[100dvh] w-full overflow-hidden">
             {/* Desktop Sidebar */}
             <Sidebar />
 
@@ -34,7 +34,7 @@ export default function MainLayout() {
 
             <main className="flex flex-1 flex-col overflow-hidden bg-background-light dark:bg-background-dark">
                 <Header onMenuToggle={toggleMobileMenu} />
-                <div className="flex-1 overflow-y-auto">
+                <div className="flex-1 overflow-y-auto pb-10">
                     <Outlet />
                 </div>
             </main>

@@ -96,7 +96,7 @@ function KanbanColumn({ id, title, tasks, count, color = 'gray' }) {
     const { setNodeRef } = useDroppable({ id });
 
     return (
-        <div ref={setNodeRef} className="flex flex-col h-full rounded-xl bg-slate-100/50 dark:bg-[#16212e] border border-slate-200/50 dark:border-slate-800/50">
+        <div ref={setNodeRef} className="flex flex-col rounded-xl bg-slate-100/50 dark:bg-[#16212e] border border-slate-200/50 dark:border-slate-800/50 h-fit min-h-[500px]">
             <div className={`flex items-center justify-between p-4 flex-shrink-0 ${color !== 'gray' ? `border-t-2 border-${color}-500` : ''} rounded-t-xl`}>
                 <div className="flex items-center gap-2">
                     <h3 className="text-sm font-bold text-slate-700 dark:text-white uppercase tracking-wider">{title}</h3>
@@ -112,7 +112,7 @@ function KanbanColumn({ id, title, tasks, count, color = 'gray' }) {
                     <span className="material-symbols-outlined text-[20px]">more_horiz</span>
                 </button>
             </div>
-            <div className="flex-1 overflow-y-auto px-3 pb-3 flex flex-col gap-3">
+            <div className="px-3 pb-3 flex flex-col gap-3">
                 <SortableContext items={tasks.map(t => String(t.id))} strategy={verticalListSortingStrategy}>
                     {tasks.map((task) => (
                         <TaskCard key={task.id} task={task} />
@@ -316,7 +316,7 @@ export default function KanbanBoard({ showHeader = true, projectId, project }) {
     }
 
     return (
-        <div className="flex flex-col h-full">
+        <div className="flex flex-col min-h-screen">
             {/* Header Section */}
             {showHeader && (
                 <header className="flex flex-col gap-4 p-6 pb-2 bg-background-light dark:bg-background-dark border-b border-transparent flex-shrink-0">
@@ -379,9 +379,9 @@ export default function KanbanBoard({ showHeader = true, projectId, project }) {
 
             {/* Kanban Board Area */}
             <div className="flex-1">
-                <div className="h-full p-6">
+                <div className="p-6">
                     <DndContext sensors={sensors} collisionDetection={closestCorners} onDragEnd={handleDragEnd}>
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 h-full">
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                             <KanbanColumn id="backlog" title="Backlog" tasks={organizedTasks.backlog} count={organizedTasks.backlog.length} color="gray" />
                             <KanbanColumn id="inProgress" title="Em andamento" tasks={organizedTasks.inProgress} count={organizedTasks.inProgress.length} color="primary" />
                             <KanbanColumn id="testing" title="Em teste" tasks={organizedTasks.testing} count={organizedTasks.testing.length} color="amber" />

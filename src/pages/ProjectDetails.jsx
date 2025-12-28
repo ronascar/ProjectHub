@@ -97,7 +97,7 @@ export default function ProjectDetails() {
     const completedTasks = project.taskStats?.find(s => s.status === 'DONE')?._count || 0;
 
     return (
-        <div className="layout-container flex h-full grow flex-col px-4 md:px-10 lg:px-40 py-8">
+        <div className="layout-container flex min-h-full grow flex-col px-4 md:px-10 lg:px-40 py-8">
             <div className="layout-content-container flex flex-col w-full max-w-[1200px] mx-auto flex-1 gap-6">
                 {/* Breadcrumbs */}
                 <nav className="flex items-center gap-2 text-sm text-slate-500 dark:text-[#92adc9]">
@@ -177,17 +177,17 @@ export default function ProjectDetails() {
                                     <div className="flex items-center justify-between">
                                         <span className="text-slate-500 dark:text-[#94a3b8] text-sm font-medium">Status</span>
                                         <span className={`material-symbols-outlined text-[20px] ${project.status === 'COMPLETED' ? 'text-green-500' :
-                                                project.status === 'IN_PROGRESS' ? 'text-blue-500' :
-                                                    project.status === 'ON_HOLD' ? 'text-orange-500' :
-                                                        'text-gray-500'
+                                            project.status === 'IN_PROGRESS' ? 'text-blue-500' :
+                                                project.status === 'ON_HOLD' ? 'text-orange-500' :
+                                                    'text-gray-500'
                                             }`}>radio_button_checked</span>
                                     </div>
                                     <span className="text-2xl font-bold text-slate-900 dark:text-white">{getStatusLabel(project.status)}</span>
                                     <div className="w-full bg-slate-100 dark:bg-slate-700 rounded-full h-1.5 mt-2">
                                         <div className={`h-1.5 rounded-full ${project.status === 'COMPLETED' ? 'bg-green-500' :
-                                                project.status === 'IN_PROGRESS' ? 'bg-blue-500' :
-                                                    project.status === 'ON_HOLD' ? 'bg-orange-500' :
-                                                        'bg-gray-500'
+                                            project.status === 'IN_PROGRESS' ? 'bg-blue-500' :
+                                                project.status === 'ON_HOLD' ? 'bg-orange-500' :
+                                                    'bg-gray-500'
                                             }`} style={{ width: `${project.progress || 0}%` }}></div>
                                     </div>
                                 </div>
@@ -196,9 +196,9 @@ export default function ProjectDetails() {
                                     <div className="flex items-center justify-between">
                                         <span className="text-slate-500 dark:text-[#94a3b8] text-sm font-medium">Prazo</span>
                                         <span className={`material-symbols-outlined text-[20px] ${daysRemaining === null ? 'text-gray-400' :
-                                                daysRemaining < 0 ? 'text-red-400' :
-                                                    daysRemaining < 7 ? 'text-orange-400' :
-                                                        'text-green-400'
+                                            daysRemaining < 0 ? 'text-red-400' :
+                                                daysRemaining < 7 ? 'text-orange-400' :
+                                                    'text-green-400'
                                             }`}>schedule</span>
                                     </div>
                                     <span className="text-2xl font-bold text-slate-900 dark:text-white">
