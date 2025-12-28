@@ -218,9 +218,12 @@ model Task {
 enum TaskStatus {
   TODO
   IN_PROGRESS
-  REVIEW
+  IN_REVIEW
+  TESTING
+  REVIEW      // Keep for backward compatibility
   DONE
   BLOCKED
+  CANCELLED
 }
 
 model TaskTag {
