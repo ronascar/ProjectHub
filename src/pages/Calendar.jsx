@@ -287,7 +287,7 @@ export default function Calendar() {
             <div className="flex flex-1 items-center justify-center">
                 <div className="text-center">
                     <div className="inline-block h-12 w-12 animate-spin rounded-full border-4 border-solid border-primary border-r-transparent"></div>
-                    <p className="mt-4 text-gray-500 dark:text-gray-400">Carregando calendário...</p>
+                    <p className="mt-4 text-gray-500 dark:text-gray-400">Carregando agenda...</p>
                 </div>
             </div>
         );

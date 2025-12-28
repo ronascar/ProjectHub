@@ -268,9 +268,11 @@ export default function KanbanBoard({ showHeader = true, projectId, project }) {
                 <header className="flex flex-col gap-4 p-6 pb-2 bg-background-light dark:bg-background-dark border-b border-transparent flex-shrink-0">
                     {/* Breadcrumbs */}
                     <div className="flex items-center gap-2">
-                        <span className="text-slate-500 dark:text-[#92adc9] text-sm font-medium">Projetos</span>
+                        <Link to={projectId ? "/projects" : "/"} className="text-slate-500 hover:text-primary dark:text-[#92adc9] text-sm font-medium transition-colors">
+                            {projectId ? 'Projetos' : 'Dashboard'}
+                        </Link>
                         <span className="text-slate-400 dark:text-[#586e85] text-sm">/</span>
-                        <span className="text-slate-900 dark:text-white text-sm font-medium">{project?.name || 'Kanban'}</span>
+                        <span className="text-slate-900 dark:text-white text-sm font-medium">{project?.name || 'Tarefas'}</span>
                     </div>
 
                     {/* Page Heading & Actions */}
