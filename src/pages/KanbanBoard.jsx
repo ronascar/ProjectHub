@@ -304,15 +304,20 @@ export default function KanbanBoard({ showHeader = true, projectId, project }) {
         const statusMap = {
             backlog: 'TODO',
             inProgress: 'IN_PROGRESS',
-            testing: 'TESTING',
+            testing: 'IN_REVIEW',  // Changed back to IN_REVIEW - TESTING might not be valid in DB
             done: 'DONE'
         };
 
+        const newStatus = statusMap[destColumn];
+        console.log('📤 Updating task', activeId, 'to status:', newStatus, 'in column:', destColumn);
+
         // Update task status in the backend
         try {
-            await updateTask(activeId, { status: statusMap[destColumn] });
+            await updateTask(activeId, { status: newStatus });
+            console.log('✅ Task updated successfully');
         } catch (err) {
-            console.error('Error updating task status:', err);
+            console.error('❌ Error updating task status:', err);
+            console.error('Error details:', err.message, err.status);
             // Revert on error
             organizeTasks();
         }
