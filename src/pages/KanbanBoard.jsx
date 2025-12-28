@@ -305,28 +305,23 @@ export default function KanbanBoard({ showHeader = true, projectId, project }) {
         const statusMap = {
             backlog: 'TODO',
             inProgress: 'IN_PROGRESS',
-            testing: 'TESTING', // Try TESTING instead of IN_REVIEW which backend rejects
+            testing: 'IN_REVIEW',
             done: 'DONE'
         };
 
         const newStatus = statusMap[destColumn];
-        console.log('📤 Updating task', activeId, 'to status:', newStatus, 'in column:', destColumn);
 
-        // Update task status in the backend - try using reorder API instead
+        // Update task status in the backend
         try {
-            // First try the reorder endpoint which is specifically for Kanban
+            // Try the reorder endpoint which is specifically for Kanban
             try {
                 await tasksAPI.reorder(activeId, newStatus, adjustedDestIndex);
-                console.log('✅ Task reordered successfully using reorder API');
             } catch (reorderErr) {
-                console.warn('⚠️ Reorder API failed, trying update API:', reorderErr.message);
                 // Fallback to regular update if reorder fails
                 await updateTask(activeId, { status: newStatus });
-                console.log('✅ Task updated successfully using update API');
             }
         } catch (err) {
-            console.error('❌ Error updating task status:', err);
-            console.error('Error details:', err.message, err.status);
+            console.error('Error updating task status:', err);
             // Revert on error
             organizeTasks();
         }
