@@ -7,7 +7,7 @@ import { useTasks } from '../context/TasksContext';
 
 // Sortable Task Card Component
 function TaskCard({ task }) {
-    const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: task.id });
+    const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: String(task.id) });
 
     const style = {
         transform: CSS.Transform.toString(transform),
@@ -113,7 +113,7 @@ function KanbanColumn({ id, title, tasks, count, color = 'gray' }) {
                 </button>
             </div>
             <div className="flex-1 overflow-y-auto px-3 pb-3 flex flex-col gap-3">
-                <SortableContext items={tasks.map(t => t.id)} strategy={verticalListSortingStrategy}>
+                <SortableContext items={tasks.map(t => String(t.id))} strategy={verticalListSortingStrategy}>
                     {tasks.map((task) => (
                         <TaskCard key={task.id} task={task} />
                     ))}
@@ -214,7 +214,7 @@ export default function KanbanBoard({ showHeader = true, projectId, project }) {
         // Find source column
         let sourceColumn = null;
         Object.keys(organizedTasks).forEach(column => {
-            if (organizedTasks[column].find(t => t.id === activeId)) sourceColumn = column;
+            if (organizedTasks[column].find(t => String(t.id) === String(activeId))) sourceColumn = column;
         });
 
         if (!sourceColumn) return;
@@ -228,7 +228,7 @@ export default function KanbanBoard({ showHeader = true, projectId, project }) {
         } else {
             // Check if dropped on a task
             Object.keys(organizedTasks).forEach(column => {
-                if (organizedTasks[column].find(t => t.id === overId)) destColumn = column;
+                if (organizedTasks[column].find(t => String(t.id) === String(overId))) destColumn = column;
             });
         }
 
@@ -237,10 +237,10 @@ export default function KanbanBoard({ showHeader = true, projectId, project }) {
         // If dragging within the same column
         if (sourceColumn === destColumn) {
             const newColumnTasks = [...organizedTasks[sourceColumn]];
-            const oldIndex = newColumnTasks.findIndex(t => t.id === activeId);
+            const oldIndex = newColumnTasks.findIndex(t => String(t.id) === String(activeId));
             const newIndex = organizedTasks[overId]
                 ? newColumnTasks.length // Dropped on column, move to end
-                : newColumnTasks.findIndex(t => t.id === overId); // Dropped on task
+                : newColumnTasks.findIndex(t => String(t.id) === String(overId)); // Dropped on task
 
             // Move the task
             const [movedTask] = newColumnTasks.splice(oldIndex, 1);
@@ -259,10 +259,10 @@ export default function KanbanBoard({ showHeader = true, projectId, project }) {
         const sourceTasks = [...organizedTasks[sourceColumn]];
         const destTasks = [...organizedTasks[destColumn]];
 
-        const sourceIndex = sourceTasks.findIndex(t => t.id === activeId);
+        const sourceIndex = sourceTasks.findIndex(t => String(t.id) === String(activeId));
         const destIndex = organizedTasks[overId]
             ? destTasks.length // Dropped on column, move to end
-            : destTasks.findIndex(t => t.id === overId); // Dropped on task
+            : destTasks.findIndex(t => String(t.id) === String(overId)); // Dropped on task
 
         const [movedTask] = sourceTasks.splice(sourceIndex, 1);
         const adjustedDestIndex = destIndex < 0 ? destTasks.length : destIndex;
@@ -316,7 +316,7 @@ export default function KanbanBoard({ showHeader = true, projectId, project }) {
     }
 
     return (
-        <div className="flex flex-col h-full overflow-hidden">
+        <div className="flex flex-col h-full">
             {/* Header Section */}
             {showHeader && (
                 <header className="flex flex-col gap-4 p-6 pb-2 bg-background-light dark:bg-background-dark border-b border-transparent flex-shrink-0">
@@ -378,7 +378,7 @@ export default function KanbanBoard({ showHeader = true, projectId, project }) {
             )}
 
             {/* Kanban Board Area */}
-            <div className="flex-1 overflow-hidden">
+            <div className="flex-1">
                 <div className="h-full p-6">
                     <DndContext sensors={sensors} collisionDetection={closestCorners} onDragEnd={handleDragEnd}>
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 h-full">
