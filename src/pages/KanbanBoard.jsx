@@ -206,12 +206,23 @@ export default function KanbanBoard({ showHeader = true, projectId, project }) {
 
     const handleDragStart = (event) => {
         const { active } = event;
+        console.log('🎯 Drag Start - Active ID:', active.id, 'Type:', typeof active.id);
+
         // Find the task object from the active ID
         let task = null;
         Object.keys(organizedTasks).forEach(column => {
             const found = organizedTasks[column].find(t => String(t.id) === String(active.id));
-            if (found) task = found;
+            if (found) {
+                console.log('✅ Found task in column:', column, 'Task:', found);
+                task = found;
+            }
         });
+
+        if (!task) {
+            console.error('❌ Task not found for ID:', active.id);
+            console.log('📊 Current organized tasks:', organizedTasks);
+        }
+
         setActiveTask(task);
     };
 
