@@ -27,7 +27,7 @@ const TASK_STATUSES = [
 export default function Calendar() {
     const navigate = useNavigate();
     const today = new Date();
-    const [currentDate, setCurrentDate] = useState(new Date(today.getFullYear(), today.getMonth(), 1));
+    const [currentDate, setCurrentDate] = useState(new Date(today.getFullYear(), today.getMonth(), today.getDate()));
     const [selectedProjects, setSelectedProjects] = useState([]);
     const [selectedStatuses, setSelectedStatuses] = useState(['TODO', 'IN_PROGRESS', 'DONE']);
     const [viewMode, setViewMode] = useState('Mês');
@@ -187,7 +187,7 @@ export default function Calendar() {
     };
 
     const goToToday = () => {
-        setCurrentDate(new Date(today.getFullYear(), today.getMonth(), 1));
+        setCurrentDate(new Date(today.getFullYear(), today.getMonth(), today.getDate()));
     };
 
     // Toggle project filter
